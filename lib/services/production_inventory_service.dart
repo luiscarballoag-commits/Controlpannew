@@ -29,7 +29,7 @@ class ProductionInventoryService {
       final requiredQuantity =
           item.quantity * lots;
 
-      if (ingredient.stock <
+      if (ingredient.normalizedStock <
           requiredQuantity) {
         return false;
       }
@@ -67,8 +67,8 @@ class ProductionInventoryService {
 
       final updatedIngredient =
           ingredient.copyWith(
-        stock:
-            ingredient.stock -
+        normalizedStock:
+            ingredient.normalizedStock -
             consumed,
       );
 
