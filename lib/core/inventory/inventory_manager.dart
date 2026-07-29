@@ -21,6 +21,8 @@ class InventoryManager {
     final normalized = UnitConverter.normalize(
       quantity: quantity,
       packageSize: ingredient.packageSize,
+      packageUnit: ingredient.packageUnit,
+      consumptionUnit: ingredient.unit,
     );
 
     final updated = ingredient.copyWith(

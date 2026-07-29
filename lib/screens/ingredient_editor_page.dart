@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/ingredient_catalog.dart';
+import '../core/inventory/unit_converter.dart';
 import '../services/ingredient_service.dart';
 
 class IngredientEditorPage extends StatefulWidget {
@@ -152,7 +153,12 @@ class _IngredientEditorPageState
         double.tryParse(_packageSizeController.text) ?? 0;
 
     final normalizedStock =
-        stock * packageSize;
+        UnitConverter.normalize(
+      quantity: stock,
+      packageSize: packageSize,
+      packageUnit: selectedPackageUnit ?? "",
+      consumptionUnit: selectedUnit ?? "",
+    );
 
     final ingredient = IngredientCatalog(
       id: widget.ingredient?.id ??

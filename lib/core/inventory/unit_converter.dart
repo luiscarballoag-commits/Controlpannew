@@ -1,15 +1,36 @@
 class UnitConverter {
-  /// Convierte una cantidad a la unidad base.
+  /// Convierte una cantidad comprada a la unidad de consumo.
   ///
   /// Ejemplos:
-  /// 10 sacos × 45 kg = 450 kg
-  /// 2 cajas × 5 kg = 10 kg
+  /// 1 saco × 30 kg = 30000 g
+  /// 2 cajas × 5 kg = 10000 g
   /// 2 paquetes × 500 g = 1000 g
+  /// 1 bidón × 18 L = 18 L
   static double normalize({
     required double quantity,
     required double packageSize,
+    required String packageUnit,
+    required String consumptionUnit,
   }) {
-    return quantity * packageSize;
+    double value = quantity * packageSize;
+
+    // Kilogramos <-> gramos
+    if (packageUnit == 'kg' && consumptionUnit == 'g') {
+      value *= 1000;
+    } else if (packageUnit == 'g' && consumptionUnit == 'kg') {
+      value /= 1000;
+    }
+
+    // Litros <-> mililitros
+    else if (packageUnit == 'L' && consumptionUnit == 'mL') {
+      value *= 1000;
+    } else if (packageUnit == 'mL' && consumptionUnit == 'L') {
+      value /= 1000;
+    }
+
+    // Si las unidades son iguales (kg→kg, g→g, L→L, unidad→unidad)
+    // simplemente devuelve el valor calculado.
+    return value;
   }
 
   /// Convierte gramos a kilogramos.

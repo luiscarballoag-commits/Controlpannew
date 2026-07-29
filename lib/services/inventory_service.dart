@@ -42,6 +42,8 @@ class InventoryService {
     return UnitConverter.normalize(
       quantity: quantity,
       packageSize: packageSize,
+      packageUnit: "kg",
+      consumptionUnit: "kg",
     );
   }
 }
