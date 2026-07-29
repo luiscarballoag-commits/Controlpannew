@@ -91,7 +91,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Stock: ${ingredient.stock.toStringAsFixed(2)}",
+                          "Stock: ${ingredient.normalizedStock.toStringAsFixed(2)}",
                         ),
                         Text(
                           "Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)}",
