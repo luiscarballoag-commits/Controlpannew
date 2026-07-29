@@ -20,6 +20,18 @@ class InventoryItem {
   /// Unidad de medida
   final String unit;
 
+  /// Unidad de compra
+  final String purchaseUnit;
+
+  /// Contenido del envase
+  final double packageSize;
+
+  /// Unidad del contenido
+  final String packageUnit;
+
+  /// Existencia normalizada
+  final double normalizedStock;
+
   /// Existencia actual
   final double stock;
 
@@ -37,6 +49,10 @@ class InventoryItem {
     required this.ingredientName,
     required this.category,
     required this.unit,
+    required this.purchaseUnit,
+    required this.packageSize,
+    required this.packageUnit,
+    required this.normalizedStock,
     required this.stock,
     required this.minimumStock,
     required this.purchasePrice,
@@ -48,6 +64,10 @@ class InventoryItem {
     String? ingredientName,
     String? category,
     String? unit,
+    String? purchaseUnit,
+    double? packageSize,
+    String? packageUnit,
+    double? normalizedStock,
     double? stock,
     double? minimumStock,
     double? purchasePrice,
@@ -58,6 +78,10 @@ class InventoryItem {
       ingredientName: ingredientName ?? this.ingredientName,
       category: category ?? this.category,
       unit: unit ?? this.unit,
+      purchaseUnit: purchaseUnit ?? this.purchaseUnit,
+      packageSize: packageSize ?? this.packageSize,
+      packageUnit: packageUnit ?? this.packageUnit,
+      normalizedStock: normalizedStock ?? this.normalizedStock,
       stock: stock ?? this.stock,
       minimumStock: minimumStock ?? this.minimumStock,
       purchasePrice: purchasePrice ?? this.purchasePrice,

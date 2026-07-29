@@ -25,13 +25,17 @@ class IngredientCatalogAdapter extends TypeAdapter<IngredientCatalog> {
       stock: fields[5] as double,
       minimumStock: fields[6] as double,
       notes: fields[7] as String,
+      purchaseUnit: fields[8] as String,
+      packageSize: fields[9] as double,
+      packageUnit: fields[10] as String,
+      normalizedStock: fields[11] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, IngredientCatalog obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +51,15 @@ class IngredientCatalogAdapter extends TypeAdapter<IngredientCatalog> {
       ..writeByte(6)
       ..write(obj.minimumStock)
       ..writeByte(7)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(8)
+      ..write(obj.purchaseUnit)
+      ..writeByte(9)
+      ..write(obj.packageSize)
+      ..writeByte(10)
+      ..write(obj.packageUnit)
+      ..writeByte(11)
+      ..write(obj.normalizedStock);
   }
 
   @override

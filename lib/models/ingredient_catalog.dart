@@ -28,6 +28,22 @@ class IngredientCatalog extends HiveObject {
   @HiveField(7)
   final String notes;
 
+  // ===============================
+  // Inventario Inteligente 2.0
+  // ===============================
+
+  @HiveField(8)
+  final String purchaseUnit;
+
+  @HiveField(9)
+  final double packageSize;
+
+  @HiveField(10)
+  final String packageUnit;
+
+  @HiveField(11)
+  final double normalizedStock;
+
   IngredientCatalog({
     required this.id,
     required this.name,
@@ -37,6 +53,10 @@ class IngredientCatalog extends HiveObject {
     this.stock = 0,
     this.minimumStock = 0,
     this.notes = '',
+    this.purchaseUnit = '',
+    this.packageSize = 1,
+    this.packageUnit = '',
+    this.normalizedStock = 0,
   });
 
   IngredientCatalog copyWith({
@@ -48,6 +68,10 @@ class IngredientCatalog extends HiveObject {
     double? stock,
     double? minimumStock,
     String? notes,
+    String? purchaseUnit,
+    double? packageSize,
+    String? packageUnit,
+    double? normalizedStock,
   }) {
     return IngredientCatalog(
       id: id ?? this.id,
@@ -58,6 +82,11 @@ class IngredientCatalog extends HiveObject {
       stock: stock ?? this.stock,
       minimumStock: minimumStock ?? this.minimumStock,
       notes: notes ?? this.notes,
+      purchaseUnit: purchaseUnit ?? this.purchaseUnit,
+      packageSize: packageSize ?? this.packageSize,
+      packageUnit: packageUnit ?? this.packageUnit,
+      normalizedStock:
+          normalizedStock ?? this.normalizedStock,
     );
   }
 }

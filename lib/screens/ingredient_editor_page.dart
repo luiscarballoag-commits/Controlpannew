@@ -24,13 +24,27 @@ class _IngredientEditorPageState
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();
   final _unitController = TextEditingController();
+
   final _priceController = TextEditingController();
   final _stockController = TextEditingController();
   final _minimumController = TextEditingController();
+
+  final _packageSizeController =
+      TextEditingController();
+
+  final _purchaseUnitController =
+      TextEditingController();
+
+  final _packageUnitController =
+      TextEditingController();
+
   final _notesController = TextEditingController();
 
   String? selectedCategory;
   String? selectedUnit;
+
+  String? selectedPurchaseUnit;
+  String? selectedPackageUnit;
 
   final categories = [
     "Harinas",
@@ -41,6 +55,24 @@ class _IngredientEditorPageState
     "Esencias",
     "Mejoradores",
     "Otros",
+  ];
+
+  final purchaseUnits = [
+    "Saco",
+    "Caja",
+    "Bolsa",
+    "Bidón",
+    "Botella",
+    "Paquete",
+    "Unidad",
+  ];
+
+  final packageUnits = [
+    "kg",
+    "g",
+    "L",
+    "ml",
+    "Unidad",
   ];
 
   final units = [
@@ -54,14 +86,11 @@ class _IngredientEditorPageState
   ];
 
   final IngredientService ingredientService =
-      IngredientService();
-
-  @override
+      IngredientService();  @override
   void initState() {
     super.initState();
 
     if (widget.ingredient != null) {
-
       _nameController.text =
           widget.ingredient!.name;
 
@@ -71,11 +100,20 @@ class _IngredientEditorPageState
       selectedUnit =
           widget.ingredient!.unit;
 
+      selectedPurchaseUnit =
+          widget.ingredient!.purchaseUnit;
+
+      selectedPackageUnit =
+          widget.ingredient!.packageUnit;
+
       _priceController.text =
           widget.ingredient!.purchasePrice.toString();
 
       _stockController.text =
           widget.ingredient!.stock.toString();
+
+      _packageSizeController.text =
+          widget.ingredient!.packageSize.toString();
 
       _minimumController.text =
           widget.ingredient!.minimumStock.toString();
@@ -90,16 +128,31 @@ class _IngredientEditorPageState
     _nameController.dispose();
     _categoryController.dispose();
     _unitController.dispose();
+
     _priceController.dispose();
     _stockController.dispose();
     _minimumController.dispose();
+
+    _packageSizeController.dispose();
+    _purchaseUnitController.dispose();
+    _packageUnitController.dispose();
+
     _notesController.dispose();
+
     super.dispose();
   }  void saveIngredient() {
-
     if (_nameController.text.trim().isEmpty) {
       return;
     }
+
+    final stock =
+        double.tryParse(_stockController.text) ?? 0;
+
+    final packageSize =
+        double.tryParse(_packageSizeController.text) ?? 0;
+
+    final normalizedStock =
+        stock * packageSize;
 
     final ingredient = IngredientCatalog(
       id: widget.ingredient?.id ??
@@ -119,11 +172,7 @@ class _IngredientEditorPageState
               ) ??
               0,
 
-      stock:
-          double.tryParse(
-                _stockController.text,
-              ) ??
-              0,
+      stock: stock,
 
       minimumStock:
           double.tryParse(
@@ -131,22 +180,28 @@ class _IngredientEditorPageState
               ) ??
               0,
 
+      purchaseUnit:
+          selectedPurchaseUnit ?? "",
+
+      packageSize: packageSize,
+
+      packageUnit:
+          selectedPackageUnit ?? "",
+
+      normalizedStock: normalizedStock,
+
       notes: _notesController.text.trim(),
     );
 
     if (widget.index == null) {
-
       ingredientService.addIngredient(
         ingredient,
       );
-
     } else {
-
       ingredientService.updateIngredient(
         widget.index!,
         ingredient,
       );
-
     }
 
     Navigator.pop(context);
@@ -172,10 +227,9 @@ class _IngredientEditorPageState
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {    return Scaffold(
+  }  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.index == null
@@ -216,9 +270,59 @@ class _IngredientEditorPageState
             const SizedBox(height: 14),
 
             DropdownButtonFormField<String>(
+              initialValue: selectedPurchaseUnit,
+              decoration: const InputDecoration(
+                labelText: "Unidad de compra",
+                border: OutlineInputBorder(),
+              ),
+              items: purchaseUnits.map((unit) {
+                return DropdownMenuItem(
+                  value: unit,
+                  child: Text(unit),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedPurchaseUnit = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 14),
+
+            buildField(
+              "Contenido del envase",
+              _packageSizeController,
+              keyboard: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+            ),
+
+            DropdownButtonFormField<String>(
+              initialValue: selectedPackageUnit,
+              decoration: const InputDecoration(
+                labelText: "Unidad del contenido",
+                border: OutlineInputBorder(),
+              ),
+              items: packageUnits.map((unit) {
+                return DropdownMenuItem(
+                  value: unit,
+                  child: Text(unit),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedPackageUnit = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 14),
+
+            DropdownButtonFormField<String>(
               initialValue: selectedUnit,
               decoration: const InputDecoration(
-                labelText: "Unidad",
+                labelText: "Unidad de consumo",
                 border: OutlineInputBorder(),
               ),
               items: units.map((unit) {
@@ -234,9 +338,7 @@ class _IngredientEditorPageState
               },
             ),
 
-            const SizedBox(height: 14),
-
-            buildField(
+            const SizedBox(height: 14),            buildField(
               "Precio de compra",
               _priceController,
               keyboard: const TextInputType.numberWithOptions(

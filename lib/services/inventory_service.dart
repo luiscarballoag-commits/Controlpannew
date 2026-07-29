@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../models/ingredient_catalog.dart';
+import '../core/inventory/unit_converter.dart';
 
 class InventoryService {
   final Box<IngredientCatalog> _box =
@@ -14,7 +15,7 @@ class InventoryService {
     double total = 0;
 
     for (final item in _box.values) {
-      total += item.stock * item.purchasePrice;
+      total += item.normalizedStock * item.purchasePrice;
     }
 
     return total;
@@ -26,7 +27,21 @@ class InventoryService {
 
   List<IngredientCatalog> getLowStockItems() {
     return _box.values
-        .where((item) => item.stock <= item.minimumStock)
+        .where((item) => item.normalizedStock <= item.minimumStock)
         .toList();
+  }
+
+  /// Convierte una compra a la unidad base.
+  ///
+  /// Ejemplo:
+  /// 10 sacos × 45 kg = 450 kg
+  double calculateNormalizedStock({
+    required double quantity,
+    required double packageSize,
+  }) {
+    return UnitConverter.normalize(
+      quantity: quantity,
+      packageSize: packageSize,
+    );
   }
 }

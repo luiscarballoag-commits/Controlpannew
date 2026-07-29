@@ -2,6 +2,7 @@ import '../../models/ingredient_catalog.dart';
 import '../../models/inventory_movement.dart';
 import '../../services/ingredient_service.dart';
 import '../../services/inventory_movement_service.dart';
+import 'unit_converter.dart';
 
 class InventoryManager {
   final IngredientService _ingredientService = IngredientService();
@@ -17,15 +18,16 @@ class InventoryManager {
     required String reference,
     String notes = '',
   }) async {
-    final updated = IngredientCatalog(
-      id: ingredient.id,
-      name: ingredient.name,
-      category: ingredient.category,
-      unit: ingredient.unit,
+    final normalized = UnitConverter.normalize(
+      quantity: quantity,
+      packageSize: ingredient.packageSize,
+    );
+
+    final updated = ingredient.copyWith(
       purchasePrice: purchasePrice,
       stock: ingredient.stock + quantity,
-      minimumStock: ingredient.minimumStock,
-      notes: ingredient.notes,
+      normalizedStock:
+          ingredient.normalizedStock + normalized,
     );
 
     _ingredientService.updateIngredient(index, updated);
@@ -37,7 +39,7 @@ class InventoryManager {
         ingredientId: updated.id,
         ingredientName: updated.name,
         quantity: quantity,
-        unit: updated.unit,
+        unit: updated.purchaseUnit,
         type: 'Entrada',
         reference: reference,
         notes: notes,
@@ -53,19 +55,13 @@ class InventoryManager {
     required String reason,
     String notes = '',
   }) async {
-    if (quantity > ingredient.stock) {
+    if (quantity > ingredient.normalizedStock) {
       throw Exception('Stock insuficiente.');
     }
 
-    final updated = IngredientCatalog(
-      id: ingredient.id,
-      name: ingredient.name,
-      category: ingredient.category,
-      unit: ingredient.unit,
-      purchasePrice: ingredient.purchasePrice,
-      stock: ingredient.stock - quantity,
-      minimumStock: ingredient.minimumStock,
-      notes: ingredient.notes,
+    final updated = ingredient.copyWith(
+      normalizedStock:
+          ingredient.normalizedStock - quantity,
     );
 
     _ingredientService.updateIngredient(index, updated);
@@ -77,7 +73,7 @@ class InventoryManager {
         ingredientId: updated.id,
         ingredientName: updated.name,
         quantity: quantity,
-        unit: updated.unit,
+        unit: ingredient.unit,
         type: 'Salida',
         reference: reason,
         notes: notes,
@@ -85,15 +81,20 @@ class InventoryManager {
     );
   }
 
-  double getCurrentStock(IngredientCatalog ingredient) {
-    return ingredient.stock;
+  double getCurrentStock(
+    IngredientCatalog ingredient,
+  ) {
+    return ingredient.normalizedStock;
   }
 
-  double getInventoryValue(List<IngredientCatalog> ingredients) {
+  double getInventoryValue(
+    List<IngredientCatalog> ingredients,
+  ) {
     double total = 0;
 
     for (final ingredient in ingredients) {
-      total += ingredient.stock * ingredient.purchasePrice;
+      total += ingredient.normalizedStock *
+          ingredient.purchasePrice;
     }
 
     return total;
