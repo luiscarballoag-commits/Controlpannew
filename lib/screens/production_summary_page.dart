@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../core/production_manager/production_manager.dart';
+import '../core/production_engine/ingredient.dart';
 import '../models/production.dart';
 import '../models/recipe.dart';
-import '../models/recipe_ingredient.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
 
@@ -45,13 +45,25 @@ class _ProductionSummaryPageState
   }
 
   void calculateTotalMass() {
-    totalMassGrams = 0;
+    final ingredientes = <Ingredient>[];
 
-    for (final RecipeIngredient ingredient
-        in widget.recipe.ingredients) {
-      totalMassGrams +=
-          ingredient.quantity * widget.lots;
+    for (final item in widget.recipe.ingredients) {
+      ingredientes.add(
+        Ingredient(
+          id: item.ingredient.id,
+          name: item.ingredient.name,
+          quantity: item.quantity * widget.lots,
+          unit: UnitType.grams,
+        ),
+      );
     }
+
+    final resultado = productionManager.calculateProduction(
+      ingredients: ingredientes,
+      pieceWeight: widget.pieceWeight,
+    );
+
+    totalMassGrams = resultado.totalMass;
   }
 
   @override
