@@ -73,6 +73,7 @@ class _IngredientEditorPageState
     "g",
     "L",
     "ml",
+    "Unidad",
   ];
 
   final units = [
@@ -81,6 +82,8 @@ class _IngredientEditorPageState
     "L",
     "ml",
     "Unidad",
+    "Caja",
+    "Saco",
   ];
 
   final IngredientService ingredientService =
