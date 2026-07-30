@@ -48,12 +48,32 @@ class _ProductionSummaryPageState
     final ingredientes = <Ingredient>[];
 
     for (final item in widget.recipe.ingredients) {
+      double cantidad = item.quantity * widget.lots;
+      UnitType tipo = UnitType.grams;
+
+      switch (item.unit) {
+        case "kg":
+          cantidad *= 1000;
+          tipo = UnitType.grams;
+          break;
+        case "g":
+          tipo = UnitType.grams;
+          break;
+        case "L":
+          cantidad *= 1000;
+          tipo = UnitType.milliliters;
+          break;
+        case "ml":
+          tipo = UnitType.milliliters;
+          break;
+      }
+
       ingredientes.add(
         Ingredient(
           id: item.ingredient.id,
           name: item.ingredient.name,
-          quantity: item.quantity * widget.lots,
-          unit: UnitType.grams,
+          quantity: cantidad,
+          unit: tipo,
         ),
       );
     }
