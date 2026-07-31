@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import '../core/production_manager/production_manager.dart';
 import '../core/production_engine/ingredient.dart';
 import '../models/production.dart';
+import '../models/cost_record.dart';
 import '../models/recipe.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
+import '../services/cost_service.dart';
+import '../services/cost_record_service.dart';
 
 class ProductionSummaryPage extends StatefulWidget {
   final Recipe recipe;
@@ -26,13 +29,19 @@ class ProductionSummaryPage extends StatefulWidget {
 
 class _ProductionSummaryPageState
     extends State<ProductionSummaryPage> {
+
   final ProductionService productionService =
       ProductionService();
+
+  final CostService costService =
+      CostService();
+
+  final CostRecordService costRecordService =
+      CostRecordService();
 
   final ProductionInventoryService
       inventoryService =
       ProductionInventoryService();
-
   final ProductionManager productionManager =
       ProductionManager();
 
@@ -399,6 +408,43 @@ class _ProductionSummaryPageState
                                 widget.pieceWeight,
                             totalPieces:
                                 totalPieces,
+                          ),
+                        );
+
+                        final costResult =
+                            costService.calculateRecipeCost(
+                          recipe: widget.recipe,
+                          lots: widget.lots,
+                          totalWeightKg: totalMassGrams / 1000,
+                          totalUnits: totalPieces,
+                        );
+
+                        costRecordService.saveRecord(
+                          CostRecord(
+                            id: DateTime.now()
+                                .millisecondsSinceEpoch
+                                .toString(),
+                            date: DateTime.now(),
+                            productionId: widget.recipe.id,
+                            recipeName: widget.recipe.name,
+                            rawMaterialCost:
+                                costResult.rawMaterialCost,
+                            laborCost:
+                                costResult.laborCost,
+                            operatingCost:
+                                costResult.operatingCost,
+                            depreciationCost:
+                                costResult.depreciationCost,
+                            totalCost:
+                                costResult.totalCost,
+                            costPerKg:
+                                costResult.costPerKg,
+                            costPerPiece:
+                                costResult.costPerUnit,
+                            profitPercentage:
+                                costResult.profitMargin,
+                            suggestedSalePrice:
+                                costResult.suggestedSalePrice,
                           ),
                         );
 

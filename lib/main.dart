@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'models/ingredient_catalog.dart';
 import 'models/inventory_movement.dart';
+import 'models/cost_record.dart';
 import 'models/production.dart';
 import 'models/recipe.dart';
 import 'models/recipe_ingredient.dart';
@@ -20,6 +21,7 @@ Future<void> main() async {
   Hive.registerAdapter(RecipeAdapter());
   Hive.registerAdapter(ProductionAdapter());
   Hive.registerAdapter(InventoryMovementAdapter());
+  Hive.registerAdapter(CostRecordAdapter());
 
   await Hive.openBox<IngredientCatalog>('ingredients');
   await Hive.openBox<Recipe>('recipes');
@@ -29,7 +31,7 @@ Future<void> main() async {
   );
 
   await Hive.openBox('inventory');
-  await Hive.openBox('costs');
+  await Hive.openBox<CostRecord>('costs');
   await Hive.openBox('settings');
 
   runApp(const ControlPanApp());

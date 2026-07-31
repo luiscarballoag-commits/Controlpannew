@@ -35,6 +35,16 @@ class RecipeService {
 
   bool get isNotEmpty => _box.isNotEmpty;
 
+  Recipe? getRecipeById(String id) {
+    try {
+      return _box.values.firstWhere(
+        (recipe) => recipe.id == id,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
   void clear() {
     _box.clear();
   }

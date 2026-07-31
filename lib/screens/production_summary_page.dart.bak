@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import '../core/production_manager/production_manager.dart';
 import '../core/production_engine/ingredient.dart';
 import '../models/production.dart';
+import '../models/cost_record.dart';
 import '../models/recipe.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
+import '../services/cost_service.dart';
+import '../services/cost_record_service.dart';
 
 class ProductionSummaryPage extends StatefulWidget {
   final Recipe recipe;
@@ -26,13 +29,19 @@ class ProductionSummaryPage extends StatefulWidget {
 
 class _ProductionSummaryPageState
     extends State<ProductionSummaryPage> {
+
   final ProductionService productionService =
       ProductionService();
+
+  final CostService costService =
+      CostService();
+
+  final CostRecordService costRecordService =
+      CostRecordService();
 
   final ProductionInventoryService
       inventoryService =
       ProductionInventoryService();
-
   final ProductionManager productionManager =
       ProductionManager();
 
@@ -48,12 +57,32 @@ class _ProductionSummaryPageState
     final ingredientes = <Ingredient>[];
 
     for (final item in widget.recipe.ingredients) {
+      double cantidad = item.quantity * widget.lots;
+      UnitType tipo = UnitType.grams;
+
+      switch (item.unit) {
+        case "kg":
+          cantidad *= 1000;
+          tipo = UnitType.grams;
+          break;
+        case "g":
+          tipo = UnitType.grams;
+          break;
+        case "L":
+          cantidad *= 1000;
+          tipo = UnitType.milliliters;
+          break;
+        case "ml":
+          tipo = UnitType.milliliters;
+          break;
+      }
+
       ingredientes.add(
         Ingredient(
           id: item.ingredient.id,
           name: item.ingredient.name,
-          quantity: item.quantity * widget.lots,
-          unit: UnitType.grams,
+          quantity: cantidad,
+          unit: tipo,
         ),
       );
     }
