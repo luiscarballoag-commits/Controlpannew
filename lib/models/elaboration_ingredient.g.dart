@@ -8,7 +8,7 @@ part of 'elaboration_ingredient.dart';
 
 class ElaborationIngredientAdapter extends TypeAdapter<ElaborationIngredient> {
   @override
-  final int typeId = 10;
+  final int typeId = 12;
 
   @override
   ElaborationIngredient read(BinaryReader reader) {

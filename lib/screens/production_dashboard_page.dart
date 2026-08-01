@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'new_production_page.dart';
 import 'production_recipe_page.dart';
-import 'production_lots_page.dart';
-import 'production_summary_page.dart';
 import 'productions_page.dart';
 
 class ProductionDashboardPage extends StatelessWidget {

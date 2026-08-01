@@ -8,7 +8,7 @@ part of 'production_elaboration.dart';
 
 class ProductionElaborationAdapter extends TypeAdapter<ProductionElaboration> {
   @override
-  final int typeId = 9;
+  final int typeId = 11;
 
   @override
   ProductionElaboration read(BinaryReader reader) {

@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'production_elaboration.g.dart';
 
-@HiveType(typeId: 9)
+@HiveType(typeId: 11)
 class ProductionElaboration extends HiveObject {
   @HiveField(0)
   String id;
