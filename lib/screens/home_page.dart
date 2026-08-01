@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
 
           const NewProductionPage(),
 
-          const CostsPage(),
+          CostsPage(),
 
           const SettingsPage(),
         ],

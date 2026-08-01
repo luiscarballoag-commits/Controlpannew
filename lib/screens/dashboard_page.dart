@@ -127,7 +127,7 @@ class DashboardPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const CostsPage(),
+                              CostsPage(),
                         ),
                       );
                     },
