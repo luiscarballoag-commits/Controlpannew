@@ -7,6 +7,7 @@ import '../models/cost_record.dart';
 import '../models/recipe.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
+import 'production_elaboration_page.dart';
 import '../services/cost_service.dart';
 import '../services/cost_record_service.dart';
 
@@ -457,11 +458,51 @@ class _ProductionSummaryPageState
                           ),
                         );
 
-                        Navigator.popUntil(
-                          context,
-                          (route) =>
-                              route.isFirst,
-                        );
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (dialogContext) {
+                              return AlertDialog(
+                                title: const Text("Producción finalizada"),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.check_circle, color: Colors.green, size: 60),
+                                    const SizedBox(height: 16),
+                                    const Text("La producción fue registrada correctamente."),
+                                    const SizedBox(height: 16),
+                                    Text("Panes obtenidos: ${totalPieces}"),
+                                  ],
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        Navigator.pop(dialogContext);
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ProductionElaborationPage(
+                                              productionId: DateTime.now().millisecondsSinceEpoch.toString(),
+                                              availablePieces: totalPieces,
+                                            ),
+                                          ),
+                                        );
+                                        if (!mounted) return;
+                                        Navigator.popUntil(context, (route) => route.isFirst);
+                                      },
+                                    child: const Text("Elaborar Productos"),
+                                  ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.pop(dialogContext);
+                                      Navigator.popUntil(context, (route) => route.isFirst);
+                                    },
+                                    child: const Text("Finalizar"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                       }
                     : null,
               ),

@@ -1,0 +1,43 @@
+import 'package:hive/hive.dart';
+
+import '../models/product_component.dart';
+
+class ProductComponentService {
+  static const String boxName = 'product_components';
+
+  Box<ProductComponent> get _box =>
+      Hive.box<ProductComponent>(boxName);
+
+  List<ProductComponent> getAll() {
+    return _box.values.toList();
+  }
+
+  List<ProductComponent> getByProduct(
+      String productId) {
+    return _box.values
+        .where(
+          (component) =>
+              component.productId == productId,
+        )
+        .toList();
+  }
+
+  void add(ProductComponent component) {
+    _box.add(component);
+  }
+
+  void update(
+    int index,
+    ProductComponent component,
+  ) {
+    _box.putAt(index, component);
+  }
+
+  void delete(int index) {
+    _box.deleteAt(index);
+  }
+
+  void clear() {
+    _box.clear();
+  }
+}
