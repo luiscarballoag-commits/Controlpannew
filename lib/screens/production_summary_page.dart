@@ -422,7 +422,7 @@ class _ProductionSummaryPageState
                           CostRecord(
                                                             id: DateTime.now().millisecondsSinceEpoch.toString(),
                             date: DateTime.now(),
-                            productionId: widget.recipe.id,
+                              productionId: DateTime.now().millisecondsSinceEpoch.toString(),
                             recipeName: widget.recipe.name,
                             rawMaterialCost:
                                 costResult.rawMaterialCost,
@@ -478,7 +478,6 @@ class _ProductionSummaryPageState
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => ProductionElaborationPage(
-                                              productionId: DateTime.now().millisecondsSinceEpoch.toString(),
                                               availablePieces: totalPieces,
                                             ),
                                           ),
