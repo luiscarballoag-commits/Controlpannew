@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../services/ingredient_service.dart';
+import '../services/inventory_presentation_service.dart';
 import 'ingredient_editor_page.dart';
 import 'inventory_kardex_page.dart';
 import 'inventory_entry_page.dart';
 import 'inventory_exit_page.dart';
+import '../core/inventory/inventory_category_style.dart';
 
 class IngredientsPage extends StatefulWidget {
   const IngredientsPage({super.key});
@@ -72,8 +74,12 @@ class _IngredientsPageState extends State<IngredientsPage> {
                     vertical: 6,
                   ),
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.inventory_2),
+                    leading: CircleAvatar(
+                      backgroundColor: InventoryCategoryStyle.color(ingredient.category),
+                      child: Icon(
+                        InventoryCategoryStyle.icon(ingredient.category),
+                        color: Colors.white,
+                      ),
                     ),
                     title: Text(
                       ingredient.name,
@@ -85,21 +91,14 @@ class _IngredientsPageState extends State<IngredientsPage> {
                       crossAxisAlignment:
                           CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "${ingredient.category} • ${ingredient.unit}",
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "Stock: ${ingredient.normalizedStock.toStringAsFixed(2)}",
-                        ),
-                        Text(
-                          "Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)}",
-                        ),
-                        Text(
-                          "Precio: \$${ingredient.purchasePrice.toStringAsFixed(2)}",
-                        ),
-                      ],
+                        children: [
+                          Text("📂 ${ingredient.category}"),
+                          Text("📦 Compra: ${ingredient.purchaseUnit} (${ingredient.packageSize} ${ingredient.packageUnit})"),
+                          const SizedBox(height: 4),
+                          Text("Stock: ${InventoryPresentationService.formatStock(ingredient)}"),
+                          Text("⚠️ Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)} ${ingredient.unit}"),
+                            Text("💲 Precio: \$${ingredient.purchasePrice.toStringAsFixed(2)}"),
+                        ],
                     ),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) async {

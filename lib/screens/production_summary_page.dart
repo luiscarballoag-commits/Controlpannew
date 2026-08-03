@@ -392,9 +392,7 @@ class _ProductionSummaryPageState
                         productionService
                             .addProduction(
                           Production(
-                            id: DateTime.now()
-                                .millisecondsSinceEpoch
-                                .toString(),
+                              id: "P-${(productionService.getAllProductions().length + 1).toString().padLeft(6, '0')}",
                             date: DateTime.now(),
                             recipeId:
                                 widget.recipe.id,
@@ -422,9 +420,7 @@ class _ProductionSummaryPageState
 
                         costRecordService.saveRecord(
                           CostRecord(
-                            id: DateTime.now()
-                                .millisecondsSinceEpoch
-                                .toString(),
+                                                            id: DateTime.now().millisecondsSinceEpoch.toString(),
                             date: DateTime.now(),
                             productionId: widget.recipe.id,
                             recipeName: widget.recipe.name,

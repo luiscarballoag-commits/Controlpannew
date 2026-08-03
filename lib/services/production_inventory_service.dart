@@ -97,5 +97,52 @@ class ProductionInventoryService {
         ),
       );
     }
+    }
+  void consumeSingleIngredient({
+    required String ingredientId,
+    required double quantity,
+    required String reference,
+  }) {
+    final index = _ingredientsBox.values
+        .toList()
+        .indexWhere(
+          (ingredient) => ingredient.id == ingredientId,
+        );
+
+    if (index == -1) {
+      return;
+    }
+
+    final ingredient = _ingredientsBox.getAt(index);
+
+    if (ingredient == null) {
+      return;
+    }
+
+    final updatedIngredient = ingredient.copyWith(
+      normalizedStock:
+          ingredient.normalizedStock - quantity,
+    );
+
+    _ingredientsBox.putAt(
+      index,
+      updatedIngredient,
+    );
+
+    movementService.addMovement(
+      InventoryMovement(
+        id: DateTime.now()
+            .microsecondsSinceEpoch
+            .toString(),
+        date: DateTime.now(),
+        ingredientId: ingredient.id,
+        ingredientName: ingredient.name,
+        quantity: quantity,
+        unit: ingredient.unit,
+        type: 'Consumo',
+        reference: reference,
+        notes: 'Elaboración de productos',
+      ),
+    );
   }
 }

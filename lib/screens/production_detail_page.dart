@@ -38,7 +38,9 @@ class ProductionDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
       appBar: AppBar(
-        title: const Text("Detalle de Producción"),
+        title: const Text(
+          "Detalle de Producción",
+        ),
         centerTitle: true,
       ),
       body: ListView(
@@ -60,6 +62,15 @@ class ProductionDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
+                    production.id,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
                     production.recipeName,
                     style: const TextStyle(
                       fontSize: 24,
@@ -72,9 +83,7 @@ class ProductionDetailPage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20),
-
-          infoTile(
+          const SizedBox(height: 20),          infoTile(
             "Fecha",
             production.date.toString().substring(0, 16),
             Icons.calendar_today,
@@ -115,4 +124,3 @@ class ProductionDetailPage extends StatelessWidget {
     );
   }
 }
-

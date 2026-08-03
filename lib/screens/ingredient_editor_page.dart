@@ -49,12 +49,15 @@ class _IngredientEditorPageState
 
   final categories = [
     "Harinas",
+    "Agua",
     "Azúcares",
     "Grasas",
     "Levaduras",
     "Lácteos",
+    "Huevos",
     "Esencias",
     "Mejoradores",
+    "Rellenos",
     "Otros",
   ];
 
@@ -65,6 +68,8 @@ class _IngredientEditorPageState
     "Bidón",
     "Botella",
     "Paquete",
+      "Bandeja",
+      "Cubeta",
     "Unidad",
   ];
 

@@ -82,26 +82,44 @@ class _RecipesPageState extends State<RecipesPage> {
                       "${recipe.ingredients.length} ingredientes",
                     ),
                     trailing: PopupMenuButton<String>(
-                      onSelected: (value) {
-                        if (value == "delete") {
-                          _deleteRecipe(index);
-                        }
-                      },
-                      itemBuilder: (_) => const [
-                        PopupMenuItem(
-                          value: "delete",
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.delete,
-                                color: Colors.red,
+                        onSelected: (value) {
+                          if (value == "edit") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RecipeEditorPage(
+                                  recipe: recipe,
+                                  recipeIndex: index,
+                                ),
                               ),
-                              SizedBox(width: 10),
-                              Text("Eliminar"),
-                            ],
+                            ).then((_) => setState(() {}));
+                          }
+                          if (value == "delete") {
+                            _deleteRecipe(index);
+                          }
+                        },
+                        itemBuilder: (_) => const [
+                          PopupMenuItem(
+                            value: "edit",
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, color: Colors.blue),
+                                SizedBox(width: 10),
+                                Text("Editar"),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          PopupMenuItem(
+                            value: "delete",
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Colors.red),
+                                SizedBox(width: 10),
+                                Text("Eliminar"),
+                              ],
+                            ),
+                          ),
+                        ],
                     ),
                     onTap: () {
                       Navigator.push(

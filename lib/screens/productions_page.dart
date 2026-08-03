@@ -53,9 +53,10 @@ class _ProductionsPageState
                         Icons.bakery_dining,
                       ),
                     ),
-                    title: Text(
-                      production.recipeName,
-                    ),
+                      title: Text(
+                        "${production.id} • ${production.recipeName}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     subtitle: Column(
                       crossAxisAlignment:
                           CrossAxisAlignment.start,
