@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'elaboration_ingredient.g.dart';
 
-@HiveType(typeId: 20)
+@HiveType(typeId: 21)
 class ElaborationIngredient extends HiveObject {
   @HiveField(0)
   final String ingredientId;
