@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/elaboration/elaboration_recipe.dart';
+import '../services/elaboration/elaboration_recipe_service.dart';
+
+import 'elaboration/elaboration_recipe_list_page.dart';
+import 'elaboration/elaboration_consumption_summary_page.dart';
+
 class ProductionElaborationPage extends StatefulWidget {
   final int availablePieces;
 
@@ -15,21 +21,8 @@ class ProductionElaborationPage extends StatefulWidget {
 
 class _ProductionElaborationPageState
     extends State<ProductionElaborationPage> {
-
-  final List<String> products = [
-    "Pan de Jamón",
-    "Golfeados",
-    "Cachitos",
-    "Pan de Queso",
-    "Pan de Pizza",
-    "Pan Aliñado",
-    "Pan Integral",
-    "Pan Dulce Especial",
-    "Pan de Coco",
-    "Pan Andino",
-    "Pan Sandwich",
-    "Pan Campesino",
-  ];
+  final ElaborationRecipeService recipeService =
+      ElaborationRecipeService();
 
   final Map<String, TextEditingController> controllers = {};
 
@@ -37,8 +30,11 @@ class _ProductionElaborationPageState
   void initState() {
     super.initState();
 
-    for (final product in products) {
-      controllers[product] = TextEditingController(text: "0");
+    final recipes = recipeService.getAllRecipes();
+
+    for (final recipe in recipes) {
+      controllers[recipe.name] =
+          TextEditingController(text: "0");
     }
   }
 
@@ -65,23 +61,22 @@ class _ProductionElaborationPageState
 
   @override
   Widget build(BuildContext context) {
+    final List<ElaborationRecipe> recipes =
+        recipeService.getAllRecipes();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Elaboración de Productos"),
         centerTitle: true,
       ),
-
       body: Column(
         children: [
-
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             color: Colors.brown.shade50,
             child: Column(
               children: [
-
                 Text(
                   "Panes disponibles: ${widget.availablePieces}",
                   style: const TextStyle(
@@ -89,9 +84,7 @@ class _ProductionElaborationPageState
                     fontSize: 18,
                   ),
                 ),
-
                 const SizedBox(height: 6),
-
                 Text(
                   "Restantes: $remaining",
                   style: TextStyle(
@@ -102,44 +95,87 @@ class _ProductionElaborationPageState
                     fontSize: 18,
                   ),
                 ),
-
               ],
             ),
           ),
 
-          Expanded(
-            child: ListView.builder(
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-
-                final product = products[index];
-
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  child: ListTile(
-                    leading: const Icon(Icons.bakery_dining),
-                    title: Text(product),
-                    trailing: SizedBox(
-                      width: 80,
-                      child: TextField(
-                        controller: controllers[product],
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (_) {
-                          setState(() {});
-                        },
-                      ),
+          Padding(
+            padding:
+                const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.menu_book),
+                label: const Text(
+                  "RECETAS DE ELABORACIÓN",
+                ),
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const ElaborationRecipeListPage(),
                     ),
-                  ),
-                );
-              },
+                  );
+
+                  if (!mounted) return;
+
+                  setState(() {});
+                },
+              ),
             ),
+          ),
+
+          Expanded(
+            child: recipes.isEmpty
+                ? const Center(
+                    child: Text(
+                      "No existen recetas de elaboración.",
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: recipes.length,
+                    itemBuilder: (context, index) {
+                      final recipe = recipes[index];
+
+                      return Card(
+                        margin:
+                            const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        child: ListTile(
+                          leading: const Icon(
+                            Icons.bakery_dining,
+                          ),
+                          title: Text(recipe.name),
+                          subtitle: Text(
+                            "${recipe.ingredients.length} ingredientes",
+                          ),
+                          trailing: SizedBox(
+                            width: 80,
+                            child: TextField(
+                              controller:
+                                  controllers[recipe.name],
+                              keyboardType:
+                                  TextInputType.number,
+                              textAlign:
+                                  TextAlign.center,
+                              decoration:
+                                  const InputDecoration(
+                                border:
+                                    OutlineInputBorder(),
+                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
 
           Padding(
@@ -149,26 +185,54 @@ class _ProductionElaborationPageState
               height: 55,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.arrow_forward),
-                label: const Text(
-                  "CONTINUAR",
-                ),
+                label: const Text("CONTINUAR"),
                 onPressed: remaining < 0
                     ? null
                     : () {
+                        final Map<String, double>
+                            consumption = {};
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Próximo paso: ingredientes de relleno.",
+                        for (final recipe in recipes) {
+                          final pieces =
+                              int.tryParse(
+                                    controllers[
+                                                recipe
+                                                    .name]
+                                            ?.text ??
+                                        "0",
+                                  ) ??
+                                  0;
+
+                          if (pieces <= 0) continue;
+
+                          for (final ingredient
+                              in recipe.ingredients) {
+                            consumption.update(
+                              ingredient.ingredientName,
+                              (value) =>
+                                  value +
+                                  (ingredient.quantity *
+                                      pieces),
+                              ifAbsent: () =>
+                                  ingredient.quantity *
+                                  pieces,
+                            );
+                          }
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ElaborationConsumptionSummaryPage(
+                              ingredients: consumption,
                             ),
                           ),
                         );
-
-                    },
+                      },
               ),
             ),
           ),
-
         ],
       ),
     );
