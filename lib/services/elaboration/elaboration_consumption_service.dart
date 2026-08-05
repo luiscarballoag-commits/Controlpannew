@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../../models/ingredient_catalog.dart';
+import '../../models/elaboration/consumption_item.dart';
 import '../../models/inventory_movement.dart';
 
 class ElaborationConsumptionService {
@@ -11,14 +12,14 @@ class ElaborationConsumptionService {
       Hive.box<InventoryMovement>('inventory_movements');
 
   Future<void> consume(
-    Map<String, double> consumption,
+      List<ConsumptionItem> consumption,
   ) async {
-    for (final entry in consumption.entries) {
-      final ingredientName = entry.key;
-      final quantity = entry.value;
+    for (final entry in consumption) {
+        final ingredientId = entry.ingredientId;
+        final quantity = entry.quantity;
 
       final int index = ingredientBox.values.toList().indexWhere(
-            (i) => i.name == ingredientName,
+              (i) => i.id == ingredientId,
           );
 
       if (index == -1) continue;

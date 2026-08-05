@@ -1,0 +1,746 @@
+[33mcommit b547f9ff27a1bb29dfcb118a73d031e83f1aa8f1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: root <root@localhost.localdomain>
+Date:   Wed Aug 5 14:59:51 2026 +1300
+
+    Producción 95% - interfaz unificada y mejoras visuales
+
+[1mdiff --git a/lib/main.dart b/lib/main.dart[m
+[1mindex 5bec119..4574c66 100644[m
+[1m--- a/lib/main.dart[m
+[1m+++ b/lib/main.dart[m
+[36m@@ -13,6 +13,7 @@[m [mimport 'models/recipe_ingredient.dart';[m
+ [m
+ import 'models/elaboration/elaboration_ingredient.dart';[m
+ import 'models/elaboration/elaboration_recipe.dart';[m
+[32m+[m[32mimport 'models/elaboration/elaboration_production.dart';[m
+ [m
+ import 'screens/home_page.dart';[m
+ [m
+[36m@@ -34,9 +35,12 @@[m [mFuture<void> main() async {[m
+ [m
+   Hive.registerAdapter(ElaborationIngredientAdapter());[m
+   Hive.registerAdapter(ElaborationRecipeAdapter());[m
+[32m+[m[32m  Hive.registerAdapter(ElaborationProductionAdapter());[m
+ [m
+   await Hive.openBox<IngredientCatalog>('ingredients');[m
+[32m+[m
+   await Hive.openBox<Recipe>('recipes');[m
+[32m+[m
+   await Hive.openBox<Production>('productions');[m
+ [m
+   await Hive.openBox<InventoryMovement>([m
+[36m@@ -57,6 +61,10 @@[m [mFuture<void> main() async {[m
+     'elaboration_recipes',[m
+   );[m
+ [m
+[32m+[m[32m  await Hive.openBox<ElaborationProduction>([m
+[32m+[m[32m    'elaboration_productions',[m
+[32m+[m[32m  );[m
+[32m+[m
+   await Hive.openBox('settings');[m
+ [m
+   runApp(const ControlPanApp());[m
+[1mdiff --git a/lib/models/elaboration/elaboration_production.dart b/lib/models/elaboration/elaboration_production.dart[m
+[1mnew file mode 100644[m
+[1mindex 0000000..e3e2341[m
+[1m--- /dev/null[m
+[1m+++ b/lib/models/elaboration/elaboration_production.dart[m
+[36m@@ -0,0 +1,30 @@[m
+[32m+[m[32mimport 'package:hive/hive.dart';[m
+[32m+[m
+[32m+[m[32mpart 'elaboration_production.g.dart';[m
+[32m+[m
+[32m+[m[32m@HiveType(typeId: 22)[m
+[32m+[m[32mclass ElaborationProduction extends HiveObject {[m
+[32m+[m[32m  @HiveField(0)[m
+[32m+[m[32m  final String id;[m
+[32m+[m
+[32m+[m[32m  @HiveField(1)[m
+[32m+[m[32m  final DateTime date;[m
+[32m+[m
+[32m+[m[32m  @HiveField(2)[m
+[32m+[m[32m  final String recipeId;[m
+[32m+[m
+[32m+[m[32m  @HiveField(3)[m
+[32m+[m[32m  final String recipeName;[m
+[32m+[m
+[32m+[m[32m  @HiveField(4)[m
+[32m+[m[32m  final int quantity;[m
+[32m+[m
+[32m+[m[32m  ElaborationProduction({[m
+[32m+[m[32m    required this.id,[m
+[32m+[m[32m    required this.date,[m
+[32m+[m[32m    required this.recipeId,[m
+[32m+[m[32m    required this.recipeName,[m
+[32m+[m[32m    required this.quantity,[m
+[32m+[m[32m  });[m
+[32m+[m[32m}[m
+[32m+[m
+[1mdiff --git a/lib/models/elaboration/elaboration_production.g.dart b/lib/models/elaboration/elaboration_production.g.dart[m
+[1mnew file mode 100644[m
+[1mindex 0000000..3ec6984[m
+[1m--- /dev/null[m
+[1m+++ b/lib/models/elaboration/elaboration_production.g.dart[m
+[36m@@ -0,0 +1,53 @@[m
+[32m+[m[32m// GENERATED CODE - DO NOT MODIFY BY HAND[m
+[32m+[m
+[32m+[m[32mpart of 'elaboration_production.dart';[m
+[32m+[m
+[32m+[m[32m// **************************************************************************[m
+[32m+[m[32m// TypeAdapterGenerator[m
+[32m+[m[32m// **************************************************************************[m
+[32m+[m
+[32m+[m[32mclass ElaborationProductionAdapter extends TypeAdapter<ElaborationProduction> {[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  final int typeId = 22;[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  ElaborationProduction read(BinaryReader reader) {[m
+[32m+[m[32m    final numOfFields = reader.readByte();[m
+[32m+[m[32m    final fields = <int, dynamic>{[m
+[32m+[m[32m      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),[m
+[32m+[m[32m    };[m
+[32m+[m[32m    return ElaborationProduction([m
+[32m+[m[32m      id: fields[0] as String,[m
+[32m+[m[32m      date: fields[1] as DateTime,[m
+[32m+[m[32m      recipeId: fields[2] as String,[m
+[32m+[m[32m      recipeName: fields[3] as String,[m
+[32m+[m[32m      quantity: fields[4] as int,[m
+[32m+[m[32m    );[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  void write(BinaryWriter writer, ElaborationProduction obj) {[m
+[32m+[m[32m    writer[m
+[32m+[m[32m      ..writeByte(5)[m
+[32m+[m[32m      ..writeByte(0)[m
+[32m+[m[32m      ..write(obj.id)[m
+[32m+[m[32m      ..writeByte(1)[m
+[32m+[m[32m      ..write(obj.date)[m
+[32m+[m[32m      ..writeByte(2)[m
+[32m+[m[32m      ..write(obj.recipeId)[m
+[32m+[m[32m      ..writeByte(3)[m
+[32m+[m[32m      ..write(obj.recipeName)[m
+[32m+[m[32m      ..writeByte(4)[m
+[32m+[m[32m      ..write(obj.quantity);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  int get hashCode => typeId.hashCode;[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  bool operator ==(Object other) =>[m
+[32m+[m[32m      identical(this, other) ||[m
+[32m+[m[32m      other is ElaborationProductionAdapter &&[m
+[32m+[m[32m          runtimeType == other.runtimeType &&[m
+[32m+[m[32m          typeId == other.typeId;[m
+[32m+[m[32m}[m
+[1mdiff --git a/lib/screens/elaboration/elaboration_production_history_page.dart b/lib/screens/elaboration/elaboration_production_history_page.dart[m
+[1mnew file mode 100644[m
+[1mindex 0000000..346f8ac[m
+[1m--- /dev/null[m
+[1m+++ b/lib/screens/elaboration/elaboration_production_history_page.dart[m
+[36m@@ -0,0 +1,59 @@[m
+[32m+[m[32mimport 'package:flutter/material.dart';[m
+[32m+[m
+[32m+[m[32mimport '../../models/elaboration/elaboration_production.dart';[m
+[32m+[m[32mimport '../../services/elaboration/elaboration_production_service.dart';[m
+[32m+[m
+[32m+[m[32mclass ElaborationProductionHistoryPage extends StatelessWidget {[m
+[32m+[m[32m  ElaborationProductionHistoryPage({super.key});[m
+[32m+[m
+[32m+[m[32m  final ElaborationProductionService service =[m
+[32m+[m[32m      ElaborationProductionService();[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  Widget build(BuildContext context) {[m
+[32m+[m[32m    final List<ElaborationProduction> productions =[m
+[32m+[m[32m        service.getAll();[m
+[32m+[m
+[32m+[m[32m    return Scaffold([m
+[32m+[m[32m      appBar: AppBar([m
+[32m+[m[32m        title: const Text("Historial de Elaboraciones"),[m
+[32m+[m[32m        centerTitle: true,[m
+[32m+[m[32m      ),[m
+[32m+[m[32m      body: productions.isEmpty[m
+[32m+[m[32m          ? const Center([m
+[32m+[m[32m              child: Text([m
+[32m+[m[32m                "No existen elaboraciones registradas.",[m
+[32m+[m[32m              ),[m
+[32m+[m[32m            )[m
+[32m+[m[32m          : ListView.builder([m
+[32m+[m[32m              itemCount: productions.length,[m
+[32m+[m[32m              itemBuilder: (context, index) {[m
+[32m+[m[32m                final production = productions[index];[m
+[32m+[m
+[32m+[m[32m                return Card([m
+[32m+[m[32m                  margin: const EdgeInsets.symmetric([m
+[32m+[m[32m                    horizontal: 12,[m
+[32m+[m[32m                    vertical: 6,[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                  child: ListTile([m
+[32m+[m[32m                    leading: const Icon([m
+[32m+[m[32m                      Icons.bakery_dining,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                    title: Text(production.recipeName),[m
+[32m+[m[32m                    subtitle: Text([m
+[32m+[m[32m                      production.date.toString(),[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                    trailing: Text([m
+[32m+[m[32m                      "${production.quantity}",[m
+[32m+[m[32m                      style: const TextStyle([m
+[32m+[m[32m                        fontWeight: FontWeight.bold,[m
+[32m+[m[32m                        fontSize: 18,[m
+[32m+[m[32m                      ),[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                );[m
+[32m+[m[32m              },[m
+[32m+[m[32m            ),[m
+[32m+[m[32m    );[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[1mdiff --git a/lib/screens/new_production_page.dart b/lib/screens/new_production_page.dart[m
+[1mindex bea3d2e..0ab4cb7 100644[m
+[1m--- a/lib/screens/new_production_page.dart[m
+[1m+++ b/lib/screens/new_production_page.dart[m
+[36m@@ -20,7 +20,7 @@[m [mclass NewProductionPage extends StatelessWidget {[m
+         margin: const EdgeInsets.symmetric(horizontal: 4),[m
+         decoration: BoxDecoration([m
+           color: color,[m
+[31m-          borderRadius: BorderRadius.circular(18),[m
+[32m+[m[32m          borderRadius: BorderRadius.circular(20),[m
+           boxShadow: const [[m
+             BoxShadow([m
+               blurRadius: 8,[m
+[36m@@ -67,15 +67,15 @@[m [mclass NewProductionPage extends StatelessWidget {[m
+     required Widget page,[m
+   }) {[m
+     return Card([m
+[31m-      elevation: 5,[m
+[32m+[m[32m      elevation: 3,[m
+       margin: const EdgeInsets.only(bottom: 14),[m
+       shape: RoundedRectangleBorder([m
+[31m-        borderRadius: BorderRadius.circular(18),[m
+[32m+[m[32m        borderRadius: BorderRadius.circular(20),[m
+       ),[m
+       child: ListTile([m
+[31m-        contentPadding: const EdgeInsets.all(18),[m
+[32m+[m[32m        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),[m
+         leading: CircleAvatar([m
+[31m-          radius: 28,[m
+[32m+[m[32m          radius: 30,[m
+           backgroundColor: const Color(0xFF8D6E63),[m
+           child: Icon([m
+             icon,[m
+[36m@@ -218,9 +218,9 @@[m [mclass NewProductionPage extends StatelessWidget {[m
+             const SizedBox(height: 12),[m
+ [m
+             Card([m
+[31m-              elevation: 5,[m
+[32m+[m[32m              elevation: 3,[m
+               shape: RoundedRectangleBorder([m
+[31m-                borderRadius: BorderRadius.circular(18),[m
+[32m+[m[32m                borderRadius: BorderRadius.circular(20),[m
+               ),[m
+               child: ListTile([m
+                 leading: const CircleAvatar([m
+[1mdiff --git a/lib/screens/production_dashboard_page.dart b/lib/screens/production_dashboard_page.dart[m
+[1mindex c1e468a..9b267c8 100644[m
+[1m--- a/lib/screens/production_dashboard_page.dart[m
+[1m+++ b/lib/screens/production_dashboard_page.dart[m
+[36m@@ -33,11 +33,13 @@[m [mclass ProductionDashboardPage extends StatelessWidget {[m
+               style: TextStyle([m
+                 fontSize: 22,[m
+                 fontWeight: FontWeight.bold,[m
+[31m-                color: Colors.white,[m
+[32m+[m[32m                color: Colors.black,[m
+               ),[m
+             ),[m
+ [m
+[31m-            const SizedBox(height: 25),            _menuCard([m
+[32m+[m[32m            const SizedBox(height: 25),[m
+[32m+[m
+[32m+[m[32m            _menuCard([m
+               context: context,[m
+               icon: Icons.play_circle_fill,[m
+               iconColor: Colors.brown,[m
+[36m@@ -60,10 +62,10 @@[m [mclass ProductionDashboardPage extends StatelessWidget {[m
+               icon: Icons.history,[m
+               iconColor: Colors.deepPurple,[m
+               title: "Historial de Producción",[m
+[31m-              subtitle: "Consultar todas las producciones realizadas.",[m
+[32m+[m[32m              subtitle:[m
+[32m+[m[32m                  "Consultar todas las producciones realizadas.",[m
+               page: const ProductionsPage(),[m
+             ),[m
+[31m-[m
+           ],[m
+         ),[m
+       ),[m
+[36m@@ -79,14 +81,14 @@[m [mclass ProductionDashboardPage extends StatelessWidget {[m
+     required Widget page,[m
+   }) {[m
+     return Card([m
+[31m-      margin: const EdgeInsets.only(bottom: 14),[m
+[31m-      elevation: 4,[m
+[32m+[m[32m      margin: const EdgeInsets.only(bottom: 18),[m
+[32m+[m[32m      elevation: 6,[m
+       shape: RoundedRectangleBorder([m
+[31m-        borderRadius: BorderRadius.circular(18),[m
+[32m+[m[32m        borderRadius: BorderRadius.circular(22),[m
+       ),[m
+       child: ListTile([m
+         leading: CircleAvatar([m
+[31m-          radius: 24,[m
+[32m+[m[32m          radius: 28,[m
+           backgroundColor: iconColor,[m
+           child: Icon([m
+             icon,[m
+[36m@@ -97,11 +99,11 @@[m [mclass ProductionDashboardPage extends StatelessWidget {[m
+           title,[m
+           style: const TextStyle([m
+             fontWeight: FontWeight.bold,[m
+[31m-            fontSize: 17,[m
+[32m+[m[32m            fontSize: 18,[m
+           ),[m
+         ),[m
+         subtitle: Text(subtitle),[m
+[31m-        trailing: const Icon(Icons.arrow_forward_ios),[m
+[32m+[m[32m        trailing: const Icon(Icons.chevron_right_rounded),[m
+         onTap: () {[m
+           Navigator.push([m
+             context,[m
+[1mdiff --git a/lib/screens/production_elaboration_page.dart b/lib/screens/production_elaboration_page.dart[m
+[1mindex f3daaa4..425d360 100644[m
+[1m--- a/lib/screens/production_elaboration_page.dart[m
+[1m+++ b/lib/screens/production_elaboration_page.dart[m
+[36m@@ -2,9 +2,11 @@[m [mimport 'package:flutter/material.dart';[m
+ [m
+ import '../models/elaboration/elaboration_recipe.dart';[m
+ import '../services/elaboration/elaboration_recipe_service.dart';[m
+[32m+[m[32mimport '../services/elaboration/elaboration_production_service.dart';[m
+ [m
+ import 'elaboration/elaboration_recipe_list_page.dart';[m
+ import 'elaboration/elaboration_consumption_summary_page.dart';[m
+[32m+[m[32mimport 'elaboration/elaboration_production_history_page.dart';[m
+ [m
+ class ProductionElaborationPage extends StatefulWidget {[m
+   final int availablePieces;[m
+[36m@@ -24,6 +26,10 @@[m [mclass _ProductionElaborationPageState[m
+   final ElaborationRecipeService recipeService =[m
+       ElaborationRecipeService();[m
+ [m
+[32m+[m[32m  final ElaborationProductionService productionService =[m
+[32m+[m[32m      ElaborationProductionService();[m
+[32m+[m
+[32m+[m
+   final Map<String, TextEditingController> controllers = {};[m
+ [m
+   @override[m
+[36m@@ -126,6 +132,25 @@[m [mclass _ProductionElaborationPageState[m
+               ),[m
+             ),[m
+           ),[m
+[32m+[m[32m            Padding([m
+[32m+[m[32m              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),[m
+[32m+[m[32m              child: SizedBox([m
+[32m+[m[32m                width: double.infinity,[m
+[32m+[m[32m                height: 50,[m
+[32m+[m[32m                child: OutlinedButton.icon([m
+[32m+[m[32m                  icon: const Icon(Icons.history),[m
+[32m+[m[32m                  label: const Text("HISTORIAL DE ELABORACIONES"),[m
+[32m+[m[32m                  onPressed: () {[m
+[32m+[m[32m                    Navigator.push([m
+[32m+[m[32m                      context,[m
+[32m+[m[32m                      MaterialPageRoute([m
+[32m+[m[32m                        builder: (_) => ElaborationProductionHistoryPage(),[m
+[32m+[m[32m                      ),[m
+[32m+[m[32m                    );[m
+[32m+[m[32m                  },[m
+[32m+[m[32m                ),[m
+[32m+[m[32m              ),[m
+[32m+[m[32m            ),[m
+ [m
+           Expanded([m
+             child: recipes.isEmpty[m
+[36m@@ -188,7 +213,7 @@[m [mclass _ProductionElaborationPageState[m
+                 label: const Text("CONTINUAR"),[m
+                 onPressed: remaining < 0[m
+                     ? null[m
+[31m-                    : () {[m
+[32m+[m[32m                    : () async {[m
+                         final Map<String, double>[m
+                             consumption = {};[m
+ [m
+[36m@@ -205,6 +230,13 @@[m [mclass _ProductionElaborationPageState[m
+ [m
+                           if (pieces <= 0) continue;[m
+ [m
+[32m+[m[32m                            await productionService.saveProduction([m
+[32m+[m[32m                              recipeId: recipe.id,[m
+[32m+[m[32m                              recipeName: recipe.name,[m
+[32m+[m[32m                              quantity: pieces,[m
+[32m+[m[32m                            );[m
+[32m+[m
+[32m+[m
+                           for (final ingredient[m
+                               in recipe.ingredients) {[m
+                             consumption.update([m
+[36m@@ -220,15 +252,20 @@[m [mclass _ProductionElaborationPageState[m
+                           }[m
+                         }[m
+ [m
+[31m-                        Navigator.push([m
+[31m-                          context,[m
+[31m-                          MaterialPageRoute([m
+[31m-                            builder: (_) =>[m
+[31m-                                ElaborationConsumptionSummaryPage([m
+[31m-                              ingredients: consumption,[m
+[32m+[m
+[32m+[m[32m                          if (!mounted) return;[m
+[32m+[m[32m                          setState(() {});[m
+[32m+[m
+[32m+[m
+[32m+[m[32m                          await Navigator.push([m
+[32m+[m[32m                            context,[m
+[32m+[m[32m                            MaterialPageRoute([m
+[32m+[m[32m                              builder: (_) => ElaborationConsumptionSummaryPage([m
+[32m+[m[32m                                ingredients: consumption,[m
+[32m+[m[32m                              ),[m
+                             ),[m
+[31m-                          ),[m
+[31m-                        );[m
+[32m+[m[32m                          );[m
+[32m+[m
+                       },[m
+               ),[m
+             ),[m
+[1mdiff --git a/lib/screens/production_elaboration_page.dart.bak b/lib/screens/production_elaboration_page.dart.bak[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f3daaa4[m
+[1m--- /dev/null[m
+[1m+++ b/lib/screens/production_elaboration_page.dart.bak[m
+[36m@@ -0,0 +1,240 @@[m
+[32m+[m[32mimport 'package:flutter/material.dart';[m
+[32m+[m
+[32m+[m[32mimport '../models/elaboration/elaboration_recipe.dart';[m
+[32m+[m[32mimport '../services/elaboration/elaboration_recipe_service.dart';[m
+[32m+[m
+[32m+[m[32mimport 'elaboration/elaboration_recipe_list_page.dart';[m
+[32m+[m[32mimport 'elaboration/elaboration_consumption_summary_page.dart';[m
+[32m+[m
+[32m+[m[32mclass ProductionElaborationPage extends StatefulWidget {[m
+[32m+[m[32m  final int availablePieces;[m
+[32m+[m
+[32m+[m[32m  const ProductionElaborationPage({[m
+[32m+[m[32m    super.key,[m
+[32m+[m[32m    required this.availablePieces,[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  State<ProductionElaborationPage> createState() =>[m
+[32m+[m[32m      _ProductionElaborationPageState();[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mclass _ProductionElaborationPageState[m
+[32m+[m[32m    extends State<ProductionElaborationPage> {[m
+[32m+[m[32m  final ElaborationRecipeService recipeService =[m
+[32m+[m[32m      ElaborationRecipeService();[m
+[32m+[m
+[32m+[m[32m  final Map<String, TextEditingController> controllers = {};[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  void initState() {[m
+[32m+[m[32m    super.initState();[m
+[32m+[m
+[32m+[m[32m    final recipes = recipeService.getAllRecipes();[m
+[32m+[m
+[32m+[m[32m    for (final recipe in recipes) {[m
+[32m+[m[32m      controllers[recipe.name] =[m
+[32m+[m[32m          TextEditingController(text: "0");[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  int get totalAssigned {[m
+[32m+[m[32m    int total = 0;[m
+[32m+[m
+[32m+[m[32m    for (final controller in controllers.values) {[m
+[32m+[m[32m      total += int.tryParse(controller.text) ?? 0;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    return total;[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  int get remaining =>[m
+[32m+[m[32m      widget.availablePieces - totalAssigned;[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  void dispose() {[m
+[32m+[m[32m    for (final controller in controllers.values) {[m
+[32m+[m[32m      controller.dispose();[m
+[32m+[m[32m    }[m
+[32m+[m[32m    super.dispose();[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  @override[m
+[32m+[m[32m  Widget build(BuildContext context) {[m
+[32m+[m[32m    final List<ElaborationRecipe> recipes =[m
+[32m+[m[32m        recipeService.getAllRecipes();[m
+[32m+[m
+[32m+[m[32m    return Scaffold([m
+[32m+[m[32m      appBar: AppBar([m
+[32m+[m[32m        title: const Text("Elaboración de Productos"),[m
+[32m+[m[32m        centerTitle: true,[m
+[32m+[m[32m      ),[m
+[32m+[m[32m      body: Column([m
+[32m+[m[32m        children: [[m
+[32m+[m[32m          Container([m
+[32m+[m[32m            width: double.infinity,[m
+[32m+[m[32m            padding: const EdgeInsets.all(16),[m
+[32m+[m[32m            color: Colors.brown.shade50,[m
+[32m+[m[32m            child: Column([m
+[32m+[m[32m              children: [[m
+[32m+[m[32m                Text([m
+[32m+[m[32m                  "Panes disponibles: ${widget.availablePieces}",[m
+[32m+[m[32m                  style: const TextStyle([m
+[32m+[m[32m                    fontWeight: FontWeight.bold,[m
+[32m+[m[32m                    fontSize: 18,[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                ),[m
+[32m+[m[32m                const SizedBox(height: 6),[m
+[32m+[m[32m                Text([m
+[32m+[m[32m                  "Restantes: $remaining",[m
+[32m+[m[32m                  style: TextStyle([m
+[32m+[m[32m                    color: remaining < 0[m
+[32m+[m[32m                        ? Colors.red[m
+[32m+[m[32m                        : Colors.green,[m
+[32m+[m[32m                    fontWeight: FontWeight.bold,[m
+[32m+[m[32m                    fontSize: 18,[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                ),[m
+[32m+[m[32m              ],[m
+[32m+[m[32m            ),[m
+[32m+[m[32m          ),[m
+[32m+[m
+[32m+[m[32m          Padding([m
+[32m+[m[32m            padding:[m
+[32m+[m[32m                const EdgeInsets.fromLTRB(16, 12, 16, 4),[m
+[32m+[m[32m            child: SizedBox([m
+[32m+[m[32m              width: double.infinity,[m
+[32m+[m[32m              height: 50,[m
+[32m+[m[32m              child: OutlinedButton.icon([m
+[32m+[m[32m                icon: const Icon(Icons.menu_book),[m
+[32m+[m[32m                label: const Text([m
+[32m+[m[32m                  "RECETAS DE ELABORACIÓN",[m
+[32m+[m[32m                ),[m
+[32m+[m[32m                onPressed: () async {[m
+[32m+[m[32m                  await Navigator.push([m
+[32m+[m[32m                    context,[m
+[32m+[m[32m                    MaterialPageRoute([m
+[32m+[m[32m                      builder: (_) =>[m
+[32m+[m[32m                          const ElaborationRecipeListPage(),[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                  );[m
+[32m+[m
+[32m+[m[32m                  if (!mounted) return;[m
+[32m+[m
+[32m+[m[32m                  setState(() {});[m
+[32m+[m[32m                },[m
+[32m+[m[32m              ),[m
+[32m+[m[32m            ),[m
+[32m+[m[32m          ),[m
+[32m+[m
+[32m+[m[32m          Expanded([m
+[32m+[m[32m            child: recipes.isEmpty[m
+[32m+[m[32m                ? const Center([m
+[32m+[m[32m                    child: Text([m
+[32m+[m[32m                      "No existen recetas de elaboración.",[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                  )[m
+[32m+[m[32m                : ListView.builder([m
+[32m+[m[32m                    itemCount: recipes.length,[m
+[32m+[m[32m                    itemBuilder: (context, index) {[m
+[32m+[m[32m                      final recipe = recipes[index];[m
+[32m+[m
+[32m+[m[32m                      return Card([m
+[32m+[m[32m                        margin:[m
+[32m+[m[32m                            const EdgeInsets.symmetric([m
+[32m+[m[32m                          horizontal: 12,[m
+[32m+[m[32m                          vertical: 6,[m
+[32m+[m[32m                        ),[m
+[32m+[m[32m                        child: ListTile([m
+[32m+[m[32m                          leading: const Icon([m
+[32m+[m[32m                            Icons.bakery_dining,[m
+[32m+[m[32m                          ),[m
+[32m+[m[32m                          title: Text(recipe.name),[m
+[32m+[m[32m                          subtitle: Text([m
+[32m+[m[32m                            "${recipe.ingredients.length} ingredientes",[m
+[32m+[m[32m                          ),[m
+[32m+[m[32m                          trailing: SizedBox([m
+[32m+[m[32m                            width: 80,[m
+[32m+[m[32m                            child: TextField([m
+[32m+[m[32m                              controller:[m
+[32m+[m[32m                                  controllers[recipe.name],[m
+[32m+[m[32m                              keyboardType:[m
+[32m+[m[32m                                  TextInputType.number,[m
+[32m+[m[32m                              textAlign:[m
+[32m+[m[32m                                  TextAlign.center,[m
+[32m+[m[32m                              decoration:[m
+[32m+[m[32m                                  const InputDecoration([m
+[32m+[m[32m                                border:[m
+[32m+[m[32m                                    OutlineInputBorder(),[m
+[32m+[m[32m                              ),[m
+[32m+[m[32m                              onChanged: (_) {[m
+[32m+[m[32m                                setState(() {});[m
+[32m+[m[32m                              },[m
+[32m+[m[32m                            ),[m
+[32m+[m[32m                          ),[m
+[32m+[m[32m                        ),[m
+[32m+[m[32m                      );[m
+[32m+[m[32m                    },[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m          ),[m
+[32m+[m
+[32m+[m[32m          Padding([m
+[32m+[m[32m            padding: const EdgeInsets.all(16),[m
+[32m+[m[32m            child: SizedBox([m
+[32m+[m[32m              width: double.infinity,[m
+[32m+[m[32m              height: 55,[m
+[32m+[m[32m              child: ElevatedButton.icon([m
+[32m+[m[32m                icon: const Icon(Icons.arrow_forward),[m
+[32m+[m[32m                label: const Text("CONTINUAR"),[m
+[32m+[m[32m                onPressed: remaining < 0[m
+[32m+[m[32m                    ? null[m
+[32m+[m[32m                    : () {[m
+[32m+[m[32m                        final Map<String, double>[m
+[32m+[m[32m                            consumption = {};[m
+[32m+[m
+[32m+[m[32m                        for (final recipe in recipes) {[m
+[32m+[m[32m                          final pieces =[m
+[32m+[m[32m                              int.tryParse([m
+[32m+[m[32m                                    controllers[[m
+[32m+[m[32m                                                recipe[m
+[32m+[m[32m                                                    .name][m
+[32m+[m[32m                                            ?.text ??[m
+[32m+[m[32m                                        "0",[m
+[32m+[m[32m                                  ) ??[m
+[32m+[m[32m                                  0;[m
+[32m+[m
+[32m+[m[32m                          if (pieces <= 0) continue;[m
+[32m+[m
+[32m+[m[32m                          for (final ingredient[m
+[32m+[m[32m                              in recipe.ingredients) {[m
+[32m+[m[32m                            consumption.update([m
+[32m+[m[32m                              ingredient.ingredientName,[m
+[32m+[m[32m                              (value) =>[m
+[32m+[m[32m                                  value +[m
+[32m+[m[32m                                  (ingredient.quantity *[m
+[32m+[m[32m                                      pieces),[m
+[32m+[m[32m                              ifAbsent: () =>[m
+[32m+[m[32m                                  ingredient.quantity *[m
+[32m+[m[32m                                  pieces,[m
+[32m+[m[32m                            );[m
+[32m+[m[32m                          }[m
+[32m+[m[32m                        }[m
+[32m+[m
+[32m+[m[32m                        Navigator.push([m
+[32m+[m[32m                          context,[m
+[32m+[m[32m                          MaterialPageRoute([m
+[32m+[m[32m                            builder: (_) =>[m
+[32m+[m[32m                                ElaborationConsumptionSummaryPage([m
+[32m+[m[32m                              ingredients: consumption,[m
+[32m+[m[32m                            ),[m
+[32m+[m[32m                          ),[m
+[32m+[m[32m                        );[m
+[32m+[m[32m                      },[m
+[32m+[m[32m              ),[m
+[32m+[m[32m            ),[m
+[32m+[m[32m          ),[m
+[32m+[m[32m        ],[m
+[32m+[m[32m      ),[m
+[32m+[m[32m    );[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[1mdiff --git a/lib/screens/production_recipe_page.dart b/lib/screens/production_recipe_page.dart[m
+[1mindex 2dc208f..9a4bb82 100644[m
+[1m--- a/lib/screens/production_recipe_page.dart[m
+[1m+++ b/lib/screens/production_recipe_page.dart[m
+[36m@@ -58,11 +58,14 @@[m [mclass _ProductionRecipePageState[m
+   }  @override[m
+   Widget build(BuildContext context) {[m
+     return Scaffold([m
+[32m+[m[32m        backgroundColor: const Color(0xFFF5F1EB),[m
+       appBar: AppBar([m
+         title: const Text([m
+           "Producción Inteligente",[m
+         ),[m
+         centerTitle: true,[m
+[32m+[m[32m          backgroundColor: const Color(0xFF8D6E63),[m
+[32m+[m[32m          foregroundColor: Colors.white,[m
+       ),[m
+       body: Column([m
+         children: [[m
+[1mdiff --git a/lib/screens/production_summary_page.dart b/lib/screens/production_summary_page.dart[m
+[1mindex 3e43e37..6a2f957 100644[m
+[1m--- a/lib/screens/production_summary_page.dart[m
+[1m+++ b/lib/screens/production_summary_page.dart[m
+[36m@@ -183,7 +183,7 @@[m [mclass _ProductionSummaryPageState[m
+                           const SizedBox([m
+                               height: 8),[m
+                           Text([m
+[31m-                            "${(totalMassGrams / 1000).toStringAsFixed(2)}",[m
+[32m+[m[32m                            (totalMassGrams / 1000).toStringAsFixed(2),[m
+                             style:[m
+                                 const TextStyle([m
+                               color:[m
+[36m@@ -467,7 +467,7 @@[m [mclass _ProductionSummaryPageState[m
+                                     const SizedBox(height: 16),[m
+                                     const Text("La producción fue registrada correctamente."),[m
+                                     const SizedBox(height: 16),[m
+[31m-                                    Text("Panes obtenidos: ${totalPieces}"),[m
+[32m+[m[32m                                    Text("Panes obtenidos: $totalPieces"),[m
+                                   ],[m
+                                 ),[m
+                                 actions: [[m
+[1mdiff --git a/lib/services/elaboration/elaboration_production_service.dart b/lib/services/elaboration/elaboration_production_service.dart[m
+[1mnew file mode 100644[m
+[1mindex 0000000..1c71c41[m
+[1m--- /dev/null[m
+[1m+++ b/lib/services/elaboration/elaboration_production_service.dart[m
+[36m@@ -0,0 +1,35 @@[m
+[32m+[m[32mimport 'package:hive/hive.dart';[m
+[32m+[m
+[32m+[m[32mimport '../../models/elaboration/elaboration_production.dart';[m
+[32m+[m
+[32m+[m[32mclass ElaborationProductionService {[m
+[32m+[m[32m  final Box<ElaborationProduction> box =[m
+[32m+[m[32m      Hive.box<ElaborationProduction>([m
+[32m+[m[32m    'elaboration_productions',[m
+[32m+[m[32m  );[m
+[32m+[m
+[32m+[m[32m  Future<void> saveProduction({[m
+[32m+[m[32m    required String recipeId,[m
+[32m+[m[32m    required String recipeName,[m
+[32m+[m[32m    required int quantity,[m
+[32m+[m[32m  }) async {[m
+[32m+[m[32m    final production = ElaborationProduction([m
+[32m+[m[32m      id: DateTime.now()[m
+[32m+[m[32m          .microsecondsSinceEpoch[m
+[32m+[m[32m          .toString(),[m
+[32m+[m[32m      date: DateTime.now(),[m
+[32m+[m[32m      recipeId: recipeId,[m
+[32m+[m[32m      recipeName: recipeName,[m
+[32m+[m[32m      quantity: quantity,[m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m[32m    await box.add(production);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  List<ElaborationProduction> getAll() {[m
+[32m+[m[32m    return box.values.toList()[m
+[32m+[m[32m      ..sort([m
+[32m+[m[32m        (a, b) => b.date.compareTo(a.date),[m
+[32m+[m[32m      );[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m

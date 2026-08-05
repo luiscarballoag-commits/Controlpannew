@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/elaboration/elaboration_recipe.dart';
 import '../services/elaboration/elaboration_recipe_service.dart';
 import '../services/elaboration/elaboration_production_service.dart';
+import '../models/elaboration/consumption_item.dart';
 
 import 'elaboration/elaboration_recipe_list_page.dart';
 import 'elaboration/elaboration_consumption_summary_page.dart';
@@ -214,8 +215,7 @@ class _ProductionElaborationPageState
                 onPressed: remaining < 0
                     ? null
                     : () async {
-                        final Map<String, double>
-                            consumption = {};
+                          final List<ConsumptionItem> consumption = [];
 
                         for (final recipe in recipes) {
                           final pieces =
@@ -239,16 +239,14 @@ class _ProductionElaborationPageState
 
                           for (final ingredient
                               in recipe.ingredients) {
-                            consumption.update(
-                              ingredient.ingredientName,
-                              (value) =>
-                                  value +
-                                  (ingredient.quantity *
-                                      pieces),
-                              ifAbsent: () =>
-                                  ingredient.quantity *
-                                  pieces,
-                            );
+                              consumption.add(
+                                ConsumptionItem(
+                                  ingredientId: ingredient.ingredientId,
+                                  ingredientName: ingredient.ingredientName,
+                                  quantity: ingredient.quantity * pieces,
+                                    unit: ingredient.unit,
+                                ),
+                              );
                           }
                         }
 

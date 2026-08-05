@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../services/elaboration/elaboration_consumption_service.dart';
+import "../../models/elaboration/consumption_item.dart";
 
 class ElaborationConsumptionSummaryPage extends StatelessWidget {
-  final Map<String, double> ingredients;
+  final List<ConsumptionItem> ingredients;
 
   ElaborationConsumptionSummaryPage({
     super.key,
@@ -32,10 +33,8 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                 : ListView.builder(
                     itemCount: ingredients.length,
                     itemBuilder: (context, index) {
-                      final key =
-                          ingredients.keys.elementAt(index);
-
-                      final value = ingredients[key]!;
+                        final item = ingredients[index];
+                        
 
                       return Card(
                         margin: const EdgeInsets.symmetric(
@@ -46,9 +45,9 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                           leading: const Icon(
                             Icons.inventory_2,
                           ),
-                          title: Text(key),
+                          title: Text(item.ingredientName),
                           trailing: Text(
-                            value.toStringAsFixed(2),
+                            item.quantity.toStringAsFixed(2),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
