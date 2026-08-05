@@ -33,11 +33,13 @@ class ProductionDashboardPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
-            const SizedBox(height: 25),            _menuCard(
+            const SizedBox(height: 25),
+
+            _menuCard(
               context: context,
               icon: Icons.play_circle_fill,
               iconColor: Colors.brown,
@@ -60,10 +62,10 @@ class ProductionDashboardPage extends StatelessWidget {
               icon: Icons.history,
               iconColor: Colors.deepPurple,
               title: "Historial de Producción",
-              subtitle: "Consultar todas las producciones realizadas.",
+              subtitle:
+                  "Consultar todas las producciones realizadas.",
               page: const ProductionsPage(),
             ),
-
           ],
         ),
       ),
@@ -79,14 +81,14 @@ class ProductionDashboardPage extends StatelessWidget {
     required Widget page,
   }) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 14),
-      elevation: 4,
+      margin: const EdgeInsets.only(bottom: 18),
+      elevation: 6,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: ListTile(
         leading: CircleAvatar(
-          radius: 24,
+          radius: 28,
           backgroundColor: iconColor,
           child: Icon(
             icon,
@@ -97,11 +99,11 @@ class ProductionDashboardPage extends StatelessWidget {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 17,
+            fontSize: 18,
           ),
         ),
         subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios),
+        trailing: const Icon(Icons.chevron_right_rounded),
         onTap: () {
           Navigator.push(
             context,

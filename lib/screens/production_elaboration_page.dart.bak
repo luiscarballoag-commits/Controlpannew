@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../models/elaboration/elaboration_recipe.dart';
 import '../services/elaboration/elaboration_recipe_service.dart';
-import '../services/elaboration/elaboration_production_service.dart';
 
 import 'elaboration/elaboration_recipe_list_page.dart';
 import 'elaboration/elaboration_consumption_summary_page.dart';
-import 'elaboration/elaboration_production_history_page.dart';
 
 class ProductionElaborationPage extends StatefulWidget {
   final int availablePieces;
@@ -25,10 +23,6 @@ class _ProductionElaborationPageState
     extends State<ProductionElaborationPage> {
   final ElaborationRecipeService recipeService =
       ElaborationRecipeService();
-
-  final ElaborationProductionService productionService =
-      ElaborationProductionService();
-
 
   final Map<String, TextEditingController> controllers = {};
 
@@ -132,25 +126,6 @@ class _ProductionElaborationPageState
               ),
             ),
           ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  icon: const Icon(Icons.history),
-                  label: const Text("HISTORIAL DE ELABORACIONES"),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ElaborationProductionHistoryPage(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
 
           Expanded(
             child: recipes.isEmpty
@@ -213,7 +188,7 @@ class _ProductionElaborationPageState
                 label: const Text("CONTINUAR"),
                 onPressed: remaining < 0
                     ? null
-                    : () async {
+                    : () {
                         final Map<String, double>
                             consumption = {};
 
@@ -230,13 +205,6 @@ class _ProductionElaborationPageState
 
                           if (pieces <= 0) continue;
 
-                            await productionService.saveProduction(
-                              recipeId: recipe.id,
-                              recipeName: recipe.name,
-                              quantity: pieces,
-                            );
-
-
                           for (final ingredient
                               in recipe.ingredients) {
                             consumption.update(
@@ -252,20 +220,15 @@ class _ProductionElaborationPageState
                           }
                         }
 
-
-                          if (!mounted) return;
-                          setState(() {});
-
-
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ElaborationConsumptionSummaryPage(
-                                ingredients: consumption,
-                              ),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ElaborationConsumptionSummaryPage(
+                              ingredients: consumption,
                             ),
-                          );
-
+                          ),
+                        );
                       },
               ),
             ),

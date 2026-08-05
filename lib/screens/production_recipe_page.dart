@@ -58,11 +58,14 @@ class _ProductionRecipePageState
   }  @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color(0xFFF5F1EB),
       appBar: AppBar(
         title: const Text(
           "Producción Inteligente",
         ),
         centerTitle: true,
+          backgroundColor: const Color(0xFF8D6E63),
+          foregroundColor: Colors.white,
       ),
       body: Column(
         children: [

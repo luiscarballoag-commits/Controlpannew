@@ -183,7 +183,7 @@ class _ProductionSummaryPageState
                           const SizedBox(
                               height: 8),
                           Text(
-                            "${(totalMassGrams / 1000).toStringAsFixed(2)}",
+                            (totalMassGrams / 1000).toStringAsFixed(2),
                             style:
                                 const TextStyle(
                               color:
@@ -467,7 +467,7 @@ class _ProductionSummaryPageState
                                     const SizedBox(height: 16),
                                     const Text("La producción fue registrada correctamente."),
                                     const SizedBox(height: 16),
-                                    Text("Panes obtenidos: ${totalPieces}"),
+                                    Text("Panes obtenidos: $totalPieces"),
                                   ],
                                 ),
                                 actions: [

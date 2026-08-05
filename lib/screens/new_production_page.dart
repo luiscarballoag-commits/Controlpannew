@@ -20,7 +20,7 @@ class NewProductionPage extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: const [
             BoxShadow(
               blurRadius: 8,
@@ -67,15 +67,15 @@ class NewProductionPage extends StatelessWidget {
     required Widget page,
   }) {
     return Card(
-      elevation: 5,
+      elevation: 3,
       margin: const EdgeInsets.only(bottom: 14),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.all(18),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         leading: CircleAvatar(
-          radius: 28,
+          radius: 30,
           backgroundColor: const Color(0xFF8D6E63),
           child: Icon(
             icon,
@@ -218,9 +218,9 @@ class NewProductionPage extends StatelessWidget {
             const SizedBox(height: 12),
 
             Card(
-              elevation: 5,
+              elevation: 3,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: ListTile(
                 leading: const CircleAvatar(
