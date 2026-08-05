@@ -32,6 +32,14 @@ class ElaborationConsumptionService {
 
       await ingredientBox.putAt(index, updated);
 
+        print("===========");
+        print("Ingrediente: ${updated.name}");
+        print("ID: ${updated.id}");
+        print("Stock anterior: ${ingredient.stock}");
+        print("Cantidad consumida: $quantity");
+        print("Stock nuevo: ${updated.stock}");
+        print("===========");
+
       await movementBox.add(
         InventoryMovement(
           id: DateTime.now()
