@@ -259,6 +259,8 @@ class _ProductionElaborationPageState
                             context,
                             MaterialPageRoute(
                               builder: (_) => ElaborationConsumptionSummaryPage(
+                                productName: recipe.name,
+                                quantity: pieces,
                                 ingredients: consumption,
                               ),
                             ),

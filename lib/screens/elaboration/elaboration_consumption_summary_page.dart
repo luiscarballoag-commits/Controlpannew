@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../services/elaboration/elaboration_consumption_service.dart';
 import "../../models/elaboration/consumption_item.dart";
+import 'elaboration_production_success_page.dart';
 
 class ElaborationConsumptionSummaryPage extends StatelessWidget {
   final List<ConsumptionItem> ingredients;
+  final String productName;
+
+  final int quantity;
+
 
   ElaborationConsumptionSummaryPage({
     super.key,
+      required this.productName,
+      required this.quantity,
     required this.ingredients,
   });
 
@@ -88,7 +95,16 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                         ),
                       );
 
-                      Navigator.pop(context, true);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ElaborationProductionSuccessPage(
+                              productName: "Producción realizada",
+                              quantity: 0,
+                              ingredients: ingredients,
+                            ),
+                          ),
+                        );
                     },
                     child: const Text("CONFIRMAR"),
                   ),
