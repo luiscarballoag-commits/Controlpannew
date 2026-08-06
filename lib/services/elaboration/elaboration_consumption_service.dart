@@ -22,12 +22,14 @@ class ElaborationConsumptionService {
               (i) => i.id == ingredientId,
           );
 
+        print("Buscando ID: $ingredientId -> índice: $index");
       if (index == -1) continue;
 
       final ingredient = ingredientBox.getAt(index)!;
 
       final updated = ingredient.copyWith(
         stock: ingredient.stock - quantity,
+          normalizedStock: ingredient.normalizedStock - quantity,
       );
 
       await ingredientBox.putAt(index, updated);

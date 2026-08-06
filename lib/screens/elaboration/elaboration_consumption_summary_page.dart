@@ -99,8 +99,8 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) => ElaborationProductionSuccessPage(
-                              productName: "Producción realizada",
-                              quantity: 0,
+                              productName: productName,
+                              quantity: quantity,
                               ingredients: ingredients,
                             ),
                           ),
