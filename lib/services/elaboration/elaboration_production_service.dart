@@ -8,7 +8,7 @@ class ElaborationProductionService {
     'elaboration_productions',
   );
 
-  Future<void> saveProduction({
+  Future<String> saveProduction({
     required String recipeId,
     required String recipeName,
     required int quantity,
@@ -24,6 +24,7 @@ class ElaborationProductionService {
     );
 
     await box.add(production);
+    return production.id;
   }
 
   List<ElaborationProduction> getAll() {

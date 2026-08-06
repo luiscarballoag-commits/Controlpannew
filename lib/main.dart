@@ -14,6 +14,7 @@ import 'models/recipe_ingredient.dart';
 import 'models/elaboration/elaboration_ingredient.dart';
 import 'models/elaboration/elaboration_recipe.dart';
 import 'models/elaboration/elaboration_production.dart';
+import 'models/elaboration/elaboration_record.dart';
 
 import 'screens/home_page.dart';
 
@@ -36,12 +37,17 @@ Future<void> main() async {
   Hive.registerAdapter(ElaborationIngredientAdapter());
   Hive.registerAdapter(ElaborationRecipeAdapter());
   Hive.registerAdapter(ElaborationProductionAdapter());
+  Hive.registerAdapter(ElaborationRecordAdapter());
 
   await Hive.openBox<IngredientCatalog>('ingredients');
 
   await Hive.openBox<Recipe>('recipes');
 
   await Hive.openBox<Production>('productions');
+  await Hive.openBox<ElaborationRecord>(
+    'elaboration_records',
+  );
+
 
   await Hive.openBox<InventoryMovement>(
     'inventory_movements',

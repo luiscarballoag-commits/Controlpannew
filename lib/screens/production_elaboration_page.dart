@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import '../models/elaboration/elaboration_recipe.dart';
 import '../services/elaboration/elaboration_recipe_service.dart';
 import '../services/elaboration/elaboration_production_service.dart';
+import '../services/elaboration/elaboration_record_service.dart';
 import '../models/elaboration/consumption_item.dart';
 
 import 'elaboration/elaboration_recipe_list_page.dart';
 import 'elaboration/elaboration_consumption_summary_page.dart';
-import 'elaboration/elaboration_production_history_page.dart';
+import 'elaboration/elaboration_record_history_page.dart';
 
 class ProductionElaborationPage extends StatefulWidget {
   final int availablePieces;
@@ -29,6 +30,9 @@ class _ProductionElaborationPageState
 
   final ElaborationProductionService productionService =
       ElaborationProductionService();
+
+  final ElaborationRecordService recordService =
+      ElaborationRecordService();
 
 
   final Map<String, TextEditingController> controllers = {};
@@ -145,7 +149,7 @@ class _ProductionElaborationPageState
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ElaborationProductionHistoryPage(),
+                        builder: (_) => ElaborationRecordHistoryPage(),
                       ),
                     );
                   },
@@ -232,11 +236,18 @@ class _ProductionElaborationPageState
 
                           if (pieces <= 0) continue;
 
-                            await productionService.saveProduction(
+                            final productionId = await productionService.saveProduction(
                               recipeId: recipe.id,
                               recipeName: recipe.name,
                               quantity: pieces,
                             );
+
+                              await recordService.saveRecord(
+                                productionId: productionId,
+                                productName: recipe.name,
+                                quantity: pieces,
+                              );
+
                               lastRecipeName = recipe.name;
                               lastPieces = pieces;
 
