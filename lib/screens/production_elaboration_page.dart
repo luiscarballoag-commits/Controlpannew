@@ -217,6 +217,8 @@ class _ProductionElaborationPageState
                     : () async {
                           final List<ConsumptionItem> consumption = [];
 
+                          String lastRecipeName = "";
+                          int lastPieces = 0;
                         for (final recipe in recipes) {
                           final pieces =
                               int.tryParse(
@@ -235,6 +237,9 @@ class _ProductionElaborationPageState
                               recipeName: recipe.name,
                               quantity: pieces,
                             );
+                              lastRecipeName = recipe.name;
+                              lastPieces = pieces;
+
 
 
                           for (final ingredient
@@ -259,8 +264,8 @@ class _ProductionElaborationPageState
                             context,
                             MaterialPageRoute(
                               builder: (_) => ElaborationConsumptionSummaryPage(
-                                productName: recipe.name,
-                                quantity: pieces,
+                                productName: lastRecipeName,
+                                quantity: lastPieces,
                                 ingredients: consumption,
                               ),
                             ),
