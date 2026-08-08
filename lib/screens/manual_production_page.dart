@@ -79,7 +79,7 @@ class _ManualProductionPageState
     );
   }
 
-  void calcular() {
+  Future<void> calcular() async {
     final ingredientes = <Ingredient>[
       Ingredient(
         id: 'harina',
@@ -171,6 +171,14 @@ class _ManualProductionPageState
               ) ??
               250,
     );
+    await productionManager.saveManualProduction(
+      totalMassKg: resultado.totalMassKg,
+      pieceWeightGrams: double.tryParse(pesoController.text) ?? 250,
+      totalPieces: resultado.totalPieces,
+    );
+
+    if (!mounted) return;
+
 
     showDialog(
       context: context,

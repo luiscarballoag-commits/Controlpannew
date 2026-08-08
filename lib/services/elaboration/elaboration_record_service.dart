@@ -6,7 +6,6 @@ class ElaborationRecordService {
   final Box<ElaborationRecord> box =
       Hive.box<ElaborationRecord>('elaboration_records');
 
-
   Future<void> saveRecord({
     required String productionId,
     required String productName,
@@ -21,5 +20,10 @@ class ElaborationRecordService {
     );
 
     await box.add(record);
+  }
+
+  List<ElaborationRecord> getAll() {
+    return box.values.toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
   }
 }

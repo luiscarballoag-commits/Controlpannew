@@ -474,8 +474,8 @@ class _ProductionSummaryPageState
                                   ElevatedButton(
                                       onPressed: () async {
                                         Navigator.pop(dialogContext);
-                                        await Navigator.push(
-                                          context,
+                                        final navigator = Navigator.of(context);
+                                        await navigator.push(
                                           MaterialPageRoute(
                                             builder: (_) => ProductionElaborationPage(
                                               availablePieces: totalPieces,
@@ -483,7 +483,7 @@ class _ProductionSummaryPageState
                                           ),
                                         );
                                         if (!mounted) return;
-                                        Navigator.popUntil(context, (route) => route.isFirst);
+                                        navigator.popUntil((route) => route.isFirst);
                                       },
                                     child: const Text("Elaborar Productos"),
                                   ),

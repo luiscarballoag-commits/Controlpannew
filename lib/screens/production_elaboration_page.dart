@@ -220,6 +220,7 @@ class _ProductionElaborationPageState
                     ? null
                     : () async {
                           final List<ConsumptionItem> consumption = [];
+                            final navigator = Navigator.of(context);
 
                           String lastRecipeName = "";
                           int lastPieces = 0;
@@ -267,20 +268,18 @@ class _ProductionElaborationPageState
                         }
 
 
-                          if (!mounted) return;
-                          setState(() {});
+                              if (!mounted) return;
+                            setState(() {});
 
-
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ElaborationConsumptionSummaryPage(
-                                productName: lastRecipeName,
-                                quantity: lastPieces,
-                                ingredients: consumption,
+                            await navigator.push(
+                              MaterialPageRoute(
+                                builder: (_) => ElaborationConsumptionSummaryPage(
+                                  productName: lastRecipeName,
+                                  quantity: lastPieces,
+                                  ingredients: consumption,
+                                ),
                               ),
-                            ),
-                          );
+                            );
 
                       },
               ),

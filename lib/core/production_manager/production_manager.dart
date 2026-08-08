@@ -11,7 +11,6 @@ import '../../services/production_inventory_service.dart';
 import '../../services/production_service.dart';
 
 import '../production_engine/bakers_percentage.dart';
-import '../production_engine/hydration_engine.dart';
 import '../production_engine/ingredient.dart';
 import '../production_engine/production_engine.dart';
 import '../production_engine/production_result.dart';
@@ -24,8 +23,6 @@ class ProductionManager {
   final BakersPercentageEngine _bakersEngine =
       BakersPercentageEngine();
 
-  final HydrationEngine _hydrationEngine =
-      HydrationEngine();
 
   final YieldEngine _yieldEngine =
       YieldEngine();
@@ -50,12 +47,6 @@ class ProductionManager {
     List<Ingredient> ingredients,
   ) {
     return _bakersEngine.calculate(ingredients);
-  }
-
-  double calculateHydration(
-    List<Ingredient> ingredients,
-  ) {
-    return _hydrationEngine.calculate(ingredients);
   }
 
   double calculateYield({
@@ -107,5 +98,26 @@ class ProductionManager {
     _productionService.addProduction(
       production,
     );
+  }
+
+  Future<void> saveManualProduction({
+    required double totalMassKg,
+    required double pieceWeightGrams,
+    required int totalPieces,
+    String notes = '',
+  }) async {
+    final production = Production(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      date: DateTime.now(),
+      recipeId: 'manual',
+      recipeName: 'Producción Manual',
+      lots: 1,
+      totalMassKg: totalMassKg,
+      pieceWeightGrams: pieceWeightGrams,
+      totalPieces: totalPieces,
+      notes: notes,
+    );
+
+    _productionService.addProduction(production);
   }
 }

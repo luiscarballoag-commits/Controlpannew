@@ -76,6 +76,8 @@ class _RecipeEditorPageState
     final controller =
         TextEditingController();
 
+      if (!mounted) return;
+
     await showDialog(
       context: context,
       builder: (context) {

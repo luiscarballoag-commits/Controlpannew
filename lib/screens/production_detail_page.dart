@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../models/production.dart';
+import '../models/elaboration/elaboration_record.dart';
+import '../services/elaboration/elaboration_record_service.dart';
 
 class ProductionDetailPage extends StatelessWidget {
   final Production production;
@@ -35,6 +37,14 @@ class ProductionDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<ElaborationRecord> elaborations =
+        ElaborationRecordService()
+            .getAll()
+            .where(
+              (e) => e.productionId == production.id,
+            )
+            .toList();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
       appBar: AppBar(
@@ -83,7 +93,9 @@ class ProductionDetailPage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20),          infoTile(
+          const SizedBox(height: 20),
+
+          infoTile(
             "Fecha",
             production.date.toString().substring(0, 16),
             Icons.calendar_today,
@@ -99,9 +111,7 @@ class ProductionDetailPage extends StatelessWidget {
             "Masa Total",
             "${production.totalMassKg.toStringAsFixed(2)} kg",
             Icons.scale,
-          ),
-
-          infoTile(
+          ),          infoTile(
             "Peso por Pieza",
             "${production.pieceWeightGrams.toStringAsFixed(0)} g",
             Icons.straighten,
@@ -119,8 +129,60 @@ class ProductionDetailPage extends StatelessWidget {
               production.notes,
               Icons.notes,
             ),
+
+          const SizedBox(height: 20),
+
+          Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Distribución de panes elaborados",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  if (elaborations.isEmpty)
+                    const Text(
+                      "No existen elaboraciones registradas para esta producción.",
+                    ),
+
+                  if (elaborations.isNotEmpty)
+                    ...elaborations.map(
+                      (item) => Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: const Icon(
+                            Icons.inventory_2,
+                            color: Color(0xFF8D6E63),
+                          ),
+                          title: Text(item.productName),
+                          trailing: Text(
+                            "${item.quantity} panes",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+

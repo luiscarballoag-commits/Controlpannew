@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'new_production_page.dart';
 import 'production_recipe_page.dart';
 import 'productions_page.dart';
+import 'manual_production_page.dart';
+import 'elaboration/elaboration_recipe_list_page.dart';
 
 class ProductionDashboardPage extends StatelessWidget {
   const ProductionDashboardPage({super.key});
@@ -28,43 +30,106 @@ class ProductionDashboardPage extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
 
-            const Text(
-              "Producción Inteligente",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+              Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.07),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 58,
+                      height: 58,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF8D6E63),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const Icon(
+                        Icons.factory_rounded,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Producción Inteligente",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            "Gestiona recetas, producciones y elaboraciones.",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 25),
-
-            _menuCard(
-              context: context,
-              icon: Icons.play_circle_fill,
-              iconColor: Colors.brown,
-              title: "Nueva Producción",
-              subtitle: "Seleccionar una receta para comenzar.",
-              page: const NewProductionPage(),
-            ),
+            const SizedBox(height: 30),
 
             _menuCard(
               context: context,
-              icon: Icons.menu_book,
+              icon: Icons.menu_book_rounded,
               iconColor: Colors.indigo,
-              title: "Recetas",
-              subtitle: "Administrar recetas disponibles.",
+              title: "Recetas de Masas",
+              subtitle: "Administrar recetas y fórmulas de masas.",
               page: const ProductionRecipePage(),
             ),
 
             _menuCard(
               context: context,
-              icon: Icons.history,
+              icon: Icons.bakery_dining,
+              iconColor: Colors.orange,
+              title: "Elaboraciones",
+              subtitle: "Administrar rellenos y elaboraciones.",
+              page: const ElaborationRecipeListPage(),
+            ),
+
+            _menuCard(
+              context: context,
+              icon: Icons.play_circle_fill_rounded,
+              iconColor: const Color(0xFF6D4C41),
+              title: "Nueva Producción",
+              subtitle: "Iniciar producción",
+              page: const NewProductionPage(),
+            ),
+
+            _menuCard(
+              context: context,
+              icon: Icons.history_rounded,
               iconColor: Colors.deepPurple,
               title: "Historial de Producción",
-              subtitle:
-                  "Consultar todas las producciones realizadas.",
+              subtitle: "Consultar todas las producciones realizadas.",
               page: const ProductionsPage(),
+            ),
+
+            _menuCard(
+              context: context,
+              icon: Icons.edit_note_rounded,
+              iconColor: Colors.teal,
+              title: "Producción Manual",
+              subtitle: "Sin receta de masa",
+              page: const ManualProductionPage(),
             ),
           ],
         ),
@@ -84,7 +149,7 @@ class ProductionDashboardPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 18),
       elevation: 6,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: ListTile(
         leading: CircleAvatar(

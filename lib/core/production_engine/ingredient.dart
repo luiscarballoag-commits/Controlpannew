@@ -1,10 +1,10 @@
-/// =======================================================
-/// CONTROLPAN
-/// Archivo: ingredient.dart
-/// Descripción:
-/// Modelo que representa un ingrediente utilizado en una
-/// producción de pan.
-/// =======================================================
+// =======================================================
+// CONTROLPAN
+// Archivo: ingredient.dart
+// Descripción:
+// Modelo que representa un ingrediente utilizado en una
+// producción de pan.
+// =======================================================
 
 /// Unidades soportadas por ControlPan.
 enum UnitType {

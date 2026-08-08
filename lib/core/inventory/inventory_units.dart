@@ -1,8 +1,8 @@
-/// =======================================================
-/// CONTROLPAN
-/// Inventario Inteligente 2.0
-/// Catálogo de unidades permitidas.
-/// =======================================================
+// =======================================================
+// CONTROLPAN
+// Inventario Inteligente 2.0
+// Catálogo de unidades permitidas.
+// =======================================================
 
 enum PurchaseUnit {
   sack,

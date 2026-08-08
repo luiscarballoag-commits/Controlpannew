@@ -1,11 +1,11 @@
-/// =======================================================
-/// CONTROLPAN
-/// Archivo: inventory_item.dart
-/// Descripción:
-/// Modelo del inventario.
-/// Representa el estado actual de un ingrediente
-/// dentro del almacén.
-/// =======================================================
+// =======================================================
+// CONTROLPAN
+// Archivo: inventory_item.dart
+// Descripción:
+// Modelo del inventario.
+// Representa el estado actual de un ingrediente
+// dentro del almacén.
+// =======================================================
 
 class InventoryItem {
   /// ID del ingrediente

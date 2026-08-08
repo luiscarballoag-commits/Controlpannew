@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'new_production_page.dart';
 import 'production_recipe_page.dart';
-import 'production_lots_page.dart';
-import 'production_summary_page.dart';
 import 'productions_page.dart';
+import 'manual_production_page.dart';
+import 'elaboration/elaboration_recipe_list_page.dart';
 
 class ProductionDashboardPage extends StatelessWidget {
   const ProductionDashboardPage({super.key});
@@ -35,11 +35,31 @@ class ProductionDashboardPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
 
-            const SizedBox(height: 25),            _menuCard(
+            const SizedBox(height: 25),
+
+            _menuCard(
+              context: context,
+              icon: Icons.menu_book,
+              iconColor: Colors.indigo,
+              title: "Recetas (Masas)",
+              subtitle: "Administrar recetas de masas.",
+              page: const ProductionRecipePage(),
+            ),
+
+            _menuCard(
+              context: context,
+              icon: Icons.bakery_dining,
+              iconColor: Colors.orange,
+              title: "Recetas de Elaboración",
+              subtitle: "Administrar rellenos y elaboraciones.",
+              page: const ElaborationRecipeListPage(),
+            ),
+
+            _menuCard(
               context: context,
               icon: Icons.play_circle_fill,
               iconColor: Colors.brown,
@@ -50,43 +70,28 @@ class ProductionDashboardPage extends StatelessWidget {
 
             _menuCard(
               context: context,
-              icon: Icons.menu_book,
-              iconColor: Colors.indigo,
-              title: "Recetas",
-              subtitle: "Administrar recetas disponibles.",
-              page: const ProductionRecipePage(),
-            ),
-
-            _menuCard(
-              context: context,
               icon: Icons.history,
               iconColor: Colors.deepPurple,
               title: "Historial de Producción",
               subtitle: "Consultar todas las producciones realizadas.",
               page: const ProductionsPage(),
-            ),            _menuCard(
-              context: context,
-              icon: Icons.inventory_2,
-              iconColor: Colors.orange,
-              title: "Lotes de Producción",
-              subtitle: "Consultar y administrar los lotes.",
-              page: const ProductionLotsPage(),
             ),
 
             _menuCard(
               context: context,
-              icon: Icons.bar_chart,
-              iconColor: Colors.green,
-              title: "Resumen de Producción",
-              subtitle: "Indicadores y estadísticas de producción.",
-              page: const ProductionSummaryPage(),
+              icon: Icons.edit_note,
+              iconColor: Colors.teal,
+              title: "Producción Manual",
+              subtitle: "Producción sin receta de masa.",
+              page: const ManualProductionPage(),
             ),
-
           ],
         ),
       ),
     );
-  }  Widget _menuCard({
+  }
+
+  Widget _menuCard({
     required BuildContext context,
     required IconData icon,
     required Color iconColor,
@@ -95,14 +100,14 @@ class ProductionDashboardPage extends StatelessWidget {
     required Widget page,
   }) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 14),
-      elevation: 4,
+      margin: const EdgeInsets.only(bottom: 18),
+      elevation: 6,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: ListTile(
         leading: CircleAvatar(
-          radius: 24,
+          radius: 28,
           backgroundColor: iconColor,
           child: Icon(
             icon,
@@ -113,11 +118,11 @@ class ProductionDashboardPage extends StatelessWidget {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 17,
+            fontSize: 18,
           ),
         ),
         subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios),
+        trailing: const Icon(Icons.chevron_right_rounded),
         onTap: () {
           Navigator.push(
             context,

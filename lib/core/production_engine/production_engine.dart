@@ -1,9 +1,9 @@
-/// =======================================================
-/// CONTROLPAN
-/// Archivo: production_engine.dart
-/// Descripción:
-/// Motor principal de cálculo de producción.
-/// =======================================================
+// =======================================================
+// CONTROLPAN
+// Archivo: production_engine.dart
+// Descripción:
+// Motor principal de cálculo de producción.
+// =======================================================
 
 import 'ingredient.dart';
 import 'production_result.dart';
