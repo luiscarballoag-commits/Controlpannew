@@ -9,6 +9,7 @@ class ElaborationProductionService {
   );
 
   Future<String> saveProduction({
+    required String productionId,
     required String recipeId,
     required String recipeName,
     required int quantity,
@@ -21,6 +22,7 @@ class ElaborationProductionService {
       recipeId: recipeId,
       recipeName: recipeName,
       quantity: quantity,
+      productionId: productionId,
     );
 
     await box.add(production);

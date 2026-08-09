@@ -19,12 +19,16 @@ class ElaborationProduction extends HiveObject {
   @HiveField(4)
   final int quantity;
 
+  @HiveField(5)
+  final String? productionId;
+
   ElaborationProduction({
     required this.id,
     required this.date,
     required this.recipeId,
     required this.recipeName,
     required this.quantity,
+    this.productionId,
   });
 }
 

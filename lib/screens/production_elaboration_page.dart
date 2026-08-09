@@ -11,10 +11,12 @@ import 'elaboration/elaboration_consumption_summary_page.dart';
 import 'elaboration/elaboration_record_history_page.dart';
 
 class ProductionElaborationPage extends StatefulWidget {
+  final String productionId;
   final int availablePieces;
 
   const ProductionElaborationPage({
     super.key,
+    required this.productionId,
     required this.availablePieces,
   });
 
@@ -238,6 +240,7 @@ class _ProductionElaborationPageState
                           if (pieces <= 0) continue;
 
                             final productionId = await productionService.saveProduction(
+                              productionId: widget.productionId,
                               recipeId: recipe.id,
                               recipeName: recipe.name,
                               quantity: pieces,

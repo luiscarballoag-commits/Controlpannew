@@ -389,10 +389,13 @@ class _ProductionSummaryPageState
                           lots: widget.lots,
                         );
 
+                        final productionId =
+                            "P-${(productionService.getAllProductions().length + 1).toString().padLeft(6, '0')}";
+
                         productionService
                             .addProduction(
                           Production(
-                              id: "P-${(productionService.getAllProductions().length + 1).toString().padLeft(6, '0')}",
+                            id: productionId,
                             date: DateTime.now(),
                             recipeId:
                                 widget.recipe.id,
@@ -478,6 +481,7 @@ class _ProductionSummaryPageState
                                         await navigator.push(
                                           MaterialPageRoute(
                                             builder: (_) => ProductionElaborationPage(
+                                              productionId: productionId,
                                               availablePieces: totalPieces,
                                             ),
                                           ),
