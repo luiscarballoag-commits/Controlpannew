@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import '../services/recipe_service.dart';
 import 'production_lots_page.dart';
+import 'recipe_editor_page.dart';
 
 class ProductionRecipePage extends StatefulWidget {
   const ProductionRecipePage({super.key});
@@ -67,6 +68,26 @@ class _ProductionRecipePageState
           backgroundColor: const Color(0xFF8D6E63),
           foregroundColor: Colors.white,
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.add),
+        label: const Text("Nueva receta"),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const RecipeEditorPage(),
+            ),
+          );
+
+          if (!mounted) return;
+
+          setState(() {
+            recipes = recipeService.getAllRecipes();
+            filteredRecipes = List.from(recipes);
+          });
+        },
+      ),
+
       body: Column(
         children: [
           Padding(
