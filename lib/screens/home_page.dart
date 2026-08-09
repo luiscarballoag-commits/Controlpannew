@@ -13,7 +13,7 @@ import '../widgets/summary_cards.dart';
 import 'costs_page.dart';
 import 'inventory_page.dart';
 import 'settings_page.dart';
-import 'new_production_page.dart';
+import 'production_dashboard_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
 
           InventoryPage(),
 
-          const NewProductionPage(),
+          const ProductionDashboardPage(),
 
           CostsPage(),
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'costs_page.dart';
 import 'ingredients_page.dart';
 import 'inventory_page.dart';
-import 'new_production_page.dart';
+import 'production_dashboard_page.dart';
 import 'recipes_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -67,7 +67,7 @@ class DashboardPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const NewProductionPage(),
+                              const ProductionDashboardPage(),
                         ),
                       );
                     },
