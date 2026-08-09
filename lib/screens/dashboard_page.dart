@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'costs_page.dart';
 import 'ingredients_page.dart';
 import 'inventory_page.dart';
+import 'new_production_page.dart';
 import 'production_dashboard_page.dart';
 import 'recipes_page.dart';
 
@@ -16,9 +17,7 @@ class DashboardPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "ControlPan",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: const Color(0xFF8D6E63),
@@ -58,7 +57,6 @@ class DashboardPage extends StatelessWidget {
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
                 children: [
-
                   DashboardCard(
                     icon: Icons.factory,
                     title: "Producción",
@@ -66,8 +64,20 @@ class DashboardPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const ProductionDashboardPage(),
+                          builder: (_) => const ProductionDashboardPage(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  DashboardCard(
+                    icon: Icons.play_circle_fill_rounded,
+                    title: "Nueva Producción",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NewProductionPage(),
                         ),
                       );
                     },
@@ -79,10 +89,7 @@ class DashboardPage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const RecipesPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const RecipesPage()),
                       );
                     },
                   ),
@@ -94,21 +101,18 @@ class DashboardPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const IngredientsPage(),
+                          builder: (_) => const IngredientsPage(),
                         ),
                       );
                     },
-                  ),                  DashboardCard(
+                  ),
+                  DashboardCard(
                     icon: Icons.inventory_2_outlined,
                     title: "Inventario",
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              InventoryPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => InventoryPage()),
                       );
                     },
                   ),
@@ -125,10 +129,7 @@ class DashboardPage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              CostsPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => CostsPage()),
                       );
                     },
                   ),
@@ -170,33 +171,19 @@ class DashboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: InkWell(
-        borderRadius:
-            BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 42,
-              color:
-                  const Color(0xFF8D6E63),
-            ),
+            Icon(icon, size: 42, color: const Color(0xFF8D6E63)),
             const SizedBox(height: 12),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight:
-                    FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ],
         ),
