@@ -173,37 +173,37 @@ class ProductionDashboardPage extends StatelessWidget {
     required Widget page,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
+        color: const Color(0xFFFFF3EE),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 5),
           ),
         ],
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => page));
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 17),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
           child: Row(
             children: [
               Container(
-                width: 58,
-                height: 58,
+                width: 64,
+                height: 64,
                 decoration: BoxDecoration(
                   color: iconColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: iconColor, size: 31),
+                child: Icon(icon, color: iconColor, size: 34),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 18),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,16 +211,18 @@ class ProductionDashboardPage extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF211C1A),
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 6),
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 13.5,
+                        color: Color(0xFF6D625D),
+                        fontSize: 15.5,
+                        height: 1.25,
                       ),
                     ),
                   ],
@@ -229,8 +231,8 @@ class ProductionDashboardPage extends StatelessWidget {
               const SizedBox(width: 10),
               const Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.black45,
-                size: 28,
+                color: Color(0xFF77716E),
+                size: 34,
               ),
             ],
           ),
