@@ -10,8 +10,8 @@ class SelectIngredientPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final IngredientService ingredientService = IngredientService();
 
-    final List<IngredientCatalog> ingredients =
-        ingredientService.getAllIngredients();
+    final List<IngredientCatalog> ingredients = ingredientService
+        .getAllIngredients();
 
     return Scaffold(
       appBar: AppBar(
@@ -43,10 +43,7 @@ class SelectIngredientPage extends StatelessWidget {
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      Navigator.pop(
-                        context,
-                        ingredient,
-                      );
+                      Navigator.pop(context, ingredient);
                     },
                   ),
                 );

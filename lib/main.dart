@@ -44,14 +44,9 @@ Future<void> main() async {
   await Hive.openBox<Recipe>('recipes');
 
   await Hive.openBox<Production>('productions');
-  await Hive.openBox<ElaborationRecord>(
-    'elaboration_records',
-  );
+  await Hive.openBox<ElaborationRecord>('elaboration_records');
 
-
-  await Hive.openBox<InventoryMovement>(
-    'inventory_movements',
-  );
+  await Hive.openBox<InventoryMovement>('inventory_movements');
 
   await Hive.openBox('inventory');
 
@@ -59,17 +54,11 @@ Future<void> main() async {
 
   await Hive.openBox<Product>('products');
 
-  await Hive.openBox<ProductComponent>(
-    'product_components',
-  );
+  await Hive.openBox<ProductComponent>('product_components');
 
-  await Hive.openBox<ElaborationRecipe>(
-    'elaboration_recipes',
-  );
+  await Hive.openBox<ElaborationRecipe>('elaboration_recipes');
 
-  await Hive.openBox<ElaborationProduction>(
-    'elaboration_productions',
-  );
+  await Hive.openBox<ElaborationProduction>('elaboration_productions');
 
   await Hive.openBox('settings');
 

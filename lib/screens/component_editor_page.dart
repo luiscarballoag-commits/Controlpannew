@@ -17,10 +17,7 @@ class ComponentEditorPage extends StatelessWidget {
         child: Text(
           "Editor de Componentes\n(Próximo paso)",
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
     );

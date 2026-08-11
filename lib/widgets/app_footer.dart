@@ -11,10 +11,7 @@ class AppFooter extends StatelessWidget {
         "La forma inteligente de gestionar tu panadería\n\n"
         "Desarrollado por Producciones Lcarballog",
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 14,
-        ),
+        style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
       ),
     );
   }

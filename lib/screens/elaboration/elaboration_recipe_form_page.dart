@@ -15,13 +15,10 @@ class ElaborationRecipeFormPage extends StatefulWidget {
       _ElaborationRecipeFormPageState();
 }
 
-class _ElaborationRecipeFormPageState
-    extends State<ElaborationRecipeFormPage> {
-  final TextEditingController _nameController =
-      TextEditingController();
+class _ElaborationRecipeFormPageState extends State<ElaborationRecipeFormPage> {
+  final TextEditingController _nameController = TextEditingController();
 
-  final ElaborationRecipeService recipeService =
-      ElaborationRecipeService();
+  final ElaborationRecipeService recipeService = ElaborationRecipeService();
 
   final List<Map<String, dynamic>> ingredients = [];
 
@@ -32,35 +29,25 @@ class _ElaborationRecipeFormPageState
   }
 
   Future<void> addIngredient() async {
-    final IngredientCatalog? ingredient =
-        await Navigator.push(
+    final IngredientCatalog? ingredient = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) =>
-            const SelectInventoryIngredientPage(),
-      ),
+      MaterialPageRoute(builder: (_) => const SelectInventoryIngredientPage()),
     );
 
     if (!mounted || ingredient == null) return;
 
-    final quantityController =
-        TextEditingController();
+    final quantityController = TextEditingController();
 
-    final quantity =
-        await showDialog<double>(
+    final quantity = await showDialog<double>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(ingredient.name),
           content: TextField(
             controller: quantityController,
-            keyboardType:
-                const TextInputType.numberWithOptions(
-              decimal: true,
-            ),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
-              labelText:
-                  "Cantidad por producto (${ingredient.unit})",
+              labelText: "Cantidad por producto (${ingredient.unit})",
             ),
           ),
           actions: [
@@ -74,10 +61,7 @@ class _ElaborationRecipeFormPageState
               onPressed: () {
                 Navigator.pop(
                   dialogContext,
-                  double.tryParse(
-                        quantityController.text,
-                      ) ??
-                      0,
+                  double.tryParse(quantityController.text) ?? 0,
                 );
               },
               child: const Text("Aceptar"),
@@ -104,29 +88,19 @@ class _ElaborationRecipeFormPageState
   void saveRecipe() {
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Debe indicar el nombre del producto.",
-          ),
-        ),
+        const SnackBar(content: Text("Debe indicar el nombre del producto.")),
       );
       return;
     }
 
     if (ingredients.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Debe agregar al menos un ingrediente.",
-          ),
-        ),
+        const SnackBar(content: Text("Debe agregar al menos un ingrediente.")),
       );
       return;
     }
 
-    final recipeId = DateTime.now()
-        .millisecondsSinceEpoch
-        .toString();
+    final recipeId = DateTime.now().millisecondsSinceEpoch.toString();
 
     final recipe = ElaborationRecipe(
       id: recipeId,
@@ -150,9 +124,7 @@ class _ElaborationRecipeFormPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Nueva Receta de Elaboración",
-        ),
+        title: const Text("Nueva Receta de Elaboración"),
         centerTitle: true,
       ),
       body: Padding(
@@ -161,12 +133,9 @@ class _ElaborationRecipeFormPageState
           children: [
             TextField(
               controller: _nameController,
-              decoration:
-                  const InputDecoration(
-                labelText:
-                    "Nombre del producto",
-                border:
-                    OutlineInputBorder(),
+              decoration: const InputDecoration(
+                labelText: "Nombre del producto",
+                border: OutlineInputBorder(),
               ),
             ),
 
@@ -174,10 +143,7 @@ class _ElaborationRecipeFormPageState
 
             const Text(
               "Ingredientes",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
 
             const SizedBox(height: 10),
@@ -185,35 +151,24 @@ class _ElaborationRecipeFormPageState
             if (ingredients.isEmpty)
               const Card(
                 child: Padding(
-                  padding:
-                      EdgeInsets.all(16),
-                  child: Text(
-                    "No hay ingredientes agregados.",
-                  ),
+                  padding: EdgeInsets.all(16),
+                  child: Text("No hay ingredientes agregados."),
                 ),
               ),
 
             ...ingredients.map(
               (ingredient) => Card(
                 child: ListTile(
-                  leading:
-                      const Icon(Icons.inventory),
-                  title: Text(
-                    ingredient["name"],
-                  ),
+                  leading: const Icon(Icons.inventory),
+                  title: Text(ingredient["name"]),
                   subtitle: Text(
                     "${ingredient["quantity"]} ${ingredient["unit"]}",
                   ),
                   trailing: IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
+                    icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () {
                       setState(() {
-                        ingredients.remove(
-                          ingredient,
-                        );
+                        ingredients.remove(ingredient);
                       });
                     },
                   ),
@@ -227,9 +182,7 @@ class _ElaborationRecipeFormPageState
               height: 55,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.add),
-                label: const Text(
-                  "AGREGAR INGREDIENTE",
-                ),
+                label: const Text("AGREGAR INGREDIENTE"),
                 onPressed: addIngredient,
               ),
             ),
@@ -240,8 +193,7 @@ class _ElaborationRecipeFormPageState
               height: 55,
               child: ElevatedButton(
                 onPressed: saveRecipe,
-                child:
-                    const Text("GUARDAR"),
+                child: const Text("GUARDAR"),
               ),
             ),
           ],

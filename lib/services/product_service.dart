@@ -5,8 +5,7 @@ import '../models/product.dart';
 class ProductService {
   static const String boxName = 'products';
 
-  Box<Product> get _box =>
-      Hive.box<Product>(boxName);
+  Box<Product> get _box => Hive.box<Product>(boxName);
 
   List<Product> getAllProducts() {
     return _box.values.toList();
@@ -16,10 +15,7 @@ class ProductService {
     _box.add(product);
   }
 
-  void updateProduct(
-    int index,
-    Product product,
-  ) {
+  void updateProduct(int index, Product product) {
     _box.putAt(index, product);
   }
 
@@ -37,18 +33,14 @@ class ProductService {
 
   Product? findById(String id) {
     try {
-      return _box.values.firstWhere(
-        (product) => product.id == id,
-      );
+      return _box.values.firstWhere((product) => product.id == id);
     } catch (_) {
       return null;
     }
   }
 
   List<Product> getActiveProducts() {
-    return _box.values
-        .where((product) => product.isActive)
-        .toList();
+    return _box.values.where((product) => product.isActive).toList();
   }
 
   int get count => _box.length;

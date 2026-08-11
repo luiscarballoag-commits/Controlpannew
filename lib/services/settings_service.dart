@@ -14,28 +14,20 @@ class SettingsService {
     return _box.get(
           bakeryNameKey,
           defaultValue: 'Panadería y Pastelería Carballog FP',
-        ) as String;
+        )
+        as String;
   }
 
   String get bakeryAddress {
-    return _box.get(
-          bakeryAddressKey,
-          defaultValue: '',
-        ) as String;
+    return _box.get(bakeryAddressKey, defaultValue: '') as String;
   }
 
   String get bakeryPhone {
-    return _box.get(
-          bakeryPhoneKey,
-          defaultValue: '',
-        ) as String;
+    return _box.get(bakeryPhoneKey, defaultValue: '') as String;
   }
 
   String get bakeryOwner {
-    return _box.get(
-          bakeryOwnerKey,
-          defaultValue: '',
-        ) as String;
+    return _box.get(bakeryOwnerKey, defaultValue: '') as String;
   }
 
   Future<void> saveBakeryName(String name) async {

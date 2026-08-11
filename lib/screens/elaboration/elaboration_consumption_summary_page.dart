@@ -10,11 +10,10 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
 
   final int quantity;
 
-
   ElaborationConsumptionSummaryPage({
     super.key,
-      required this.productName,
-      required this.quantity,
+    required this.productName,
+    required this.quantity,
     required this.ingredients,
   });
 
@@ -32,16 +31,11 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
         children: [
           Expanded(
             child: ingredients.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No hay ingredientes para mostrar.",
-                    ),
-                  )
+                ? const Center(child: Text("No hay ingredientes para mostrar."))
                 : ListView.builder(
                     itemCount: ingredients.length,
                     itemBuilder: (context, index) {
-                        final item = ingredients[index];
-                        
+                      final item = ingredients[index];
 
                       return Card(
                         margin: const EdgeInsets.symmetric(
@@ -49,15 +43,11 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                           vertical: 6,
                         ),
                         child: ListTile(
-                          leading: const Icon(
-                            Icons.inventory_2,
-                          ),
+                          leading: const Icon(Icons.inventory_2),
                           title: Text(item.ingredientName),
                           trailing: Text(
                             item.quantity.toStringAsFixed(2),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       );
@@ -80,14 +70,11 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      await consumptionService.consume(
-                        ingredients,
-                      );
+                      await consumptionService.consume(ingredients);
 
                       if (!context.mounted) return;
 
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
                             "Inventario actualizado correctamente.",
@@ -95,16 +82,16 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                         ),
                       );
 
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ElaborationProductionSuccessPage(
-                              productName: productName,
-                              quantity: quantity,
-                              ingredients: ingredients,
-                            ),
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ElaborationProductionSuccessPage(
+                            productName: productName,
+                            quantity: quantity,
+                            ingredients: ingredients,
                           ),
-                        );
+                        ),
+                      );
                     },
                     child: const Text("CONFIRMAR"),
                   ),

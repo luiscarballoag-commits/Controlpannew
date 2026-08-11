@@ -7,10 +7,7 @@ import '../services/inventory_movement_service.dart';
 class InventoryKardexPage extends StatelessWidget {
   final IngredientCatalog ingredient;
 
-  const InventoryKardexPage({
-    super.key,
-    required this.ingredient,
-  });
+  const InventoryKardexPage({super.key, required this.ingredient});
 
   @override
   Widget build(BuildContext context) {
@@ -32,28 +29,19 @@ class InventoryKardexPage extends StatelessWidget {
       }
     }
 
-    final inventoryValue =
-        ingredient.stock * ingredient.purchasePrice;
+    final inventoryValue = ingredient.stock * ingredient.purchasePrice;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(ingredient.name),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(ingredient.name), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-
-                  const Icon(
-                    Icons.inventory_2,
-                    size: 60,
-                  ),
+                  const Icon(Icons.inventory_2, size: 60),
 
                   const SizedBox(height: 12),
 
@@ -65,10 +53,7 @@ class InventoryKardexPage extends StatelessWidget {
                     ),
                   ),
 
-                  Text(
-                    "${ingredient.category} • ${ingredient.unit}",
-                  ),
-
+                  Text("${ingredient.category} • ${ingredient.unit}"),
                 ],
               ),
             ),
@@ -79,13 +64,10 @@ class InventoryKardexPage extends StatelessWidget {
           Card(
             child: Column(
               children: [
-
                 ListTile(
                   leading: const Icon(Icons.add_circle),
                   title: const Text("Comprado"),
-                  trailing: Text(
-                    purchased.toStringAsFixed(2),
-                  ),
+                  trailing: Text(purchased.toStringAsFixed(2)),
                 ),
 
                 const Divider(height: 1),
@@ -93,9 +75,7 @@ class InventoryKardexPage extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.remove_circle),
                   title: const Text("Consumido"),
-                  trailing: Text(
-                    consumed.toStringAsFixed(2),
-                  ),
+                  trailing: Text(consumed.toStringAsFixed(2)),
                 ),
 
                 const Divider(height: 1),
@@ -103,9 +83,7 @@ class InventoryKardexPage extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.inventory),
                   title: const Text("Disponible"),
-                  trailing: Text(
-                    ingredient.stock.toStringAsFixed(2),
-                  ),
+                  trailing: Text(ingredient.stock.toStringAsFixed(2)),
                 ),
 
                 const Divider(height: 1),
@@ -123,11 +101,8 @@ class InventoryKardexPage extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.calculate),
                   title: const Text("Valor del inventario"),
-                  trailing: Text(
-                    "\$${inventoryValue.toStringAsFixed(2)}",
-                  ),
+                  trailing: Text("\$${inventoryValue.toStringAsFixed(2)}"),
                 ),
-
               ],
             ),
           ),
@@ -136,10 +111,7 @@ class InventoryKardexPage extends StatelessWidget {
 
           const Text(
             "Historial de movimientos",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 10),
@@ -148,35 +120,24 @@ class InventoryKardexPage extends StatelessWidget {
             const Card(
               child: Padding(
                 padding: EdgeInsets.all(20),
-                child: Center(
-                  child: Text(
-                    "No existen movimientos.",
-                  ),
-                ),
+                child: Center(child: Text("No existen movimientos.")),
               ),
             ),
 
-          ...movements.map(
-            (InventoryMovement movement) {
-              return Card(
-                child: ListTile(
-                  leading: Icon(
-                    movement.type == 'Entrada'
-                        ? Icons.add_circle
-                        : Icons.remove_circle,
-                  ),
-                  title: Text(movement.type),
-                  subtitle: Text(
-                    movement.reference,
-                  ),
-                  trailing: Text(
-                    movement.quantity.toStringAsFixed(2),
-                  ),
+          ...movements.map((InventoryMovement movement) {
+            return Card(
+              child: ListTile(
+                leading: Icon(
+                  movement.type == 'Entrada'
+                      ? Icons.add_circle
+                      : Icons.remove_circle,
                 ),
-              );
-            },
-          ),
-
+                title: Text(movement.type),
+                subtitle: Text(movement.reference),
+                trailing: Text(movement.quantity.toStringAsFixed(2)),
+              ),
+            );
+          }),
         ],
       ),
     );

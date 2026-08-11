@@ -27,4 +27,3 @@ class ProductionElaboration extends HiveObject {
     this.completed = false,
   });
 }
-

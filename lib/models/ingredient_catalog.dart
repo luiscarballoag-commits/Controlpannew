@@ -85,8 +85,7 @@ class IngredientCatalog extends HiveObject {
       purchaseUnit: purchaseUnit ?? this.purchaseUnit,
       packageSize: packageSize ?? this.packageSize,
       packageUnit: packageUnit ?? this.packageUnit,
-      normalizedStock:
-          normalizedStock ?? this.normalizedStock,
+      normalizedStock: normalizedStock ?? this.normalizedStock,
     );
   }
 }

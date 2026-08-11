@@ -10,27 +10,20 @@ import 'production_service.dart';
 import 'recipe_service.dart';
 
 class CostService {
-  final IngredientService ingredientService =
-      IngredientService();
+  final IngredientService ingredientService = IngredientService();
 
-  final ProductionService productionService =
-      ProductionService();
+  final ProductionService productionService = ProductionService();
 
-  final RecipeService recipeService =
-      RecipeService();
+  final RecipeService recipeService = RecipeService();
 
   CostResult? calculateLastProductionCost() {
-    final production =
-        productionService.getLastProduction();
+    final production = productionService.getLastProduction();
 
     if (production == null) {
       return null;
     }
 
-    final recipe =
-        recipeService.getRecipeById(
-      production.recipeId,
-    );
+    final recipe = recipeService.getRecipeById(production.recipeId);
 
     if (recipe == null) {
       return null;
@@ -54,35 +47,27 @@ class CostService {
     double depreciationCost = 0,
     double profitMargin = 30,
   }) {
-    final inventory =
-        ingredientService.getAllIngredients();
+    final inventory = ingredientService.getAllIngredients();
 
     final List<CostItem> items = [];
 
-    for (final recipeIngredient
-        in recipe.ingredients) {
-      final IngredientCatalog? ingredient =
-          inventory
-              .cast<IngredientCatalog?>()
-              .firstWhere(
-        (item) =>
-            item?.id ==
-            recipeIngredient.ingredient.id,
-        orElse: () => null,
-      );
+    for (final recipeIngredient in recipe.ingredients) {
+      final IngredientCatalog? ingredient = inventory
+          .cast<IngredientCatalog?>()
+          .firstWhere(
+            (item) => item?.id == recipeIngredient.ingredient.id,
+            orElse: () => null,
+          );
 
       if (ingredient == null) {
         continue;
       }
 
-      final cantidad =
-          recipeIngredient.quantity * lots;
+      final cantidad = recipeIngredient.quantity * lots;
 
-      final precioUnitario =
-          ingredient.normalizedStock > 0
-              ? ingredient.purchasePrice /
-                  ingredient.normalizedStock
-              : 0.0;
+      final precioUnitario = ingredient.normalizedStock > 0
+          ? ingredient.purchasePrice / ingredient.normalizedStock
+          : 0.0;
 
       items.add(
         CostItem(

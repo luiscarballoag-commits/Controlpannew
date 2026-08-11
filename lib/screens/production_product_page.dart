@@ -3,18 +3,12 @@ import 'package:flutter/material.dart';
 class ProductionProductPage extends StatelessWidget {
   final String productName;
 
-  const ProductionProductPage({
-    super.key,
-    required this.productName,
-  });
+  const ProductionProductPage({super.key, required this.productName});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(productName),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(productName), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -31,10 +25,7 @@ class ProductionProductPage extends StatelessWidget {
             const SizedBox(height: 20),
             const Text(
               "Esta pantalla será utilizada para:",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 10),
             const ListTile(
@@ -57,11 +48,7 @@ class ProductionProductPage extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      "Módulo en construcción.",
-                    ),
-                  ),
+                  const SnackBar(content: Text("Módulo en construcción.")),
                 );
               },
               icon: const Icon(Icons.build),

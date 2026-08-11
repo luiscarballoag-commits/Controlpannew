@@ -23,9 +23,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Eliminar ingrediente"),
-        content: const Text(
-          "¿Está seguro de eliminar este ingrediente?",
-        ),
+        content: const Text("¿Está seguro de eliminar este ingrediente?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -75,7 +73,9 @@ class _IngredientsPageState extends State<IngredientsPage> {
                   ),
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: InventoryCategoryStyle.color(ingredient.category),
+                      backgroundColor: InventoryCategoryStyle.color(
+                        ingredient.category,
+                      ),
                       child: Icon(
                         InventoryCategoryStyle.icon(ingredient.category),
                         color: Colors.white,
@@ -83,22 +83,27 @@ class _IngredientsPageState extends State<IngredientsPage> {
                     ),
                     title: Text(
                       ingredient.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("📂 ${ingredient.category}"),
-                          Text("📦 Compra: ${ingredient.purchaseUnit} (${ingredient.packageSize} ${ingredient.packageUnit})"),
-                          const SizedBox(height: 4),
-                          Text("Stock: ${InventoryPresentationService.formatStock(ingredient)}"),
-                          Text("⚠️ Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)} ${ingredient.unit}"),
-                            Text("💲 Precio: \$${ingredient.purchasePrice.toStringAsFixed(2)}"),
-                        ],
+                      children: [
+                        Text("📂 ${ingredient.category}"),
+                        Text(
+                          "📦 Compra: ${ingredient.purchaseUnit} (${ingredient.packageSize} ${ingredient.packageUnit})",
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Stock: ${InventoryPresentationService.formatStock(ingredient)}",
+                        ),
+                        Text(
+                          "⚠️ Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)} ${ingredient.unit}",
+                        ),
+                        Text(
+                          "💲 Precio: \$${ingredient.purchasePrice.toStringAsFixed(2)}",
+                        ),
+                      ],
                     ),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) async {
@@ -107,8 +112,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    IngredientEditorPage(
+                                builder: (_) => IngredientEditorPage(
                                   ingredient: ingredient,
                                   index: index,
                                 ),
@@ -141,9 +145,8 @@ class _IngredientsPageState extends State<IngredientsPage> {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => InventoryKardexPage(
-                                  ingredient: ingredient,
-                                ),
+                                builder: (_) =>
+                                    InventoryKardexPage(ingredient: ingredient),
                               ),
                             );
                             break;
@@ -154,18 +157,9 @@ class _IngredientsPageState extends State<IngredientsPage> {
                         }
                       },
                       itemBuilder: (context) => const [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text('✏️ Editar'),
-                        ),
-                        PopupMenuItem(
-                          value: 'entry',
-                          child: Text('➕ Entrada'),
-                        ),
-                        PopupMenuItem(
-                          value: 'exit',
-                          child: Text('➖ Salida'),
-                        ),
+                        PopupMenuItem(value: 'edit', child: Text('✏️ Editar')),
+                        PopupMenuItem(value: 'entry', child: Text('➕ Entrada')),
+                        PopupMenuItem(value: 'exit', child: Text('➖ Salida')),
                         PopupMenuItem(
                           value: 'kardex',
                           child: Text('📋 Ver Kardex'),
@@ -185,10 +179,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  const IngredientEditorPage(),
-            ),
+            MaterialPageRoute(builder: (_) => const IngredientEditorPage()),
           );
 
           setState(() {});

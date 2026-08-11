@@ -5,8 +5,7 @@ import '../models/ingredient_catalog.dart';
 class IngredientService {
   static const String boxName = 'ingredients';
 
-  Box<IngredientCatalog> get _box =>
-      Hive.box<IngredientCatalog>(boxName);
+  Box<IngredientCatalog> get _box => Hive.box<IngredientCatalog>(boxName);
 
   List<IngredientCatalog> getAllIngredients() {
     return _box.values.toList();
@@ -16,10 +15,7 @@ class IngredientService {
     _box.add(ingredient);
   }
 
-  void updateIngredient(
-    int index,
-    IngredientCatalog ingredient,
-  ) {
+  void updateIngredient(int index, IngredientCatalog ingredient) {
     _box.putAt(index, ingredient);
   }
 

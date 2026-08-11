@@ -3,8 +3,7 @@ import 'package:hive/hive.dart';
 import '../../models/elaboration/elaboration_recipe.dart';
 
 class ElaborationRecipeService {
-  final Box<ElaborationRecipe> _box =
-      Hive.box<ElaborationRecipe>(
+  final Box<ElaborationRecipe> _box = Hive.box<ElaborationRecipe>(
     'elaboration_recipes',
   );
 

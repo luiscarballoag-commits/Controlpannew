@@ -21,17 +21,13 @@ class _EditBakeryInfoPageState extends State<EditBakeryInfoPage> {
   void initState() {
     super.initState();
 
-    nameController =
-        TextEditingController(text: settings.bakeryName);
+    nameController = TextEditingController(text: settings.bakeryName);
 
-    addressController =
-        TextEditingController(text: settings.bakeryAddress);
+    addressController = TextEditingController(text: settings.bakeryAddress);
 
-    phoneController =
-        TextEditingController(text: settings.bakeryPhone);
+    phoneController = TextEditingController(text: settings.bakeryPhone);
 
-    ownerController =
-        TextEditingController(text: settings.bakeryOwner);
+    ownerController = TextEditingController(text: settings.bakeryOwner);
   }
 
   @override
@@ -52,9 +48,7 @@ class _EditBakeryInfoPageState extends State<EditBakeryInfoPage> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Datos guardados correctamente'),
-      ),
+      const SnackBar(content: Text('Datos guardados correctamente')),
     );
 
     Navigator.pop(context);
@@ -63,9 +57,7 @@ class _EditBakeryInfoPageState extends State<EditBakeryInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Datos de la Panadería"),
-      ),
+      appBar: AppBar(title: const Text("Datos de la Panadería")),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

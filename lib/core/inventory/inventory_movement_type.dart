@@ -1,7 +1,7 @@
 enum InventoryMovementType {
   purchase,
   entry,
- production,
+  production,
   exit,
   adjustmentPositive,
   adjustmentNegative,
@@ -39,4 +39,3 @@ extension InventoryMovementTypeExtension on InventoryMovementType {
     }
   }
 }
-

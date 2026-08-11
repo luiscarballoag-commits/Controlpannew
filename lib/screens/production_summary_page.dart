@@ -24,27 +24,19 @@ class ProductionSummaryPage extends StatefulWidget {
   });
 
   @override
-  State<ProductionSummaryPage> createState() =>
-      _ProductionSummaryPageState();
+  State<ProductionSummaryPage> createState() => _ProductionSummaryPageState();
 }
 
-class _ProductionSummaryPageState
-    extends State<ProductionSummaryPage> {
+class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
+  final ProductionService productionService = ProductionService();
 
-  final ProductionService productionService =
-      ProductionService();
+  final CostService costService = CostService();
 
-  final CostService costService =
-      CostService();
+  final CostRecordService costRecordService = CostRecordService();
 
-  final CostRecordService costRecordService =
-      CostRecordService();
-
-  final ProductionInventoryService
-      inventoryService =
+  final ProductionInventoryService inventoryService =
       ProductionInventoryService();
-  final ProductionManager productionManager =
-      ProductionManager();
+  final ProductionManager productionManager = ProductionManager();
 
   double totalMassGrams = 0;
 
@@ -98,15 +90,11 @@ class _ProductionSummaryPageState
 
   @override
   Widget build(BuildContext context) {
-    final totalPieces =
-        widget.pieceWeight > 0
-            ? (totalMassGrams /
-                    widget.pieceWeight)
-                .floor()
-            : 0;
+    final totalPieces = widget.pieceWeight > 0
+        ? (totalMassGrams / widget.pieceWeight).floor()
+        : 0;
 
-    final hasInventory =
-        inventoryService.hasEnoughInventory(
+    final hasInventory = inventoryService.hasEnoughInventory(
       recipe: widget.recipe,
       lots: widget.lots,
     );
@@ -114,12 +102,9 @@ class _ProductionSummaryPageState
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
       appBar: AppBar(
-        title: const Text(
-          "Resumen de Producción",
-        ),
+        title: const Text("Resumen de Producción"),
         centerTitle: true,
-        backgroundColor:
-            const Color(0xFF8D6E63),
+        backgroundColor: const Color(0xFF8D6E63),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -129,28 +114,18 @@ class _ProductionSummaryPageState
             Card(
               elevation: 6,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(18),
               ),
               child: ListTile(
                 leading: const CircleAvatar(
-                  backgroundColor:
-                      Color(0xFF8D6E63),
-                  child: Icon(
-                    Icons.menu_book,
-                    color: Colors.white,
-                  ),
+                  backgroundColor: Color(0xFF8D6E63),
+                  child: Icon(Icons.menu_book, color: Colors.white),
                 ),
                 title: Text(
                   widget.recipe.name,
-                  style: const TextStyle(
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text(
-                  "${widget.lots.toStringAsFixed(0)} lote(s)",
-                ),
+                subtitle: Text("${widget.lots.toStringAsFixed(0)} lote(s)"),
               ),
             ),
 
@@ -160,45 +135,31 @@ class _ProductionSummaryPageState
               children: [
                 Expanded(
                   child: Card(
-                    color:
-                        const Color(0xFF8D6E63),
-                    shape:
-                        RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(
-                              18),
+                    color: const Color(0xFF8D6E63),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     child: Padding(
-                      padding:
-                          const EdgeInsets.all(
-                              16),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
                           const Icon(
                             Icons.scale,
-                            color:
-                                Colors.white,
+                            color: Colors.white,
                             size: 30,
                           ),
-                          const SizedBox(
-                              height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             (totalMassGrams / 1000).toStringAsFixed(2),
-                            style:
-                                const TextStyle(
-                              color:
-                                  Colors.white,
+                            style: const TextStyle(
+                              color: Colors.white,
                               fontSize: 22,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const Text(
                             "Kg",
-                            style: TextStyle(
-                              color:
-                                  Colors.white70,
-                            ),
+                            style: TextStyle(color: Colors.white70),
                           ),
                         ],
                       ),
@@ -210,43 +171,31 @@ class _ProductionSummaryPageState
 
                 Expanded(
                   child: Card(
-                    color:
-                        const Color(0xFF8D6E63),
-                    shape:
-                        RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(
-                              18),
+                    color: const Color(0xFF8D6E63),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     child: Padding(
-                      padding:
-                          const EdgeInsets.all(
-                              16),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
                           const Icon(
                             Icons.bakery_dining,
-                            color:
-                                Colors.white,
+                            color: Colors.white,
                             size: 30,
                           ),
-                          const SizedBox(
-                              height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             totalPieces.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const Text(
                             "Panes",
-                            style: TextStyle(
-                              color:
-                                  Colors.white70,
-                            ),
+                            style: TextStyle(color: Colors.white70),
                           ),
                         ],
                       ),
@@ -254,34 +203,25 @@ class _ProductionSummaryPageState
                   ),
                 ),
               ],
-            ),            const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
 
             Card(
               elevation: 4,
-              color: hasInventory
-                  ? Colors.green.shade50
-                  : Colors.red.shade50,
+              color: hasInventory ? Colors.green.shade50 : Colors.red.shade50,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(18),
               ),
               child: ListTile(
                 leading: Icon(
-                  hasInventory
-                      ? Icons.check_circle
-                      : Icons.warning,
-                  color: hasInventory
-                      ? Colors.green
-                      : Colors.red,
+                  hasInventory ? Icons.check_circle : Icons.warning,
+                  color: hasInventory ? Colors.green : Colors.red,
                 ),
                 title: Text(
                   hasInventory
                       ? "Inventario disponible"
                       : "Inventario insuficiente",
-                  style: const TextStyle(
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -292,10 +232,7 @@ class _ProductionSummaryPageState
               alignment: Alignment.centerLeft,
               child: Text(
                 "Ingredientes necesarios",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
 
@@ -303,46 +240,26 @@ class _ProductionSummaryPageState
 
             Expanded(
               child: ListView.builder(
-                itemCount:
-                    widget.recipe.ingredients.length,
-                itemBuilder:
-                    (context, index) {
+                itemCount: widget.recipe.ingredients.length,
+                itemBuilder: (context, index) {
+                  final ingredient = widget.recipe.ingredients[index];
 
-                  final ingredient =
-                      widget.recipe.ingredients[index];
-
-                  final quantity =
-                      ingredient.quantity *
-                          widget.lots;
+                  final quantity = ingredient.quantity * widget.lots;
 
                   return Card(
                     elevation: 3,
-                    margin:
-                        const EdgeInsets.only(
-                      bottom: 10,
-                    ),
-                    shape:
-                        RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(
-                              16),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: ListTile(
-                      leading:
-                          const CircleAvatar(
-                        backgroundColor:
-                            Color(0xFF8D6E63),
-                        child: Icon(
-                          Icons.inventory,
-                          color: Colors.white,
-                        ),
+                      leading: const CircleAvatar(
+                        backgroundColor: Color(0xFF8D6E63),
+                        child: Icon(Icons.inventory, color: Colors.white),
                       ),
                       title: Text(
                         ingredient.name,
-                        style: const TextStyle(
-                          fontWeight:
-                              FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         "${quantity.toStringAsFixed(2)} ${ingredient.unit}",
@@ -360,31 +277,20 @@ class _ProductionSummaryPageState
               height: 58,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color(0xFF8D6E63),
-                  foregroundColor:
-                      Colors.white,
-                  shape:
-                      RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(
-                            18),
+                  backgroundColor: const Color(0xFF8D6E63),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
                   ),
                 ),
-                icon: const Icon(
-                  Icons.play_arrow,
-                ),
+                icon: const Icon(Icons.play_arrow),
                 label: const Text(
                   "INICIAR PRODUCCIÓN",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
-                ),                onPressed: hasInventory
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                onPressed: hasInventory
                     ? () {
-                        inventoryService
-                            .consumeIngredients(
+                        inventoryService.consumeIngredients(
                           recipe: widget.recipe,
                           lots: widget.lots,
                         );
@@ -392,29 +298,20 @@ class _ProductionSummaryPageState
                         final productionId =
                             "P-${(productionService.getAllProductions().length + 1).toString().padLeft(6, '0')}";
 
-                        productionService
-                            .addProduction(
+                        productionService.addProduction(
                           Production(
                             id: productionId,
                             date: DateTime.now(),
-                            recipeId:
-                                widget.recipe.id,
-                            recipeName:
-                                widget.recipe.name,
-                            lots:
-                                widget.lots.toInt(),
-                            totalMassKg:
-                                totalMassGrams /
-                                    1000,
-                            pieceWeightGrams:
-                                widget.pieceWeight,
-                            totalPieces:
-                                totalPieces,
+                            recipeId: widget.recipe.id,
+                            recipeName: widget.recipe.name,
+                            lots: widget.lots.toInt(),
+                            totalMassKg: totalMassGrams / 1000,
+                            pieceWeightGrams: widget.pieceWeight,
+                            totalPieces: totalPieces,
                           ),
                         );
 
-                        final costResult =
-                            costService.calculateRecipeCost(
+                        final costResult = costService.calculateRecipeCost(
                           recipe: widget.recipe,
                           lots: widget.lots,
                           totalWeightKg: totalMassGrams / 1000,
@@ -423,33 +320,25 @@ class _ProductionSummaryPageState
 
                         costRecordService.saveRecord(
                           CostRecord(
-                                                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            id: DateTime.now().millisecondsSinceEpoch
+                                .toString(),
                             date: DateTime.now(),
-                              productionId: DateTime.now().millisecondsSinceEpoch.toString(),
+                            productionId: DateTime.now().millisecondsSinceEpoch
+                                .toString(),
                             recipeName: widget.recipe.name,
-                            rawMaterialCost:
-                                costResult.rawMaterialCost,
-                            laborCost:
-                                costResult.laborCost,
-                            operatingCost:
-                                costResult.operatingCost,
-                            depreciationCost:
-                                costResult.depreciationCost,
-                            totalCost:
-                                costResult.totalCost,
-                            costPerKg:
-                                costResult.costPerKg,
-                            costPerPiece:
-                                costResult.costPerUnit,
-                            profitPercentage:
-                                costResult.profitMargin,
-                            suggestedSalePrice:
-                                costResult.suggestedSalePrice,
+                            rawMaterialCost: costResult.rawMaterialCost,
+                            laborCost: costResult.laborCost,
+                            operatingCost: costResult.operatingCost,
+                            depreciationCost: costResult.depreciationCost,
+                            totalCost: costResult.totalCost,
+                            costPerKg: costResult.costPerKg,
+                            costPerPiece: costResult.costPerUnit,
+                            profitPercentage: costResult.profitMargin,
+                            suggestedSalePrice: costResult.suggestedSalePrice,
                           ),
                         );
 
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
                               "Producción registrada correctamente.",
@@ -457,51 +346,63 @@ class _ProductionSummaryPageState
                           ),
                         );
 
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (dialogContext) {
-                              return AlertDialog(
-                                title: const Text("Producción finalizada"),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.check_circle, color: Colors.green, size: 60),
-                                    const SizedBox(height: 16),
-                                    const Text("La producción fue registrada correctamente."),
-                                    const SizedBox(height: 16),
-                                    Text("Panes obtenidos: $totalPieces"),
-                                  ],
-                                ),
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        Navigator.pop(dialogContext);
-                                        final navigator = Navigator.of(context);
-                                        await navigator.push(
-                                          MaterialPageRoute(
-                                            builder: (_) => ProductionElaborationPage(
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (dialogContext) {
+                            return AlertDialog(
+                              title: const Text("Producción finalizada"),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.green,
+                                    size: 60,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    "La producción fue registrada correctamente.",
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text("Panes obtenidos: $totalPieces"),
+                                ],
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    Navigator.pop(dialogContext);
+                                    final navigator = Navigator.of(context);
+                                    await navigator.push(
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            ProductionElaborationPage(
                                               productionId: productionId,
                                               availablePieces: totalPieces,
                                             ),
-                                          ),
-                                        );
-                                        if (!mounted) return;
-                                        navigator.popUntil((route) => route.isFirst);
-                                      },
-                                    child: const Text("Elaborar Productos"),
-                                  ),
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.pop(dialogContext);
-                                      Navigator.popUntil(context, (route) => route.isFirst);
-                                    },
-                                    child: const Text("Finalizar"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                                      ),
+                                    );
+                                    if (!mounted) return;
+                                    navigator.popUntil(
+                                      (route) => route.isFirst,
+                                    );
+                                  },
+                                  child: const Text("Elaborar Productos"),
+                                ),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.pop(dialogContext);
+                                    Navigator.popUntil(
+                                      context,
+                                      (route) => route.isFirst,
+                                    );
+                                  },
+                                  child: const Text("Finalizar"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     : null,
               ),

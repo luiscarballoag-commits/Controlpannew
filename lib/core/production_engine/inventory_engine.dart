@@ -17,11 +17,7 @@ class InventoryEngine {
 
       final consume = usedItem.first;
 
-      result.add(
-        item.copyWith(
-          quantity: item.quantity - consume.quantity,
-        ),
-      );
+      result.add(item.copyWith(quantity: item.quantity - consume.quantity));
     }
 
     return result;

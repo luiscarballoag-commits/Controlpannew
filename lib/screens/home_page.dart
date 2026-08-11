@@ -60,18 +60,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   String getDate() {
-    return DateFormat(
-      "EEEE, d 'de' MMMM 'de' y",
-      "es",
-    ).format(DateTime.now());
+    return DateFormat("EEEE, d 'de' MMMM 'de' y", "es").format(DateTime.now());
   }
 
   String getTime() {
-    return DateFormat(
-      "hh:mm a",
-      "es",
-    ).format(DateTime.now());
-  }  @override
+    return DateFormat("hh:mm a", "es").format(DateTime.now());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
@@ -112,7 +108,6 @@ class _HomePageState extends State<HomePage> {
           });
         },
         destinations: const [
-
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
@@ -142,7 +137,6 @@ class _HomePageState extends State<HomePage> {
             selectedIcon: Icon(Icons.settings),
             label: "Configuración",
           ),
-
         ],
       ),
     );
@@ -169,21 +163,12 @@ class HomeDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
-        children: [
+      children: [
+        GreetingCard(greeting: greeting, bakeryName: bakeryName),
 
-        GreetingCard(
-          greeting: greeting,
-          bakeryName: bakeryName,
-        ),
+        DateTimeCard(currentDate: currentDate, currentTime: currentTime),
 
-        DateTimeCard(
-          currentDate: currentDate,
-          currentTime: currentTime,
-        ),
-
-        MessageCard(
-          message: message,
-        ),
+        MessageCard(message: message),
 
         const DashboardBanner(),
 
@@ -191,10 +176,7 @@ class HomeDashboard extends StatelessWidget {
 
         const Text(
           "Resumen del día",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
 
         const SizedBox(height: 15),

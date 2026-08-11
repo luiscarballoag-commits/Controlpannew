@@ -37,9 +37,7 @@ class RecipeService {
 
   Recipe? getRecipeById(String id) {
     try {
-      return _box.values.firstWhere(
-        (recipe) => recipe.id == id,
-      );
+      return _box.values.firstWhere((recipe) => recipe.id == id);
     } catch (_) {
       return null;
     }

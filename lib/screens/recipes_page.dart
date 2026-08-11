@@ -20,9 +20,7 @@ class _RecipesPageState extends State<RecipesPage> {
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Eliminar receta"),
-        content: const Text(
-          "¿Deseas eliminar esta receta?",
-        ),
+        content: const Text("¿Deseas eliminar esta receta?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -47,14 +45,10 @@ class _RecipesPageState extends State<RecipesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Recipe> recipes =
-        recipeService.getAllRecipes();
+    final List<Recipe> recipes = recipeService.getAllRecipes();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Mis Recetas"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Mis Recetas"), centerTitle: true),
       body: recipes.isEmpty
           ? const Center(
               child: Text(
@@ -74,61 +68,54 @@ class _RecipesPageState extends State<RecipesPage> {
                     vertical: 6,
                   ),
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.menu_book),
-                    ),
+                    leading: const CircleAvatar(child: Icon(Icons.menu_book)),
                     title: Text(recipe.name),
-                    subtitle: Text(
-                      "${recipe.ingredients.length} ingredientes",
-                    ),
+                    subtitle: Text("${recipe.ingredients.length} ingredientes"),
                     trailing: PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == "edit") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => RecipeEditorPage(
-                                  recipe: recipe,
-                                  recipeIndex: index,
-                                ),
+                      onSelected: (value) {
+                        if (value == "edit") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RecipeEditorPage(
+                                recipe: recipe,
+                                recipeIndex: index,
                               ),
-                            ).then((_) => setState(() {}));
-                          }
-                          if (value == "delete") {
-                            _deleteRecipe(index);
-                          }
-                        },
-                        itemBuilder: (_) => const [
-                          PopupMenuItem(
-                            value: "edit",
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, color: Colors.blue),
-                                SizedBox(width: 10),
-                                Text("Editar"),
-                              ],
                             ),
+                          ).then((_) => setState(() {}));
+                        }
+                        if (value == "delete") {
+                          _deleteRecipe(index);
+                        }
+                      },
+                      itemBuilder: (_) => const [
+                        PopupMenuItem(
+                          value: "edit",
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, color: Colors.blue),
+                              SizedBox(width: 10),
+                              Text("Editar"),
+                            ],
                           ),
-                          PopupMenuItem(
-                            value: "delete",
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, color: Colors.red),
-                                SizedBox(width: 10),
-                                Text("Eliminar"),
-                              ],
-                            ),
+                        ),
+                        PopupMenuItem(
+                          value: "delete",
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 10),
+                              Text("Eliminar"),
+                            ],
                           ),
-                        ],
+                        ),
+                      ],
                     ),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              RecipeDetailsPage(
-                            recipe: recipe,
-                          ),
+                          builder: (_) => RecipeDetailsPage(recipe: recipe),
                         ),
                       );
                     },
@@ -136,17 +123,13 @@ class _RecipesPageState extends State<RecipesPage> {
                 );
               },
             ),
-      floatingActionButton:
-          FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add),
         label: const Text("Nueva receta"),
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  const RecipeEditorPage(),
-            ),
+            MaterialPageRoute(builder: (_) => const RecipeEditorPage()),
           );
 
           if (!mounted) return;

@@ -4,12 +4,10 @@ class ProductComponentsPage extends StatefulWidget {
   const ProductComponentsPage({super.key});
 
   @override
-  State<ProductComponentsPage> createState() =>
-      _ProductComponentsPageState();
+  State<ProductComponentsPage> createState() => _ProductComponentsPageState();
 }
 
-class _ProductComponentsPageState
-    extends State<ProductComponentsPage> {
+class _ProductComponentsPageState extends State<ProductComponentsPage> {
   final List<Map<String, dynamic>> components = [];
 
   @override
@@ -27,11 +25,7 @@ class _ProductComponentsPageState
         child: const Icon(Icons.add),
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                "Agregar componente próximamente",
-              ),
-            ),
+            const SnackBar(content: Text("Agregar componente próximamente")),
           );
         },
       ),
@@ -49,42 +43,26 @@ class _ProductComponentsPageState
                 final component = components[index];
 
                 return Card(
-                  margin:
-                      const EdgeInsets.only(bottom: 12),
+                  margin: const EdgeInsets.only(bottom: 12),
                   elevation: 4,
                   child: ListTile(
                     leading: const CircleAvatar(
                       backgroundColor: Colors.orange,
-                      child: Icon(
-                        Icons.inventory_2,
-                        color: Colors.white,
-                      ),
+                      child: Icon(Icons.inventory_2, color: Colors.white),
                     ),
                     title: Text(
                       component["name"],
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(
-                      "${component["grams"]} g por pieza",
-                    ),
+                    subtitle: Text("${component["grams"]} g por pieza"),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "$value próximamente",
-                            ),
-                          ),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("$value próximamente")),
                         );
                       },
                       itemBuilder: (context) => const [
-                        PopupMenuItem(
-                          value: "Editar",
-                          child: Text("Editar"),
-                        ),
+                        PopupMenuItem(value: "Editar", child: Text("Editar")),
                         PopupMenuItem(
                           value: "Eliminar",
                           child: Text("Eliminar"),

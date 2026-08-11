@@ -3,8 +3,7 @@ import 'package:hive/hive.dart';
 import '../../models/elaboration/elaboration_production.dart';
 
 class ElaborationProductionService {
-  final Box<ElaborationProduction> box =
-      Hive.box<ElaborationProduction>(
+  final Box<ElaborationProduction> box = Hive.box<ElaborationProduction>(
     'elaboration_productions',
   );
 
@@ -15,9 +14,7 @@ class ElaborationProductionService {
     required int quantity,
   }) async {
     final production = ElaborationProduction(
-      id: DateTime.now()
-          .microsecondsSinceEpoch
-          .toString(),
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
       date: DateTime.now(),
       recipeId: recipeId,
       recipeName: recipeName,
@@ -30,9 +27,6 @@ class ElaborationProductionService {
   }
 
   List<ElaborationProduction> getAll() {
-    return box.values.toList()
-      ..sort(
-        (a, b) => b.date.compareTo(a.date),
-      );
+    return box.values.toList()..sort((a, b) => b.date.compareTo(a.date));
   }
 }

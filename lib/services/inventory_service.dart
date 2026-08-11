@@ -4,8 +4,9 @@ import '../models/ingredient_catalog.dart';
 import '../core/inventory/unit_converter.dart';
 
 class InventoryService {
-  final Box<IngredientCatalog> _box =
-      Hive.box<IngredientCatalog>('ingredients');
+  final Box<IngredientCatalog> _box = Hive.box<IngredientCatalog>(
+    'ingredients',
+  );
 
   List<IngredientCatalog> getAllItems() {
     return _box.values.toList();

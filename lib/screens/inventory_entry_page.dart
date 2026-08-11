@@ -8,36 +8,26 @@ class InventoryEntryPage extends StatefulWidget {
   const InventoryEntryPage({super.key});
 
   @override
-  State<InventoryEntryPage> createState() =>
-      _InventoryEntryPageState();
+  State<InventoryEntryPage> createState() => _InventoryEntryPageState();
 }
 
-class _InventoryEntryPageState
-    extends State<InventoryEntryPage> {
+class _InventoryEntryPageState extends State<InventoryEntryPage> {
+  final IngredientService ingredientService = IngredientService();
 
-  final IngredientService ingredientService =
-      IngredientService();
-
-  final InventoryManager inventoryManager =
-      InventoryManager();
+  final InventoryManager inventoryManager = InventoryManager();
 
   IngredientCatalog? selectedIngredient;
   int? selectedIndex;
 
-  final _quantityController =
-      TextEditingController();
+  final _quantityController = TextEditingController();
 
-  final _priceController =
-      TextEditingController();
+  final _priceController = TextEditingController();
 
-  final _supplierController =
-      TextEditingController();
+  final _supplierController = TextEditingController();
 
-  final _invoiceController =
-      TextEditingController();
+  final _invoiceController = TextEditingController();
 
-  final _notesController =
-      TextEditingController();
+  final _notesController = TextEditingController();
 
   @override
   void dispose() {
@@ -52,8 +42,7 @@ class _InventoryEntryPageState
   Widget buildField(
     String label,
     TextEditingController controller, {
-    TextInputType keyboard =
-        TextInputType.text,
+    TextInputType keyboard = TextInputType.text,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -69,40 +58,26 @@ class _InventoryEntryPageState
   }
 
   Future<void> saveEntry() async {
-
-    if (selectedIngredient == null ||
-        selectedIndex == null) {
-
+    if (selectedIngredient == null || selectedIndex == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Seleccione un ingrediente",
-          ),
-        ),
+        const SnackBar(content: Text("Seleccione un ingrediente")),
       );
 
       return;
     }
 
-    final quantity =
-        double.tryParse(
-              _quantityController.text,
-            ) ??
-            0;
+    final quantity = double.tryParse(_quantityController.text) ?? 0;
 
     await inventoryManager.purchaseIngredient(
       index: selectedIndex!,
       ingredient: selectedIngredient!,
       quantity: quantity,
       purchasePrice:
-          double.tryParse(
-                _priceController.text,
-              ) ??
-              selectedIngredient!.purchasePrice,
-      reference:
-          _invoiceController.text.trim().isEmpty
-              ? "Compra Manual"
-              : _invoiceController.text,
+          double.tryParse(_priceController.text) ??
+          selectedIngredient!.purchasePrice,
+      reference: _invoiceController.text.trim().isEmpty
+          ? "Compra Manual"
+          : _invoiceController.text,
       notes: _notesController.text,
     );
 
@@ -121,49 +96,37 @@ class _InventoryEntryPageState
 
   @override
   Widget build(BuildContext context) {
-
-    final ingredients =
-        ingredientService.getAllIngredients();
+    final ingredients = ingredientService.getAllIngredients();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Entrada de Inventario",
-        ),
+        title: const Text("Entrada de Inventario"),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
             DropdownButtonFormField<IngredientCatalog>(
               initialValue: selectedIngredient,
               decoration: const InputDecoration(
                 labelText: "Ingrediente",
                 border: OutlineInputBorder(),
               ),
-              items: List.generate(
-                ingredients.length,
-                (index) {
-                  final ingredient =
-                      ingredients[index];
+              items: List.generate(ingredients.length, (index) {
+                final ingredient = ingredients[index];
 
-                  return DropdownMenuItem<IngredientCatalog>(
-                    value: ingredient,
-                    child: Text(
-                      ingredient.name,
-                    ),
-                  );
-                },
-              ),
+                return DropdownMenuItem<IngredientCatalog>(
+                  value: ingredient,
+                  child: Text(ingredient.name),
+                );
+              }),
               onChanged: (value) {
                 setState(() {
                   selectedIngredient = value;
 
                   if (value != null) {
-                    selectedIndex =
-                        ingredients.indexOf(value);
+                    selectedIndex = ingredients.indexOf(value);
                   }
                 });
               },
@@ -174,35 +137,20 @@ class _InventoryEntryPageState
             buildField(
               "Cantidad",
               _quantityController,
-              keyboard:
-                  const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboard: const TextInputType.numberWithOptions(decimal: true),
             ),
 
             buildField(
               "Precio Unitario",
               _priceController,
-              keyboard:
-                  const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboard: const TextInputType.numberWithOptions(decimal: true),
             ),
 
-            buildField(
-              "Proveedor",
-              _supplierController,
-            ),
+            buildField("Proveedor", _supplierController),
 
-            buildField(
-              "Número de Factura",
-              _invoiceController,
-            ),
+            buildField("Número de Factura", _invoiceController),
 
-            buildField(
-              "Observaciones",
-              _notesController,
-            ),
+            buildField("Observaciones", _notesController),
 
             const SizedBox(height: 20),
 
@@ -213,10 +161,7 @@ class _InventoryEntryPageState
                 icon: const Icon(Icons.save),
                 label: const Text(
                   "REGISTRAR ENTRADA",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 onPressed: saveEntry,
               ),

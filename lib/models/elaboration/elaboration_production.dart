@@ -31,4 +31,3 @@ class ElaborationProduction extends HiveObject {
     this.productionId,
   });
 }
-

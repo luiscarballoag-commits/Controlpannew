@@ -20,9 +20,7 @@ class SelectInventoryIngredientPage extends StatelessWidget {
         builder: (context, Box<IngredientCatalog> box, _) {
           if (box.isEmpty) {
             return const Center(
-              child: Text(
-                "No hay ingredientes registrados.",
-              ),
+              child: Text("No hay ingredientes registrados."),
             );
           }
 

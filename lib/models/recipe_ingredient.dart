@@ -12,10 +12,7 @@ class RecipeIngredient extends HiveObject {
   @HiveField(1)
   final double quantity;
 
-  RecipeIngredient({
-    required this.ingredient,
-    required this.quantity,
-  });
+  RecipeIngredient({required this.ingredient, required this.quantity});
 
   String get unit => ingredient.unit;
 

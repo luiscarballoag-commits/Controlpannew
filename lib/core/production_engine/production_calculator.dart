@@ -16,7 +16,8 @@ class ProductionCalculator {
     final water = waterLiters * 1000;
 
     // Masa total
-    final totalMass = flour +
+    final totalMass =
+        flour +
         water +
         sugarGrams +
         saltGrams +

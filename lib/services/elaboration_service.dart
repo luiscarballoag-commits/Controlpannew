@@ -12,27 +12,17 @@ class ElaborationService {
     return _box.values.toList();
   }
 
-  List<ProductionElaboration> getByProduction(
-    String productionId,
-  ) {
+  List<ProductionElaboration> getByProduction(String productionId) {
     return _box.values
-        .where(
-          (item) =>
-              item.productionId == productionId,
-        )
+        .where((item) => item.productionId == productionId)
         .toList();
   }
 
-  void add(
-    ProductionElaboration elaboration,
-  ) {
+  void add(ProductionElaboration elaboration) {
     _box.add(elaboration);
   }
 
-  void update(
-    int index,
-    ProductionElaboration elaboration,
-  ) {
+  void update(int index, ProductionElaboration elaboration) {
     _box.putAt(index, elaboration);
   }
 

@@ -7,29 +7,17 @@ import '../services/elaboration/elaboration_record_service.dart';
 class ProductionDetailPage extends StatelessWidget {
   final Production production;
 
-  const ProductionDetailPage({
-    super.key,
-    required this.production,
-  });
+  const ProductionDetailPage({super.key, required this.production});
 
-  Widget infoTile(
-    String title,
-    String value,
-    IconData icon,
-  ) {
+  Widget infoTile(String title, String value, IconData icon) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        leading: CircleAvatar(
-          child: Icon(icon),
-        ),
+        leading: CircleAvatar(child: Icon(icon)),
         title: Text(title),
         subtitle: Text(
           value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ),
     );
@@ -37,20 +25,15 @@ class ProductionDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<ElaborationRecord> elaborations =
-        ElaborationRecordService()
-            .getAll()
-            .where(
-              (e) => e.productionId == production.id,
-            )
-            .toList();
+    final List<ElaborationRecord> elaborations = ElaborationRecordService()
+        .getAll()
+        .where((e) => e.productionId == production.id)
+        .toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
       appBar: AppBar(
-        title: const Text(
-          "Detalle de Producción",
-        ),
+        title: const Text("Detalle de Producción"),
         centerTitle: true,
       ),
       body: ListView(
@@ -101,17 +84,14 @@ class ProductionDetailPage extends StatelessWidget {
             Icons.calendar_today,
           ),
 
-          infoTile(
-            "Lotes",
-            production.lots.toString(),
-            Icons.layers,
-          ),
+          infoTile("Lotes", production.lots.toString(), Icons.layers),
 
           infoTile(
             "Masa Total",
             "${production.totalMassKg.toStringAsFixed(2)} kg",
             Icons.scale,
-          ),          infoTile(
+          ),
+          infoTile(
             "Peso por Pieza",
             "${production.pieceWeightGrams.toStringAsFixed(0)} g",
             Icons.straighten,
@@ -124,11 +104,7 @@ class ProductionDetailPage extends StatelessWidget {
           ),
 
           if (production.notes.isNotEmpty)
-            infoTile(
-              "Observaciones",
-              production.notes,
-              Icons.notes,
-            ),
+            infoTile("Observaciones", production.notes, Icons.notes),
 
           const SizedBox(height: 20),
 
@@ -144,10 +120,7 @@ class ProductionDetailPage extends StatelessWidget {
                 children: [
                   const Text(
                     "Distribución de panes elaborados",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 12),
@@ -169,9 +142,7 @@ class ProductionDetailPage extends StatelessWidget {
                           title: Text(item.productName),
                           trailing: Text(
                             "${item.quantity} panes",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -185,4 +156,3 @@ class ProductionDetailPage extends StatelessWidget {
     );
   }
 }
-

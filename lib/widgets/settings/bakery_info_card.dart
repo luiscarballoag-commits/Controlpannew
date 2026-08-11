@@ -12,9 +12,7 @@ class BakeryInfoCard extends StatelessWidget {
 
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -22,16 +20,11 @@ class BakeryInfoCard extends StatelessWidget {
           children: [
             const Row(
               children: [
-                CircleAvatar(
-                  child: Icon(Icons.store),
-                ),
+                CircleAvatar(child: Icon(Icons.store)),
                 SizedBox(width: 12),
                 Text(
                   'Datos de la Panadería',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

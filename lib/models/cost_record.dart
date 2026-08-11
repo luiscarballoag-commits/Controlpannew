@@ -26,7 +26,8 @@ class CostRecord extends HiveObject {
   final double operatingCost;
 
   @HiveField(7)
-  final double depreciationCost;  @HiveField(8)
+  final double depreciationCost;
+  @HiveField(8)
   final double totalCost;
 
   @HiveField(9)

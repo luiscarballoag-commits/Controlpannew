@@ -7,13 +7,7 @@
 // =======================================================
 
 /// Unidades soportadas por ControlPan.
-enum UnitType {
-  grams,
-  kilograms,
-  milliliters,
-  liters,
-  units,
-}
+enum UnitType { grams, kilograms, milliliters, liters, units }
 
 /// Modelo de un ingrediente.
 class Ingredient {

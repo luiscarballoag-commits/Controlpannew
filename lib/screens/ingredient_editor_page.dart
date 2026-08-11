@@ -8,20 +8,13 @@ class IngredientEditorPage extends StatefulWidget {
   final IngredientCatalog? ingredient;
   final int? index;
 
-  const IngredientEditorPage({
-    super.key,
-    this.ingredient,
-    this.index,
-  });
+  const IngredientEditorPage({super.key, this.ingredient, this.index});
 
   @override
-  State<IngredientEditorPage> createState() =>
-      _IngredientEditorPageState();
+  State<IngredientEditorPage> createState() => _IngredientEditorPageState();
 }
 
-class _IngredientEditorPageState
-    extends State<IngredientEditorPage> {
-
+class _IngredientEditorPageState extends State<IngredientEditorPage> {
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();
   final _unitController = TextEditingController();
@@ -30,14 +23,11 @@ class _IngredientEditorPageState
   final _stockController = TextEditingController();
   final _minimumController = TextEditingController();
 
-  final _packageSizeController =
-      TextEditingController();
+  final _packageSizeController = TextEditingController();
 
-  final _purchaseUnitController =
-      TextEditingController();
+  final _purchaseUnitController = TextEditingController();
 
-  final _packageUnitController =
-      TextEditingController();
+  final _packageUnitController = TextEditingController();
 
   final _notesController = TextEditingController();
 
@@ -68,61 +58,40 @@ class _IngredientEditorPageState
     "Bidón",
     "Botella",
     "Paquete",
-      "Bandeja",
-      "Cubeta",
+    "Bandeja",
+    "Cubeta",
     "Unidad",
   ];
 
-  final packageUnits = [
-    "kg",
-    "g",
-    "L",
-    "ml",
-  ];
+  final packageUnits = ["kg", "g", "L", "ml"];
 
-  final units = [
-    "kg",
-    "g",
-    "L",
-    "ml",
-    "Unidad",
-  ];
+  final units = ["kg", "g", "L", "ml", "Unidad"];
 
-  final IngredientService ingredientService =
-      IngredientService();  @override
+  final IngredientService ingredientService = IngredientService();
+  @override
   void initState() {
     super.initState();
 
     if (widget.ingredient != null) {
-      _nameController.text =
-          widget.ingredient!.name;
+      _nameController.text = widget.ingredient!.name;
 
-      selectedCategory =
-          widget.ingredient!.category;
+      selectedCategory = widget.ingredient!.category;
 
-      selectedUnit =
-          widget.ingredient!.unit;
+      selectedUnit = widget.ingredient!.unit;
 
-      selectedPurchaseUnit =
-          widget.ingredient!.purchaseUnit;
+      selectedPurchaseUnit = widget.ingredient!.purchaseUnit;
 
-      selectedPackageUnit =
-          widget.ingredient!.packageUnit;
+      selectedPackageUnit = widget.ingredient!.packageUnit;
 
-      _priceController.text =
-          widget.ingredient!.purchasePrice.toString();
+      _priceController.text = widget.ingredient!.purchasePrice.toString();
 
-      _stockController.text =
-          widget.ingredient!.stock.toString();
+      _stockController.text = widget.ingredient!.stock.toString();
 
-      _packageSizeController.text =
-          widget.ingredient!.packageSize.toString();
+      _packageSizeController.text = widget.ingredient!.packageSize.toString();
 
-      _minimumController.text =
-          widget.ingredient!.minimumStock.toString();
+      _minimumController.text = widget.ingredient!.minimumStock.toString();
 
-      _notesController.text =
-          widget.ingredient!.notes;
+      _notesController.text = widget.ingredient!.notes;
     }
   }
 
@@ -143,19 +112,18 @@ class _IngredientEditorPageState
     _notesController.dispose();
 
     super.dispose();
-  }  void saveIngredient() {
+  }
+
+  void saveIngredient() {
     if (_nameController.text.trim().isEmpty) {
       return;
     }
 
-    final stock =
-        double.tryParse(_stockController.text) ?? 0;
+    final stock = double.tryParse(_stockController.text) ?? 0;
 
-    final packageSize =
-        double.tryParse(_packageSizeController.text) ?? 0;
+    final packageSize = double.tryParse(_packageSizeController.text) ?? 0;
 
-    final normalizedStock =
-        UnitConverter.normalize(
+    final normalizedStock = UnitConverter.normalize(
       quantity: stock,
       packageSize: packageSize,
       packageUnit: selectedPackageUnit ?? "",
@@ -163,10 +131,9 @@ class _IngredientEditorPageState
     );
 
     final ingredient = IngredientCatalog(
-      id: widget.ingredient?.id ??
-          DateTime.now()
-              .millisecondsSinceEpoch
-              .toString(),
+      id:
+          widget.ingredient?.id ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
 
       name: _nameController.text.trim(),
 
@@ -174,27 +141,17 @@ class _IngredientEditorPageState
 
       unit: selectedUnit ?? "",
 
-      purchasePrice:
-          double.tryParse(
-                _priceController.text,
-              ) ??
-              0,
+      purchasePrice: double.tryParse(_priceController.text) ?? 0,
 
       stock: stock,
 
-      minimumStock:
-          double.tryParse(
-                _minimumController.text,
-              ) ??
-              0,
+      minimumStock: double.tryParse(_minimumController.text) ?? 0,
 
-      purchaseUnit:
-          selectedPurchaseUnit ?? "",
+      purchaseUnit: selectedPurchaseUnit ?? "",
 
       packageSize: packageSize,
 
-      packageUnit:
-          selectedPackageUnit ?? "",
+      packageUnit: selectedPackageUnit ?? "",
 
       normalizedStock: normalizedStock,
 
@@ -202,14 +159,9 @@ class _IngredientEditorPageState
     );
 
     if (widget.index == null) {
-      ingredientService.addIngredient(
-        ingredient,
-      );
+      ingredientService.addIngredient(ingredient);
     } else {
-      ingredientService.updateIngredient(
-        widget.index!,
-        ingredient,
-      );
+      ingredientService.updateIngredient(widget.index!, ingredient);
     }
 
     Navigator.pop(context);
@@ -218,31 +170,27 @@ class _IngredientEditorPageState
   Widget buildField(
     String label,
     TextEditingController controller, {
-    TextInputType keyboard =
-        TextInputType.text,
+    TextInputType keyboard = TextInputType.text,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 14,
-      ),
+      padding: const EdgeInsets.only(bottom: 14),
       child: TextField(
         controller: controller,
         keyboardType: keyboard,
         decoration: InputDecoration(
           labelText: label,
-          border:
-              const OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
-  }  @override
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.index == null
-              ? "Nuevo Ingrediente"
-              : "Editar Ingrediente",
+          widget.index == null ? "Nuevo Ingrediente" : "Editar Ingrediente",
         ),
         centerTitle: true,
       ),
@@ -250,11 +198,7 @@ class _IngredientEditorPageState
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
-            buildField(
-              "Nombre",
-              _nameController,
-            ),
+            buildField("Nombre", _nameController),
 
             DropdownButtonFormField<String>(
               initialValue: selectedCategory,
@@ -263,10 +207,7 @@ class _IngredientEditorPageState
                 border: OutlineInputBorder(),
               ),
               items: categories.map((category) {
-                return DropdownMenuItem(
-                  value: category,
-                  child: Text(category),
-                );
+                return DropdownMenuItem(value: category, child: Text(category));
               }).toList(),
               onChanged: (value) {
                 setState(() {
@@ -284,10 +225,7 @@ class _IngredientEditorPageState
                 border: OutlineInputBorder(),
               ),
               items: purchaseUnits.map((unit) {
-                return DropdownMenuItem(
-                  value: unit,
-                  child: Text(unit),
-                );
+                return DropdownMenuItem(value: unit, child: Text(unit));
               }).toList(),
               onChanged: (value) {
                 setState(() {
@@ -301,9 +239,7 @@ class _IngredientEditorPageState
             buildField(
               "Contenido del envase",
               _packageSizeController,
-              keyboard: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboard: const TextInputType.numberWithOptions(decimal: true),
             ),
 
             DropdownButtonFormField<String>(
@@ -313,10 +249,7 @@ class _IngredientEditorPageState
                 border: OutlineInputBorder(),
               ),
               items: packageUnits.map((unit) {
-                return DropdownMenuItem(
-                  value: unit,
-                  child: Text(unit),
-                );
+                return DropdownMenuItem(value: unit, child: Text(unit));
               }).toList(),
               onChanged: (value) {
                 setState(() {
@@ -334,10 +267,7 @@ class _IngredientEditorPageState
                 border: OutlineInputBorder(),
               ),
               items: units.map((unit) {
-                return DropdownMenuItem(
-                  value: unit,
-                  child: Text(unit),
-                );
+                return DropdownMenuItem(value: unit, child: Text(unit));
               }).toList(),
               onChanged: (value) {
                 setState(() {
@@ -346,34 +276,26 @@ class _IngredientEditorPageState
               },
             ),
 
-            const SizedBox(height: 14),            buildField(
+            const SizedBox(height: 14),
+            buildField(
               "Precio de compra",
               _priceController,
-              keyboard: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboard: const TextInputType.numberWithOptions(decimal: true),
             ),
 
             buildField(
               "Stock actual",
               _stockController,
-              keyboard: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboard: const TextInputType.numberWithOptions(decimal: true),
             ),
 
             buildField(
               "Stock mínimo",
               _minimumController,
-              keyboard: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboard: const TextInputType.numberWithOptions(decimal: true),
             ),
 
-            buildField(
-              "Observaciones",
-              _notesController,
-            ),
+            buildField("Observaciones", _notesController),
 
             const SizedBox(height: 25),
 
@@ -393,7 +315,6 @@ class _IngredientEditorPageState
                 ),
               ),
             ),
-
           ],
         ),
       ),

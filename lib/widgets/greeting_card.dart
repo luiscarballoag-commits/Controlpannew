@@ -15,13 +15,9 @@ class GreetingCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Text(
           greeting,
-          style: const TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
 
         const SizedBox(height: 8),
@@ -36,7 +32,6 @@ class GreetingCard extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
-
       ],
     );
   }

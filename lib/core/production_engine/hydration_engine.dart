@@ -6,9 +6,7 @@ class HydrationEngine {
       (i) => i.name.toLowerCase() == 'harina',
     );
 
-    final water = ingredients.firstWhere(
-      (i) => i.name.toLowerCase() == 'agua',
-    );
+    final water = ingredients.firstWhere((i) => i.name.toLowerCase() == 'agua');
 
     return (water.quantityInGrams / flour.quantityInGrams) * 100;
   }

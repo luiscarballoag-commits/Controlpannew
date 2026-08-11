@@ -4,14 +4,11 @@ import '../services/ingredient_service.dart';
 import '../services/production_service.dart';
 
 class DashboardService {
-  final ProductionService productionService =
-      ProductionService();
+  final ProductionService productionService = ProductionService();
 
-  final IngredientService ingredientService =
-      IngredientService();
+  final IngredientService ingredientService = IngredientService();
 
-  List<Production> get productions =>
-      productionService.getAllProductions();
+  List<Production> get productions => productionService.getAllProductions();
 
   List<IngredientCatalog> get inventory =>
       ingredientService.getAllIngredients();
@@ -40,7 +37,9 @@ class DashboardService {
     }
 
     return total;
-  }  int get totalPiecesToday {
+  }
+
+  int get totalPiecesToday {
     final now = DateTime.now();
 
     int total = 0;
@@ -96,16 +95,16 @@ class DashboardService {
     }
 
     return total;
-  }  Production? get lastProduction {
+  }
+
+  Production? get lastProduction {
     if (productions.isEmpty) {
       return null;
     }
 
     final list = [...productions];
 
-    list.sort(
-      (a, b) => b.date.compareTo(a.date),
-    );
+    list.sort((a, b) => b.date.compareTo(a.date));
 
     return list.first;
   }

@@ -5,8 +5,7 @@ import '../models/cost_record.dart';
 class CostRecordService {
   static const String boxName = 'costs';
 
-  Box<CostRecord> get _box =>
-      Hive.box<CostRecord>(boxName);
+  Box<CostRecord> get _box => Hive.box<CostRecord>(boxName);
 
   List<CostRecord> getAllRecords() {
     return _box.values.toList().reversed.toList();
@@ -16,10 +15,7 @@ class CostRecordService {
     _box.add(record);
   }
 
-  void updateRecord(
-    int index,
-    CostRecord record,
-  ) {
+  void updateRecord(int index, CostRecord record) {
     _box.putAt(index, record);
   }
 
@@ -56,5 +52,4 @@ class CostRecordService {
   void saveRecord(CostRecord record) {
     _box.add(record);
   }
-
 }

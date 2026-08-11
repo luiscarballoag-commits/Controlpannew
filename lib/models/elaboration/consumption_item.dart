@@ -11,9 +11,7 @@ class ConsumptionItem {
     required this.unit,
   });
 
-  ConsumptionItem copyWith({
-    double? quantity,
-  }) {
+  ConsumptionItem copyWith({double? quantity}) {
     return ConsumptionItem(
       ingredientId: ingredientId,
       ingredientName: ingredientName,

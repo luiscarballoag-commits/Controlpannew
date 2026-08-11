@@ -7,20 +7,9 @@ class SummaryCards extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        _summaryCard(Icons.inventory_2, "Ingredientes", "0", Colors.orange),
 
-        _summaryCard(
-          Icons.inventory_2,
-          "Ingredientes",
-          "0",
-          Colors.orange,
-        ),
-
-        _summaryCard(
-          Icons.bakery_dining,
-          "Producciones",
-          "0",
-          Colors.brown,
-        ),
+        _summaryCard(Icons.bakery_dining, "Producciones", "0", Colors.brown),
 
         _summaryCard(
           Icons.attach_money,
@@ -29,43 +18,22 @@ class SummaryCards extends StatelessWidget {
           Colors.green,
         ),
 
-        _summaryCard(
-          Icons.warning_amber_rounded,
-          "Alertas",
-          "0",
-          Colors.red,
-        ),
-
+        _summaryCard(Icons.warning_amber_rounded, "Alertas", "0", Colors.red),
       ],
     );
   }
 
-  Widget _summaryCard(
-    IconData icon,
-    String title,
-    String value,
-    Color color,
-  ) {
+  Widget _summaryCard(IconData icon, String title, String value, Color color) {
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color,
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
+          child: Icon(icon, color: Colors.white),
         ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         trailing: Text(
           value,
           style: const TextStyle(

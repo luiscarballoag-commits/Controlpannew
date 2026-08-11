@@ -6,8 +6,7 @@ import 'unit_converter.dart';
 
 class InventoryManager {
   final IngredientService _ingredientService = IngredientService();
-  final InventoryMovementService _movementService =
-      InventoryMovementService();
+  final InventoryMovementService _movementService = InventoryMovementService();
 
   /// Compra o entrada de inventario.
   Future<void> purchaseIngredient({
@@ -28,8 +27,7 @@ class InventoryManager {
     final updated = ingredient.copyWith(
       purchasePrice: purchasePrice,
       stock: ingredient.stock + quantity,
-      normalizedStock:
-          ingredient.normalizedStock + normalized,
+      normalizedStock: ingredient.normalizedStock + normalized,
     );
 
     _ingredientService.updateIngredient(index, updated);
@@ -62,8 +60,7 @@ class InventoryManager {
     }
 
     final updated = ingredient.copyWith(
-      normalizedStock:
-          ingredient.normalizedStock - quantity,
+      normalizedStock: ingredient.normalizedStock - quantity,
     );
 
     _ingredientService.updateIngredient(index, updated);
@@ -83,20 +80,15 @@ class InventoryManager {
     );
   }
 
-  double getCurrentStock(
-    IngredientCatalog ingredient,
-  ) {
+  double getCurrentStock(IngredientCatalog ingredient) {
     return ingredient.normalizedStock;
   }
 
-  double getInventoryValue(
-    List<IngredientCatalog> ingredients,
-  ) {
+  double getInventoryValue(List<IngredientCatalog> ingredients) {
     double total = 0;
 
     for (final ingredient in ingredients) {
-      total += ingredient.normalizedStock *
-          ingredient.purchasePrice;
+      total += ingredient.normalizedStock * ingredient.purchasePrice;
     }
 
     return total;

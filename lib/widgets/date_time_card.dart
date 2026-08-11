@@ -14,23 +14,16 @@ class DateTimeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-
         Card(
           elevation: 3,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListTile(
-            leading: const Icon(
-              Icons.calendar_month,
-              color: Color(0xFF8D6E63),
-            ),
+            leading: const Icon(Icons.calendar_month, color: Color(0xFF8D6E63)),
             title: Text(
               currentDate,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ),
@@ -43,10 +36,7 @@ class DateTimeCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListTile(
-            leading: const Icon(
-              Icons.access_time,
-              color: Color(0xFF8D6E63),
-            ),
+            leading: const Icon(Icons.access_time, color: Color(0xFF8D6E63)),
             title: Text(
               currentTime,
               style: const TextStyle(
@@ -59,7 +49,6 @@ class DateTimeCard extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
-
       ],
     );
   }

@@ -20,7 +20,6 @@ class UnitConverter {
     } else if (packageUnit == 'g' && consumptionUnit == 'kg') {
       value /= 1000;
     }
-
     // Litros <-> mililitros
     else if (packageUnit == 'L' && consumptionUnit == 'mL') {
       value *= 1000;

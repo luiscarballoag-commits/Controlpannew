@@ -5,8 +5,7 @@ import '../models/production.dart';
 class ProductionService {
   static const String boxName = 'productions';
 
-  Box<Production> get _box =>
-      Hive.box<Production>(boxName);
+  Box<Production> get _box => Hive.box<Production>(boxName);
 
   List<Production> getAllProductions() {
     return _box.values.toList().reversed.toList();
@@ -42,9 +41,7 @@ class ProductionService {
     return _box.getAt(_box.length - 1);
   }
 
-  List<Production> getLatestProductions({
-    int limit = 10,
-  }) {
+  List<Production> getLatestProductions({int limit = 10}) {
     final list = getAllProductions();
 
     if (list.length <= limit) {

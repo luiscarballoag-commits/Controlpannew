@@ -6,9 +6,7 @@ import '../services/elaboration/elaboration_production_service.dart';
 import '../services/elaboration/elaboration_record_service.dart';
 import '../models/elaboration/consumption_item.dart';
 
-import 'elaboration/elaboration_recipe_list_page.dart';
 import 'elaboration/elaboration_consumption_summary_page.dart';
-import 'elaboration/elaboration_record_history_page.dart';
 
 class ProductionElaborationPage extends StatefulWidget {
   final String productionId;
@@ -25,17 +23,13 @@ class ProductionElaborationPage extends StatefulWidget {
       _ProductionElaborationPageState();
 }
 
-class _ProductionElaborationPageState
-    extends State<ProductionElaborationPage> {
-  final ElaborationRecipeService recipeService =
-      ElaborationRecipeService();
+class _ProductionElaborationPageState extends State<ProductionElaborationPage> {
+  final ElaborationRecipeService recipeService = ElaborationRecipeService();
 
   final ElaborationProductionService productionService =
       ElaborationProductionService();
 
-  final ElaborationRecordService recordService =
-      ElaborationRecordService();
-
+  final ElaborationRecordService recordService = ElaborationRecordService();
 
   final Map<String, TextEditingController> controllers = {};
 
@@ -46,8 +40,7 @@ class _ProductionElaborationPageState
     final recipes = recipeService.getAllRecipes();
 
     for (final recipe in recipes) {
-      controllers[recipe.name] =
-          TextEditingController(text: "0");
+      controllers[recipe.name] = TextEditingController(text: "0");
     }
   }
 
@@ -61,8 +54,7 @@ class _ProductionElaborationPageState
     return total;
   }
 
-  int get remaining =>
-      widget.availablePieces - totalAssigned;
+  int get remaining => widget.availablePieces - totalAssigned;
 
   @override
   void dispose() {
@@ -74,8 +66,7 @@ class _ProductionElaborationPageState
 
   @override
   Widget build(BuildContext context) {
-    final List<ElaborationRecipe> recipes =
-        recipeService.getAllRecipes();
+    final List<ElaborationRecipe> recipes = recipeService.getAllRecipes();
 
     return Scaffold(
       appBar: AppBar(
@@ -101,9 +92,7 @@ class _ProductionElaborationPageState
                 Text(
                   "Restantes: $remaining",
                   style: TextStyle(
-                    color: remaining < 0
-                        ? Colors.red
-                        : Colors.green,
+                    color: remaining < 0 ? Colors.red : Colors.green,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
@@ -112,59 +101,10 @@ class _ProductionElaborationPageState
             ),
           ),
 
-          Padding(
-            padding:
-                const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: OutlinedButton.icon(
-                icon: const Icon(Icons.menu_book),
-                label: const Text(
-                  "RECETAS DE ELABORACIÓN",
-                ),
-                onPressed: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const ElaborationRecipeListPage(),
-                    ),
-                  );
-
-                  if (!mounted) return;
-
-                  setState(() {});
-                },
-              ),
-            ),
-          ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  icon: const Icon(Icons.history),
-                  label: const Text("HISTORIAL DE ELABORACIONES"),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ElaborationRecordHistoryPage(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
           Expanded(
             child: recipes.isEmpty
                 ? const Center(
-                    child: Text(
-                      "No existen recetas de elaboración.",
-                    ),
+                    child: Text("No existen recetas de elaboración."),
                   )
                 : ListView.builder(
                     itemCount: recipes.length,
@@ -172,15 +112,12 @@ class _ProductionElaborationPageState
                       final recipe = recipes[index];
 
                       return Card(
-                        margin:
-                            const EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 6,
                         ),
                         child: ListTile(
-                          leading: const Icon(
-                            Icons.bakery_dining,
-                          ),
+                          leading: const Icon(Icons.bakery_dining),
                           title: Text(recipe.name),
                           subtitle: Text(
                             "${recipe.ingredients.length} ingredientes",
@@ -188,16 +125,11 @@ class _ProductionElaborationPageState
                           trailing: SizedBox(
                             width: 80,
                             child: TextField(
-                              controller:
-                                  controllers[recipe.name],
-                              keyboardType:
-                                  TextInputType.number,
-                              textAlign:
-                                  TextAlign.center,
-                              decoration:
-                                  const InputDecoration(
-                                border:
-                                    OutlineInputBorder(),
+                              controller: controllers[recipe.name],
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
                               ),
                               onChanged: (_) {
                                 setState(() {});
@@ -221,69 +153,60 @@ class _ProductionElaborationPageState
                 onPressed: remaining < 0
                     ? null
                     : () async {
-                          final List<ConsumptionItem> consumption = [];
-                            final navigator = Navigator.of(context);
+                        final List<ConsumptionItem> consumption = [];
+                        final navigator = Navigator.of(context);
 
-                          String lastRecipeName = "";
-                          int lastPieces = 0;
+                        String lastRecipeName = "";
+                        int lastPieces = 0;
                         for (final recipe in recipes) {
                           final pieces =
                               int.tryParse(
-                                    controllers[
-                                                recipe
-                                                    .name]
-                                            ?.text ??
-                                        "0",
-                                  ) ??
-                                  0;
+                                controllers[recipe.name]?.text ?? "0",
+                              ) ??
+                              0;
 
                           if (pieces <= 0) continue;
 
-                            final productionId = await productionService.saveProduction(
-                              productionId: widget.productionId,
-                              recipeId: recipe.id,
-                              recipeName: recipe.name,
-                              quantity: pieces,
+                          await productionService.saveProduction(
+                            productionId: widget.productionId,
+                            recipeId: recipe.id,
+                            recipeName: recipe.name,
+                            quantity: pieces,
+                          );
+
+                          await recordService.saveRecord(
+                            productionId: widget.productionId,
+                            productName: recipe.name,
+                            quantity: pieces,
+                          );
+
+                          lastRecipeName = recipe.name;
+                          lastPieces = pieces;
+
+                          for (final ingredient in recipe.ingredients) {
+                            consumption.add(
+                              ConsumptionItem(
+                                ingredientId: ingredient.ingredientId,
+                                ingredientName: ingredient.ingredientName,
+                                quantity: ingredient.quantity * pieces,
+                                unit: ingredient.unit,
+                              ),
                             );
-
-                              await recordService.saveRecord(
-                                productionId: productionId,
-                                productName: recipe.name,
-                                quantity: pieces,
-                              );
-
-                              lastRecipeName = recipe.name;
-                              lastPieces = pieces;
-
-
-
-                          for (final ingredient
-                              in recipe.ingredients) {
-                              consumption.add(
-                                ConsumptionItem(
-                                  ingredientId: ingredient.ingredientId,
-                                  ingredientName: ingredient.ingredientName,
-                                  quantity: ingredient.quantity * pieces,
-                                    unit: ingredient.unit,
-                                ),
-                              );
                           }
                         }
 
+                        if (!mounted) return;
+                        setState(() {});
 
-                              if (!mounted) return;
-                            setState(() {});
-
-                            await navigator.push(
-                              MaterialPageRoute(
-                                builder: (_) => ElaborationConsumptionSummaryPage(
-                                  productName: lastRecipeName,
-                                  quantity: lastPieces,
-                                  ingredients: consumption,
-                                ),
-                              ),
-                            );
-
+                        await navigator.push(
+                          MaterialPageRoute(
+                            builder: (_) => ElaborationConsumptionSummaryPage(
+                              productName: lastRecipeName,
+                              quantity: lastPieces,
+                              ingredients: consumption,
+                            ),
+                          ),
+                        );
                       },
               ),
             ),

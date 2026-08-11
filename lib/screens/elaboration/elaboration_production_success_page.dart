@@ -27,18 +27,11 @@ class ElaborationProductionSuccessPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 90,
-            ),
+            const Icon(Icons.check_circle, color: Colors.green, size: 90),
             const SizedBox(height: 12),
             Text(
               productName,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
               "$quantity unidades elaboradas",
@@ -50,10 +43,7 @@ class ElaborationProductionSuccessPage extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 "Ingredientes consumidos",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
 
@@ -76,13 +66,9 @@ class ElaborationProductionSuccessPage extends StatelessWidget {
               ),
             ),
 
-            Text(
-              "Fecha: ${now.day}/${now.month}/${now.year}",
-            ),
+            Text("Fecha: ${now.day}/${now.month}/${now.year}"),
 
-            Text(
-              "Hora: ${now.hour}:${now.minute.toString().padLeft(2, '0')}",
-            ),
+            Text("Hora: ${now.hour}:${now.minute.toString().padLeft(2, '0')}"),
 
             const SizedBox(height: 20),
 

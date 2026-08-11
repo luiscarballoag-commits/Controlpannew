@@ -50,7 +50,6 @@ const List<ElaboratedProduct> elaboratedProducts = [
   ),
 
   // Pan dulce
-
   ElaboratedProduct(
     id: "golfeado",
     name: "Golfeado",

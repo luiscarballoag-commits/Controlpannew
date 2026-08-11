@@ -17,21 +17,16 @@ import '../production_engine/production_result.dart';
 import '../production_engine/yield_engine.dart';
 
 class ProductionManager {
-  final ProductionEngine _productionEngine =
-      ProductionEngine();
+  final ProductionEngine _productionEngine = ProductionEngine();
 
-  final BakersPercentageEngine _bakersEngine =
-      BakersPercentageEngine();
+  final BakersPercentageEngine _bakersEngine = BakersPercentageEngine();
 
-
-  final YieldEngine _yieldEngine =
-      YieldEngine();
+  final YieldEngine _yieldEngine = YieldEngine();
 
   final ProductionInventoryService _inventoryService =
       ProductionInventoryService();
 
-  final ProductionService _productionService =
-      ProductionService();
+  final ProductionService _productionService = ProductionService();
 
   ProductionResult calculateProduction({
     required List<Ingredient> ingredients,
@@ -43,20 +38,12 @@ class ProductionManager {
     );
   }
 
-  Map<String, double> calculatePercentages(
-    List<Ingredient> ingredients,
-  ) {
+  Map<String, double> calculatePercentages(List<Ingredient> ingredients) {
     return _bakersEngine.calculate(ingredients);
   }
 
-  double calculateYield({
-    required double totalMass,
-    double bakingLoss = 10,
-  }) {
-    return _yieldEngine.calculate(
-      totalMass: totalMass,
-      bakingLoss: bakingLoss,
-    );
+  double calculateYield({required double totalMass, double bakingLoss = 10}) {
+    return _yieldEngine.calculate(totalMass: totalMass, bakingLoss: bakingLoss);
   }
 
   Future<void> startProduction({
@@ -71,20 +58,13 @@ class ProductionManager {
       recipe: recipe,
       lots: lots.toDouble(),
     )) {
-      throw Exception(
-        'No hay suficiente inventario para producir.',
-      );
+      throw Exception('No hay suficiente inventario para producir.');
     }
 
-    _inventoryService.consumeIngredients(
-      recipe: recipe,
-      lots: lots.toDouble(),
-    );
+    _inventoryService.consumeIngredients(recipe: recipe, lots: lots.toDouble());
 
     final production = Production(
-      id: DateTime.now()
-          .millisecondsSinceEpoch
-          .toString(),
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       date: DateTime.now(),
       recipeId: recipe.id,
       recipeName: recipe.name,
@@ -95,9 +75,7 @@ class ProductionManager {
       notes: notes,
     );
 
-    _productionService.addProduction(
-      production,
-    );
+    _productionService.addProduction(production);
   }
 
   Future<void> saveManualProduction({

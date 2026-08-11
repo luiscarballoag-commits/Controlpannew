@@ -4,24 +4,9 @@
 // Catálogo de unidades permitidas.
 // =======================================================
 
-enum PurchaseUnit {
-  sack,
-  bag,
-  box,
-  package,
-  bottle,
-  drum,
-  can,
-  unit,
-}
+enum PurchaseUnit { sack, bag, box, package, bottle, drum, can, unit }
 
-enum BaseUnit {
-  grams,
-  kilograms,
-  milliliters,
-  liters,
-  units,
-}
+enum BaseUnit { grams, kilograms, milliliters, liters, units }
 
 extension PurchaseUnitName on PurchaseUnit {
   String get label {

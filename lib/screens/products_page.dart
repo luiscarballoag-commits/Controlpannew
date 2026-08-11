@@ -32,9 +32,7 @@ class _ProductsPageState extends State<ProductsPage> {
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const ProductEditorPage(),
-            ),
+            MaterialPageRoute(builder: (_) => const ProductEditorPage()),
           );
 
           setState(() {});
@@ -68,9 +66,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     ),
                     title: Text(
                       product.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                       "Peso: ${product.pieceWeightGrams.toStringAsFixed(0)} g",

@@ -4,12 +4,10 @@ class AddElaborationDialog extends StatefulWidget {
   const AddElaborationDialog({super.key});
 
   @override
-  State<AddElaborationDialog> createState() =>
-      _AddElaborationDialogState();
+  State<AddElaborationDialog> createState() => _AddElaborationDialogState();
 }
 
-class _AddElaborationDialogState
-    extends State<AddElaborationDialog> {
+class _AddElaborationDialogState extends State<AddElaborationDialog> {
   final _nameController = TextEditingController();
   final _quantityController = TextEditingController();
 
@@ -29,17 +27,13 @@ class _AddElaborationDialogState
         children: [
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: "Producto",
-            ),
+            decoration: const InputDecoration(labelText: "Producto"),
           ),
           const SizedBox(height: 15),
           TextField(
             controller: _quantityController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: "Cantidad de panes",
-            ),
+            decoration: const InputDecoration(labelText: "Cantidad de panes"),
           ),
         ],
       ),
@@ -50,17 +44,10 @@ class _AddElaborationDialogState
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.pop(
-              context,
-              {
-                "name":
-                    _nameController.text.trim(),
-                "quantity": int.tryParse(
-                      _quantityController.text,
-                    ) ??
-                    0,
-              },
-            );
+            Navigator.pop(context, {
+              "name": _nameController.text.trim(),
+              "quantity": int.tryParse(_quantityController.text) ?? 0,
+            });
           },
           child: const Text("Continuar"),
         ),

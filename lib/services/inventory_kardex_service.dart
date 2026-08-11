@@ -2,8 +2,7 @@ import '../models/inventory_movement.dart';
 import 'inventory_movement_service.dart';
 
 class InventoryKardexService {
-  final InventoryMovementService _movementService =
-      InventoryMovementService();
+  final InventoryMovementService _movementService = InventoryMovementService();
 
   /// Total comprado (Entradas)
   double getTotalPurchased(String ingredientId) {
@@ -12,8 +11,7 @@ class InventoryKardexService {
     final movements = _movementService.getAllMovements();
 
     for (final movement in movements) {
-      if (movement.ingredientId == ingredientId &&
-          movement.type == 'Entrada') {
+      if (movement.ingredientId == ingredientId && movement.type == 'Entrada') {
         total += movement.quantity;
       }
     }
@@ -28,8 +26,7 @@ class InventoryKardexService {
     final movements = _movementService.getAllMovements();
 
     for (final movement in movements) {
-      if (movement.ingredientId == ingredientId &&
-          movement.type == 'Salida') {
+      if (movement.ingredientId == ingredientId && movement.type == 'Salida') {
         total += movement.quantity;
       }
     }
@@ -39,8 +36,7 @@ class InventoryKardexService {
 
   /// Stock disponible
   double getAvailableStock(String ingredientId) {
-    return getTotalPurchased(ingredientId) -
-        getTotalConsumed(ingredientId);
+    return getTotalPurchased(ingredientId) - getTotalConsumed(ingredientId);
   }
 
   /// Historial del ingrediente
@@ -48,11 +44,7 @@ class InventoryKardexService {
     final movements = _movementService.getAllMovements();
 
     return movements
-        .where(
-          (movement) =>
-              movement.ingredientId == ingredientId,
-        )
+        .where((movement) => movement.ingredientId == ingredientId)
         .toList();
   }
 }
-
