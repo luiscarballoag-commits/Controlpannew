@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import '../services/recipe_service.dart';
 import 'recipe_editor_page.dart';
+import 'production_lots_page.dart';
 
 class ProductionRecipePage extends StatefulWidget {
   const ProductionRecipePage({super.key});
@@ -114,38 +115,58 @@ class _ProductionRecipePageState extends State<ProductionRecipePage> {
                           subtitle: Text(
                             "${recipe.ingredients.length} ingredientes",
                           ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () async {
-                            final recipeIndex = recipes.indexWhere(
-                              (item) => item.id == recipe.id,
-                            );
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: "Editar receta",
+                                icon: const Icon(Icons.edit_outlined),
+                                onPressed: () async {
+                                  final recipeIndex = recipes.indexWhere(
+                                    (item) => item.id == recipe.id,
+                                  );
 
-                            if (recipeIndex < 0) return;
+                                  if (recipeIndex < 0) return;
 
-                            await Navigator.push(
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => RecipeEditorPage(
+                                        recipe: recipe,
+                                        recipeIndex: recipeIndex,
+                                      ),
+                                    ),
+                                  );
+
+                                  if (!mounted) return;
+
+                                  setState(() {
+                                    recipes = recipeService.getAllRecipes();
+
+                                    final query = searchController.text
+                                        .toLowerCase();
+
+                                    filteredRecipes = recipes
+                                        .where(
+                                          (item) => item.name
+                                              .toLowerCase()
+                                              .contains(query),
+                                        )
+                                        .toList();
+                                  });
+                                },
+                              ),
+                              const Icon(Icons.arrow_forward_ios, size: 18),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => RecipeEditorPage(
-                                  recipe: recipe,
-                                  recipeIndex: recipeIndex,
-                                ),
+                                builder: (_) =>
+                                    ProductionLotsPage(recipe: recipe),
                               ),
                             );
-
-                            if (!mounted) return;
-
-                            setState(() {
-                              recipes = recipeService.getAllRecipes();
-
-                              final query = searchController.text.toLowerCase();
-
-                              filteredRecipes = recipes
-                                  .where(
-                                    (item) =>
-                                        item.name.toLowerCase().contains(query),
-                                  )
-                                  .toList();
-                            });
                           },
                         ),
                       );
