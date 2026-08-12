@@ -16,7 +16,7 @@ import 'models/elaboration/elaboration_recipe.dart';
 import 'models/elaboration/elaboration_production.dart';
 import 'models/elaboration/elaboration_record.dart';
 
-import 'screens/home_page.dart';
+import 'screens/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,7 +77,7 @@ class ControlPanApp extends StatelessWidget {
         colorSchemeSeed: const Color(0xFF8D6E63),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const SplashPage(),
     );
   }
 }
