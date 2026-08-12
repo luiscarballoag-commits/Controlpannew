@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/ingredient_catalog.dart';
 import '../core/inventory/unit_converter.dart';
 import '../services/ingredient_service.dart';
+import '../services/inventory_movement_service.dart';
+import '../models/inventory_movement.dart';
 
 class IngredientEditorPage extends StatefulWidget {
   final IngredientCatalog? ingredient;
@@ -68,6 +70,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
   final units = ["kg", "g", "L", "ml", "Unidad"];
 
   final IngredientService ingredientService = IngredientService();
+  final InventoryMovementService movementService = InventoryMovementService();
   @override
   void initState() {
     super.initState();
@@ -160,6 +163,24 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
 
     if (widget.index == null) {
       ingredientService.addIngredient(ingredient);
+
+      // El stock inicial de un ingrediente nuevo se registra
+      // automáticamente como una compra.
+      if (stock > 0) {
+        movementService.addMovement(
+          InventoryMovement(
+            id: DateTime.now().microsecondsSinceEpoch.toString(),
+            date: DateTime.now(),
+            ingredientId: ingredient.id,
+            ingredientName: ingredient.name,
+            quantity: stock,
+            unit: ingredient.purchaseUnit,
+            type: 'Compra',
+            reference: 'Compra inicial',
+            notes: ingredient.notes,
+          ),
+        );
+      }
     } else {
       ingredientService.updateIngredient(widget.index!, ingredient);
     }

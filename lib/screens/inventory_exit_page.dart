@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../models/ingredient_catalog.dart';
-import '../models/inventory_movement.dart';
+import '../core/inventory/inventory_manager.dart';
 import '../services/ingredient_service.dart';
-import '../services/inventory_movement_service.dart';
 
 class InventoryExitPage extends StatefulWidget {
   const InventoryExitPage({super.key});
@@ -15,7 +14,7 @@ class InventoryExitPage extends StatefulWidget {
 class _InventoryExitPageState extends State<InventoryExitPage> {
   final IngredientService ingredientService = IngredientService();
 
-  final InventoryMovementService movementService = InventoryMovementService();
+  final InventoryManager inventoryManager = InventoryManager();
 
   IngredientCatalog? selectedIngredient;
 
@@ -62,20 +61,18 @@ class _InventoryExitPageState extends State<InventoryExitPage> {
     );
   }
 
-  void saveExit() {
+  Future<void> saveExit() async {
     if (selectedIngredient == null || selectedIndex == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Seleccione un ingrediente")),
       );
-
       return;
     }
 
     if (selectedReason == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Seleccione un motivo")));
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Seleccione un motivo")),
+      );
       return;
     }
 
@@ -85,53 +82,38 @@ class _InventoryExitPageState extends State<InventoryExitPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Ingrese una cantidad válida")),
       );
-
       return;
     }
 
-    if (quantity > selectedIngredient!.stock) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Stock insuficiente")));
-
-      return;
-    }
-
-    final updatedIngredient = IngredientCatalog(
-      id: selectedIngredient!.id,
-      name: selectedIngredient!.name,
-      category: selectedIngredient!.category,
-      unit: selectedIngredient!.unit,
-      purchasePrice: selectedIngredient!.purchasePrice,
-      stock: selectedIngredient!.stock - quantity,
-      minimumStock: selectedIngredient!.minimumStock,
-      notes: selectedIngredient!.notes,
-    );
-
-    ingredientService.updateIngredient(selectedIndex!, updatedIngredient);
-    movementService.addMovement(
-      InventoryMovement(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        date: DateTime.now(),
-        ingredientId: updatedIngredient.id,
-        ingredientName: updatedIngredient.name,
+    try {
+      await inventoryManager.consumeIngredient(
+        index: selectedIndex!,
+        ingredient: selectedIngredient!,
         quantity: quantity,
-        unit: updatedIngredient.unit,
-        type: "Salida",
-        reference: selectedReason!,
-        notes: _notesController.text,
-      ),
-    );
+        reason: selectedReason!,
+        notes: _notesController.text.trim(),
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Se descontaron ${quantity.toStringAsFixed(2)} ${updatedIngredient.unit} de ${updatedIngredient.name}",
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Se descontaron ${quantity.toStringAsFixed(2)} "
+            "${selectedIngredient!.unit} de "
+            "${selectedIngredient!.name}",
+          ),
         ),
-      ),
-    );
+      );
 
-    Navigator.pop(context);
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceFirst("Exception: ", ""))),
+      );
+    }
   }
 
   @override

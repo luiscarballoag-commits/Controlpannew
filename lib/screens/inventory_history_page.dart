@@ -39,7 +39,11 @@ class _InventoryHistoryPageState extends State<InventoryHistoryPage> {
               itemBuilder: (context, index) {
                 final InventoryMovement movement = movements[index];
 
-                final bool isEntry = movement.type == "Entrada";
+                final bool isEntry = [
+                  "Compra",
+                  "Entrada",
+                  "Ajuste +",
+                ].contains(movement.type);
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
