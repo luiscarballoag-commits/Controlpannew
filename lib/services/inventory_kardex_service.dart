@@ -11,7 +11,7 @@ class InventoryKardexService {
     final movements = _movementService.getAllMovements();
 
     for (final movement in movements) {
-      if (movement.ingredientId == ingredientId && movement.type == 'Entrada') {
+      if (movement.ingredientId == ingredientId && (movement.type == 'Entrada' || movement.type == 'Compra')) {
         total += movement.quantity;
       }
     }
