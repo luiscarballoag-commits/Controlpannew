@@ -1,17 +1,48 @@
+import '../models/ingredient_catalog.dart';
 import '../models/inventory_movement.dart';
+import '../core/inventory/unit_converter.dart';
 import 'inventory_movement_service.dart';
 
 class InventoryKardexService {
-  final InventoryMovementService _movementService = InventoryMovementService();
+  final InventoryMovementService _movementService =
+      InventoryMovementService();
 
-  /// Total comprado (Entradas)
-  double getTotalPurchased(String ingredientId) {
+  /// Total comprado convertido a la unidad de consumo.
+  ///
+  /// Ejemplo:
+  /// 20 sacos × 45 kg = 900 kg.
+  double getTotalPurchasedNormalized(IngredientCatalog ingredient) {
     double total = 0;
 
     final movements = _movementService.getAllMovements();
 
     for (final movement in movements) {
-      if (movement.ingredientId == ingredientId && (movement.type == 'Entrada' || movement.type == 'Compra')) {
+      if (movement.ingredientId != ingredient.id) {
+        continue;
+      }
+
+      if (movement.type == 'Entrada' || movement.type == 'Compra') {
+        total += UnitConverter.normalize(
+          quantity: movement.quantity,
+          packageSize: ingredient.packageSize,
+          packageUnit: ingredient.packageUnit,
+          consumptionUnit: ingredient.unit,
+        );
+      }
+    }
+
+    return total;
+  }
+
+  /// Total consumido en la unidad de consumo.
+  double getTotalConsumedNormalized(IngredientCatalog ingredient) {
+    double total = 0;
+
+    final movements = _movementService.getAllMovements();
+
+    for (final movement in movements) {
+      if (movement.ingredientId == ingredient.id &&
+          movement.type == 'Salida') {
         total += movement.quantity;
       }
     }
@@ -19,27 +50,13 @@ class InventoryKardexService {
     return total;
   }
 
-  /// Total consumido (Salidas)
-  double getTotalConsumed(String ingredientId) {
-    double total = 0;
-
-    final movements = _movementService.getAllMovements();
-
-    for (final movement in movements) {
-      if (movement.ingredientId == ingredientId && movement.type == 'Salida') {
-        total += movement.quantity;
-      }
-    }
-
-    return total;
+  /// Stock disponible calculado mediante movimientos.
+  double getAvailableStockNormalized(IngredientCatalog ingredient) {
+    return getTotalPurchasedNormalized(ingredient) -
+        getTotalConsumedNormalized(ingredient);
   }
 
-  /// Stock disponible
-  double getAvailableStock(String ingredientId) {
-    return getTotalPurchased(ingredientId) - getTotalConsumed(ingredientId);
-  }
-
-  /// Historial del ingrediente
+  /// Historial del ingrediente.
   List<InventoryMovement> getHistory(String ingredientId) {
     final movements = _movementService.getAllMovements();
 
