@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/inventory/unit_converter.dart';
 import '../models/ingredient_catalog.dart';
 import '../models/inventory_movement.dart';
 import '../services/inventory_kardex_service.dart';
@@ -18,8 +19,14 @@ class InventoryKardexPage extends StatelessWidget {
 
     final movements = kardexService.getHistory(ingredient.id);
 
-    final purchased =
-        kardexService.getTotalPurchasedNormalized(ingredient);
+    double purchasedPackages = 0;
+
+    for (final movement in movements) {
+      if (movement.type == 'Entrada' ||
+          movement.type == 'Compra') {
+        purchasedPackages += movement.quantity;
+      }
+    }
 
     final consumed =
         kardexService.getTotalConsumedNormalized(ingredient);
@@ -27,8 +34,24 @@ class InventoryKardexPage extends StatelessWidget {
     final available =
         kardexService.getAvailableStockNormalized(ingredient);
 
+    final normalizedPerPackage = UnitConverter.normalize(
+      quantity: 1,
+      packageSize: ingredient.packageSize,
+      packageUnit: ingredient.packageUnit,
+      consumptionUnit: ingredient.unit,
+    );
+
+    final costPerConsumptionUnit =
+        normalizedPerPackage > 0
+            ? ingredient.purchasePrice / normalizedPerPackage
+            : 0;
+
     final inventoryValue =
-        available * ingredient.purchasePrice;
+        available * costPerConsumptionUnit;
+
+    final purchaseUnit = ingredient.purchaseUnit.isEmpty
+        ? 'unidad'
+        : ingredient.purchaseUnit;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,57 +92,63 @@ class InventoryKardexPage extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(
-                    Icons.add_circle,
-                  ),
+                  leading: const Icon(Icons.add_circle),
                   title: const Text('Comprado'),
                   trailing: Text(
-                    '${purchased.toStringAsFixed(2)} ${ingredient.unit}',
+                    '${purchasedPackages.toStringAsFixed(2)} '
+                    '$purchaseUnit',
                   ),
                 ),
 
                 const Divider(height: 1),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.remove_circle,
-                  ),
+                  leading: const Icon(Icons.remove_circle),
                   title: const Text('Consumido'),
                   trailing: Text(
-                    '${consumed.toStringAsFixed(2)} ${ingredient.unit}',
+                    '${consumed.toStringAsFixed(2)} '
+                    '${ingredient.unit}',
                   ),
                 ),
 
                 const Divider(height: 1),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.inventory,
-                  ),
+                  leading: const Icon(Icons.inventory),
                   title: const Text('Disponible'),
                   trailing: Text(
-                    '${available.toStringAsFixed(2)} ${ingredient.unit}',
+                    '${available.toStringAsFixed(2)} '
+                    '${ingredient.unit}',
                   ),
                 ),
 
                 const Divider(height: 1),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.attach_money,
-                  ),
+                  leading: const Icon(Icons.attach_money),
                   title: const Text('Precio de compra'),
                   trailing: Text(
-                    '\$${ingredient.purchasePrice.toStringAsFixed(2)}',
+                    '\$${ingredient.purchasePrice.toStringAsFixed(2)} '
+                    '/ $purchaseUnit',
                   ),
                 ),
 
                 const Divider(height: 1),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.calculate,
+                  leading: const Icon(Icons.scale),
+                  title: Text(
+                    'Costo por ${ingredient.unit}',
                   ),
+                  trailing: Text(
+                    '\$${costPerConsumptionUnit.toStringAsFixed(2)}',
+                  ),
+                ),
+
+                const Divider(height: 1),
+
+                ListTile(
+                  leading: const Icon(Icons.calculate),
                   title: const Text('Valor del inventario'),
                   trailing: Text(
                     '\$${inventoryValue.toStringAsFixed(2)}',
