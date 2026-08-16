@@ -42,6 +42,7 @@ class InventoryManager {
         unit: updated.purchaseUnit,
         type: 'Entrada',
         reference: reference,
+        purchasePrice: purchasePrice,
         notes: notes,
       ),
     );

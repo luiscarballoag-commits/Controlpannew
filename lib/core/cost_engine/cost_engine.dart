@@ -39,17 +39,11 @@ class CostEngine {
     }
 
     final double totalCost =
-        rawMaterial +
-        production +
-        labor +
-        operating +
-        depreciation;
+        rawMaterial + production + labor + operating + depreciation;
 
-    final double costPerKg =
-        totalWeight > 0 ? totalCost / totalWeight : 0.0;
+    final double costPerKg = totalWeight > 0 ? totalCost / totalWeight : 0.0;
 
-    final double costPerUnit =
-        totalUnits > 0 ? totalCost / totalUnits : 0.0;
+    final double costPerUnit = totalUnits > 0 ? totalCost / totalUnits : 0.0;
 
     final double suggestedSalePrice =
         costPerUnit * (1.0 + profitMargin / 100.0);

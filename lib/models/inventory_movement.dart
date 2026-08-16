@@ -31,6 +31,9 @@ class InventoryMovement extends HiveObject {
   @HiveField(8)
   final String notes;
 
+  @HiveField(9)
+  final double purchasePrice;
+
   InventoryMovement({
     required this.id,
     required this.date,
@@ -41,5 +44,6 @@ class InventoryMovement extends HiveObject {
     required this.type,
     required this.reference,
     this.notes = '',
+    this.purchasePrice = 0,
   });
 }

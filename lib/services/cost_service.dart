@@ -1,6 +1,7 @@
 import '../core/cost_engine/cost_engine.dart';
 import '../core/cost_engine/cost_item.dart';
 import '../core/cost_engine/cost_result.dart';
+import '../core/inventory/unit_converter.dart';
 
 import '../models/ingredient_catalog.dart';
 import '../models/recipe.dart';
@@ -11,11 +12,10 @@ import 'recipe_service.dart';
 
 class CostService {
   final IngredientService ingredientService = IngredientService();
-
   final ProductionService productionService = ProductionService();
-
   final RecipeService recipeService = RecipeService();
 
+  /// Calcula el costo de la última producción registrada.
   CostResult? calculateLastProductionCost() {
     final production = productionService.getLastProduction();
 
@@ -37,6 +37,22 @@ class CostService {
     );
   }
 
+  /// Calcula el costo completo de una receta.
+  ///
+  /// El precio de cada ingrediente se obtiene a partir de:
+  ///
+  /// precio del envase / cantidad que contiene el envase
+  ///
+  /// Ejemplo:
+  /// Harina:
+  /// 1 saco = 45 kg
+  /// precio = $50
+  ///
+  /// Costo por kg:
+  /// 50 / 45 = $1.1111
+  ///
+  /// Si la receta utiliza 20 kg:
+  /// 20 × 1.1111 = $22.22
   CostResult calculateRecipeCost({
     required Recipe recipe,
     required double lots,
@@ -52,29 +68,36 @@ class CostService {
     final List<CostItem> items = [];
 
     for (final recipeIngredient in recipe.ingredients) {
-      final IngredientCatalog? ingredient = inventory
-          .cast<IngredientCatalog?>()
-          .firstWhere(
-            (item) => item?.id == recipeIngredient.ingredient.id,
-            orElse: () => null,
-          );
+      final ingredient = inventory.cast<IngredientCatalog?>().firstWhere(
+        (item) => item?.id == recipeIngredient.ingredient.id,
+        orElse: () => null,
+      );
 
       if (ingredient == null) {
         continue;
       }
 
-      final cantidad = recipeIngredient.quantity * lots;
+      final quantityUsed = recipeIngredient.quantity * lots;
 
-      final precioUnitario = ingredient.normalizedStock > 0
-          ? ingredient.purchasePrice / ingredient.normalizedStock
-          : 0.0;
+      final quantityPerPackage = UnitConverter.normalize(
+        quantity: 1,
+        packageSize: ingredient.packageSize,
+        packageUnit: ingredient.packageUnit,
+        consumptionUnit: ingredient.unit,
+      );
+
+      if (quantityPerPackage <= 0) {
+        continue;
+      }
+
+      final unitPrice = ingredient.purchasePrice / quantityPerPackage;
 
       items.add(
         CostItem(
           name: ingredient.name,
           category: 'Materia Prima',
-          amount: cantidad,
-          unitPrice: precioUnitario,
+          amount: quantityUsed,
+          unitPrice: unitPrice,
         ),
       );
     }

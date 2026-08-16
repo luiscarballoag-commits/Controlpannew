@@ -320,11 +320,9 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
 
                         costRecordService.saveRecord(
                           CostRecord(
-                            id: DateTime.now().millisecondsSinceEpoch
-                                .toString(),
+                            id: DateTime.now().millisecondsSinceEpoch.toString(),
                             date: DateTime.now(),
-                            productionId: DateTime.now().millisecondsSinceEpoch
-                                .toString(),
+                            productionId: productionId,
                             recipeName: widget.recipe.name,
                             rawMaterialCost: costResult.rawMaterialCost,
                             laborCost: costResult.laborCost,
