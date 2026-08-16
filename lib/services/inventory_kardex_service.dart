@@ -35,14 +35,24 @@ class InventoryKardexService {
   }
 
   /// Total consumido en la unidad de consumo.
+  ///
+  /// Se reconocen las salidas provenientes de:
+  /// - Inventario manual
+  /// - Producción
+  /// - Elaboración
   double getTotalConsumedNormalized(IngredientCatalog ingredient) {
     double total = 0;
 
     final movements = _movementService.getAllMovements();
 
     for (final movement in movements) {
-      if (movement.ingredientId == ingredient.id &&
-          movement.type == 'Salida') {
+      if (movement.ingredientId != ingredient.id) {
+        continue;
+      }
+
+      final type = movement.type.trim().toLowerCase();
+
+      if (type == 'salida' || type == 'consumo') {
         total += movement.quantity;
       }
     }
@@ -54,6 +64,30 @@ class InventoryKardexService {
   double getAvailableStockNormalized(IngredientCatalog ingredient) {
     return getTotalPurchasedNormalized(ingredient) -
         getTotalConsumedNormalized(ingredient);
+  }
+
+  /// Último precio de compra registrado para el ingrediente.
+  ///
+  /// Se busca primero en los movimientos históricos.
+  /// Si no existe un precio válido, se utiliza el precio
+  /// actualmente registrado en el ingrediente.
+  double getLastPurchasePrice(IngredientCatalog ingredient) {
+    final movements = _movementService.getAllMovements();
+
+    for (final movement in movements) {
+      if (movement.ingredientId != ingredient.id) {
+        continue;
+      }
+
+      final type = movement.type.trim().toLowerCase();
+
+      if ((type == 'entrada' || type == 'compra') &&
+          movement.purchasePrice > 0) {
+        return movement.purchasePrice;
+      }
+    }
+
+    return ingredient.purchasePrice;
   }
 
   /// Historial del ingrediente.

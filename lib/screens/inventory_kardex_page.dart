@@ -22,8 +22,9 @@ class InventoryKardexPage extends StatelessWidget {
     double purchasedPackages = 0;
 
     for (final movement in movements) {
-      if (movement.type == 'Entrada' ||
-          movement.type == 'Compra') {
+      final type = movement.type.trim().toLowerCase();
+
+      if (type == 'entrada' || type == 'compra') {
         purchasedPackages += movement.quantity;
       }
     }
@@ -41,9 +42,12 @@ class InventoryKardexPage extends StatelessWidget {
       consumptionUnit: ingredient.unit,
     );
 
+    final purchasePrice =
+        kardexService.getLastPurchasePrice(ingredient);
+
     final costPerConsumptionUnit =
         normalizedPerPackage > 0
-            ? ingredient.purchasePrice / normalizedPerPackage
+            ? purchasePrice / normalizedPerPackage
             : 0;
 
     final inventoryValue =
@@ -128,7 +132,7 @@ class InventoryKardexPage extends StatelessWidget {
                   leading: const Icon(Icons.attach_money),
                   title: const Text('Precio de compra'),
                   trailing: Text(
-                    '\$${ingredient.purchasePrice.toStringAsFixed(2)} '
+                    '\$${purchasePrice.toStringAsFixed(2)} '
                     '/ $purchaseUnit',
                   ),
                 ),
@@ -184,9 +188,10 @@ class InventoryKardexPage extends StatelessWidget {
 
           ...movements.map(
             (InventoryMovement movement) {
+              final type = movement.type.trim().toLowerCase();
+
               final isEntry =
-                  movement.type == 'Entrada' ||
-                  movement.type == 'Compra';
+                  type == 'entrada' || type == 'compra';
 
               return Card(
                 child: ListTile(
@@ -199,7 +204,8 @@ class InventoryKardexPage extends StatelessWidget {
                   subtitle: Text(
                     '${movement.reference}\n'
                     '${movement.quantity.toStringAsFixed(2)} '
-                    '${movement.unit}',
+                    '${movement.unit}'
+                    '${isEntry && movement.purchasePrice > 0 ? '\nPrecio: \$${movement.purchasePrice.toStringAsFixed(2)}' : ''}',
                   ),
                   isThreeLine: true,
                 ),
