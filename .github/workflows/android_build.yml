@@ -30,7 +30,7 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/controlpan-release.jks
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/controlpan-release.jks
 
       - name: Crear key.properties
         run: |
