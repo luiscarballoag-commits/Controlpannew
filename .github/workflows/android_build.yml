@@ -25,14 +25,32 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Restaurar keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/controlpan-release.jks
+
+      - name: Crear key.properties
+        run: |
+          cat > android/key.properties <<EOF2
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=controlpan-release.jks
+          EOF2
+
       - name: Obtener dependencias
         run: flutter pub get
 
-      - name: Compilar APK Debug
-        run: flutter build apk --debug --build-number=2
+      - name: Analizar proyecto
+        run: flutter analyze
+
+      - name: Compilar APK Release
+        run: flutter build apk --release --build-number=2
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
-          name: controlpan_apk_debug
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: controlpan_apk_release
+          path: build/app/outputs/flutter-apk/app-release.apk
