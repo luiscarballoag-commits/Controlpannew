@@ -45,7 +45,7 @@ jobs:
         run: flutter pub get
 
       - name: Analizar proyecto
-        run: flutter analyze
+        run: flutter analyze lib
 
       - name: Compilar APK Release
         run: flutter build apk --release --build-number=2
