@@ -35,8 +35,6 @@ Future<void> main() async {
   Hive.registerAdapter(ProductionAdapter());
   Hive.registerAdapter(InventoryMovementAdapter());
   Hive.registerAdapter(CostRecordAdapter());
-  // LaborWorker desactivado temporalmente para diagnóstico.
-  // Hive.registerAdapter(LaborWorkerAdapter());
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(ProductComponentAdapter());
 
@@ -75,8 +73,6 @@ Future<void> main() async {
   await Hive.openBox<CostRecord>('costs');
   debugPrint('CONTROLPAN: 18 - costs OK');
 
-  // LaborWorker desactivado temporalmente para diagnóstico.
-  // await Hive.openBox<LaborWorker>('labor_workers');
 
   debugPrint('CONTROLPAN: 19 - abriendo products');
   await Hive.openBox<Product>('products');
