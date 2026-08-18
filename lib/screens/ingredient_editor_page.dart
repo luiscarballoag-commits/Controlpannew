@@ -164,9 +164,8 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
     if (widget.index == null) {
       ingredientService.addIngredient(ingredient);
 
-      // El stock inicial de un ingrediente nuevo se registra
-      // automáticamente como una compra.
-      if (stock > 0) {
+      // El stock inicial establece el costo base del ingrediente.
+      if (stock > 0 && packageSize > 0) {
         movementService.addMovement(
           InventoryMovement(
             id: DateTime.now().microsecondsSinceEpoch.toString(),
@@ -175,8 +174,9 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
             ingredientName: ingredient.name,
             quantity: stock,
             unit: ingredient.purchaseUnit,
-            type: 'Compra',
+            type: 'Entrada',
             reference: 'Compra inicial',
+            purchasePrice: ingredient.purchasePrice,
             notes: ingredient.notes,
           ),
         );

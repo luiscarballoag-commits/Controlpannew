@@ -6,9 +6,16 @@ import 'unit_converter.dart';
 
 class InventoryManager {
   final IngredientService _ingredientService = IngredientService();
-  final InventoryMovementService _movementService = InventoryMovementService();
+  final InventoryMovementService _movementService =
+      InventoryMovementService();
 
-  /// Compra o entrada de inventario.
+  /// Registra una compra y actualiza el costo promedio ponderado.
+  ///
+  /// El costo promedio se calcula sobre la unidad de consumo:
+  ///
+  /// Valor anterior + valor de la compra
+  /// -----------------------------------
+  /// Cantidad anterior + cantidad comprada
   Future<void> purchaseIngredient({
     required int index,
     required IngredientCatalog ingredient,
@@ -17,17 +24,47 @@ class InventoryManager {
     required String reference,
     String notes = '',
   }) async {
-    final normalized = UnitConverter.normalize(
+    if (quantity <= 0) {
+      throw Exception('La cantidad de compra debe ser mayor que cero.');
+    }
+
+    if (purchasePrice < 0) {
+      throw Exception('El precio de compra no puede ser negativo.');
+    }
+
+    final normalizedPurchase = UnitConverter.normalize(
       quantity: quantity,
       packageSize: ingredient.packageSize,
       packageUnit: ingredient.packageUnit,
       consumptionUnit: ingredient.unit,
     );
 
+    if (normalizedPurchase <= 0) {
+      throw Exception('La cantidad normalizada de la compra no es válida.');
+    }
+
+    final previousQuantity = ingredient.normalizedStock;
+
+    final previousValue = previousQuantity * ingredient.purchasePrice;
+
+    final purchaseValue = normalizedPurchase * purchasePrice;
+
+    final totalQuantity = previousQuantity + normalizedPurchase;
+
+    final averageCost = totalQuantity > 0
+        ? (previousValue + purchaseValue) / totalQuantity
+        : purchasePrice;
+
     final updated = ingredient.copyWith(
-      purchasePrice: purchasePrice,
+      // purchasePrice pasa a representar el costo promedio
+      // por unidad de consumo.
+      purchasePrice: averageCost,
+
+      // Cantidad expresada en la unidad de compra.
       stock: ingredient.stock + quantity,
-      normalizedStock: ingredient.normalizedStock + normalized,
+
+      // Cantidad normalizada en la unidad de consumo.
+      normalizedStock: totalQuantity,
     );
 
     _ingredientService.updateIngredient(index, updated);
@@ -48,7 +85,7 @@ class InventoryManager {
     );
   }
 
-  /// Consumo o salida de inventario.
+  /// Registra un consumo o salida de inventario.
   Future<void> consumeIngredient({
     required int index,
     required IngredientCatalog ingredient,
@@ -56,6 +93,10 @@ class InventoryManager {
     required String reason,
     String notes = '',
   }) async {
+    if (quantity <= 0) {
+      throw Exception('La cantidad de consumo debe ser mayor que cero.');
+    }
+
     if (quantity > ingredient.normalizedStock) {
       throw Exception('Stock insuficiente.');
     }
@@ -77,6 +118,7 @@ class InventoryManager {
         type: 'Salida',
         reference: reason,
         notes: notes,
+        purchasePrice: ingredient.purchasePrice,
       ),
     );
   }
