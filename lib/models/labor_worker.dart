@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'labor_worker.g.dart';
 
-@HiveType(typeId: 9)
+@HiveType(typeId: 25)
 class LaborWorker extends HiveObject {
   @HiveField(0)
   final String id;
