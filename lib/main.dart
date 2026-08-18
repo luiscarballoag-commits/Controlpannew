@@ -32,7 +32,7 @@ Future<void> main() async {
   Hive.registerAdapter(ProductionAdapter());
   Hive.registerAdapter(InventoryMovementAdapter());
   Hive.registerAdapter(CostRecordAdapter());
-  Hive.registerAdapter(LaborWorkerAdapter());
+//   Hive.registerAdapter(LaborWorkerAdapter());
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(ProductComponentAdapter());
 
