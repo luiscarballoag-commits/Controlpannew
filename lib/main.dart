@@ -53,7 +53,7 @@ Future<void> main() async {
   await Hive.openBox('inventory');
 
   await Hive.openBox<CostRecord>('costs');
-  await Hive.openBox<LaborWorker>('labor_workers');
+  // await Hive.openBox<LaborWorker>('labor_workers');
 
   await Hive.openBox<Product>('products');
 
