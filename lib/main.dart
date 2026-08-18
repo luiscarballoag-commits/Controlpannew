@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'models/ingredient_catalog.dart';
 import 'models/inventory_movement.dart';
 import 'models/cost_record.dart';
+import 'models/labor_worker.dart';
 import 'models/product.dart';
 import 'models/product_component.dart';
 import 'models/production.dart';
@@ -31,6 +32,7 @@ Future<void> main() async {
   Hive.registerAdapter(ProductionAdapter());
   Hive.registerAdapter(InventoryMovementAdapter());
   Hive.registerAdapter(CostRecordAdapter());
+  Hive.registerAdapter(LaborWorkerAdapter());
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(ProductComponentAdapter());
 
@@ -51,6 +53,7 @@ Future<void> main() async {
   await Hive.openBox('inventory');
 
   await Hive.openBox<CostRecord>('costs');
+  await Hive.openBox<LaborWorker>('labor_workers');
 
   await Hive.openBox<Product>('products');
 

@@ -26,13 +26,14 @@ class InventoryMovementAdapter extends TypeAdapter<InventoryMovement> {
       type: fields[6] as String,
       reference: fields[7] as String,
       notes: fields[8] as String,
+      purchasePrice: fields[9] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, InventoryMovement obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class InventoryMovementAdapter extends TypeAdapter<InventoryMovement> {
       ..writeByte(7)
       ..write(obj.reference)
       ..writeByte(8)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(9)
+      ..write(obj.purchasePrice);
   }
 
   @override
