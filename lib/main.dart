@@ -10,6 +10,7 @@ import 'models/product_component.dart';
 import 'models/production.dart';
 import 'models/recipe.dart';
 import 'models/recipe_ingredient.dart';
+import 'models/labor_worker.dart';
 
 import 'models/elaboration/elaboration_ingredient.dart';
 import 'models/elaboration/elaboration_recipe.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
   Hive.registerAdapter(CostRecordAdapter());
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(ProductComponentAdapter());
+  Hive.registerAdapter(LaborWorkerAdapter());
 
   Hive.registerAdapter(ElaborationIngredientAdapter());
   Hive.registerAdapter(ElaborationRecipeAdapter());
@@ -55,6 +57,7 @@ Future<void> main() async {
   await Hive.openBox<Product>('products');
 
   await Hive.openBox<ProductComponent>('product_components');
+  await Hive.openBox<LaborWorker>('labor_workers');
 
   await Hive.openBox<ElaborationRecipe>('elaboration_recipes');
 
