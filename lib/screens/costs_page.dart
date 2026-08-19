@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/cost_record.dart';
 import '../services/cost_record_service.dart';
+import 'labor_costs_page.dart';
 
 class CostsPage extends StatelessWidget {
   CostsPage({super.key});
@@ -65,7 +66,7 @@ class CostsPage extends StatelessWidget {
             Colors.red,
           ),
 
-          _buildCard(Icons.groups, "Mano de Obra", labor, Colors.blue),
+          _buildCard(Icons.groups, "Mano de Obra", labor, Colors.blue, onTap: () { Navigator.push(context, MaterialPageRoute(builder: (_) => const LaborCostsPage())); }),
 
           _buildCard(
             Icons.business,
@@ -237,12 +238,13 @@ class CostsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(IconData icon, String title, double value, Color color) {
+  Widget _buildCard(IconData icon, String title, double value, Color color, {VoidCallback? onTap}) {
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: ListTile(
+        onTap: onTap,
         leading: CircleAvatar(
           backgroundColor: color,
           child: Icon(icon, color: Colors.white),
