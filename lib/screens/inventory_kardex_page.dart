@@ -42,8 +42,7 @@ class InventoryKardexPage extends StatelessWidget {
       consumptionUnit: ingredient.unit,
     );
 
-    final purchasePrice =
-        kardexService.getLastPurchasePrice(ingredient);
+    final purchasePrice = ingredient.purchasePrice;
 
     final costPerConsumptionUnit =
         normalizedPerPackage > 0
