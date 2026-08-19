@@ -26,7 +26,7 @@ class InventoryMovementAdapter extends TypeAdapter<InventoryMovement> {
       type: fields[6] as String,
       reference: fields[7] as String,
       notes: fields[8] as String,
-      purchasePrice: fields[9] as double,
+      purchasePrice: (fields[9] as num?)?.toDouble() ?? 0.0,
     );
   }
 
