@@ -8,7 +8,7 @@ part of 'labor_worker.dart';
 
 class LaborWorkerAdapter extends TypeAdapter<LaborWorker> {
   @override
-  final int typeId = 9;
+  final int typeId = 13;
 
   @override
   LaborWorker read(BinaryReader reader) {
