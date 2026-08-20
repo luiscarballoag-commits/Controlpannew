@@ -16,6 +16,7 @@ class LaborWorkerAdapter extends TypeAdapter<LaborWorker> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+
     return LaborWorker(
       id: fields[0] as String,
       role: fields[1] as String,
@@ -23,13 +24,14 @@ class LaborWorkerAdapter extends TypeAdapter<LaborWorker> {
       cost: fields[3] as double,
       period: fields[4] as String,
       active: fields[5] as bool,
+      hoursPerDay: fields[6] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, LaborWorker obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +43,9 @@ class LaborWorkerAdapter extends TypeAdapter<LaborWorker> {
       ..writeByte(4)
       ..write(obj.period)
       ..writeByte(5)
-      ..write(obj.active);
+      ..write(obj.active)
+      ..writeByte(6)
+      ..write(obj.hoursPerDay);
   }
 
   @override

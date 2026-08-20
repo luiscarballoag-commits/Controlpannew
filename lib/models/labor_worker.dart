@@ -21,6 +21,8 @@ class LaborWorker extends HiveObject {
 
   @HiveField(5)
   final bool active;
+  @HiveField(6)
+  final double hoursPerDay;
 
   LaborWorker({
     required this.id,
@@ -29,6 +31,7 @@ class LaborWorker extends HiveObject {
     required this.cost,
     required this.period,
     this.active = true,
+    this.hoursPerDay = 8,
   });
 
   LaborWorker copyWith({
@@ -38,6 +41,7 @@ class LaborWorker extends HiveObject {
     double? cost,
     String? period,
     bool? active,
+    double? hoursPerDay,
   }) {
     return LaborWorker(
       id: id ?? this.id,
@@ -46,6 +50,7 @@ class LaborWorker extends HiveObject {
       cost: cost ?? this.cost,
       period: period ?? this.period,
       active: active ?? this.active,
+      hoursPerDay: hoursPerDay ?? this.hoursPerDay,
     );
   }
 }

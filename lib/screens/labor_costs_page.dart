@@ -19,13 +19,20 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
 
     final roleController =
         TextEditingController(text: existing?.role ?? '');
+
     final quantityController =
         TextEditingController(
           text: existing?.quantity.toString() ?? '1',
         );
+
     final costController =
         TextEditingController(
           text: existing?.cost.toString() ?? '',
+        );
+
+    final hoursController =
+        TextEditingController(
+          text: existing?.hoursPerDay.toString() ?? '8',
         );
 
     String period = existing?.period ?? 'Mensual';
@@ -50,8 +57,6 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                       controller: roleController,
                       decoration: const InputDecoration(
                         labelText: 'Cargo',
-                        hintText:
-                            'Ej. Panadero, Hornero, Ayudante',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -89,6 +94,10 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                       ),
                       items: const [
                         DropdownMenuItem(
+                          value: 'Por Hora',
+                          child: Text('Por Hora'),
+                        ),
+                        DropdownMenuItem(
                           value: 'Diario',
                           child: Text('Diario'),
                         ),
@@ -109,6 +118,19 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                         }
                       },
                     ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: hoursController,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Jornada (horas)',
+                        suffixText: 'h',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
@@ -125,9 +147,7 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(dialogContext);
-                  },
+                  onPressed: () => Navigator.pop(dialogContext),
                   child: const Text('Cancelar'),
                 ),
                 ElevatedButton(
@@ -137,10 +157,13 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                         double.tryParse(quantityController.text) ?? 0;
                     final cost =
                         double.tryParse(costController.text) ?? 0;
+                    final hours =
+                        double.tryParse(hoursController.text) ?? 8;
 
                     if (role.isEmpty ||
                         quantity <= 0 ||
-                        cost < 0) {
+                        cost < 0 ||
+                        hours <= 0) {
                       return;
                     }
 
@@ -154,6 +177,7 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                       cost: cost,
                       period: period,
                       active: active,
+                      hoursPerDay: hours,
                     );
 
                     if (index == null) {
@@ -223,18 +247,11 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
         padding: const EdgeInsets.all(16),
         children: [
           Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const Icon(
-                    Icons.groups,
-                    size: 42,
-                  ),
+                  const Icon(Icons.groups, size: 42),
                   const SizedBox(height: 8),
                   const Text(
                     'Costo de Mano de Obra',
@@ -279,11 +296,14 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                 ),
                 subtitle: Text(
                   '${worker.quantity.toStringAsFixed(0)} trabajador(es) · '
-                  '${worker.period}',
+                  '${worker.period} · '
+                  '${worker.hoursPerDay.toStringAsFixed(0)} h',
                 ),
                 trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.end,
                   children: [
                     Text(
                       '\$${workerTotal.toStringAsFixed(2)}',
