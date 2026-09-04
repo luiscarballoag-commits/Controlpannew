@@ -7,6 +7,7 @@ import 'productions_page.dart';
 import 'manual_production_page.dart';
 import 'elaboration/elaboration_recipe_list_page.dart';
 import 'labor_costs_page.dart';
+import 'depreciation_assets_page.dart';
 
 class ProductionDashboardPage extends StatelessWidget {
   const ProductionDashboardPage({super.key});
@@ -79,6 +80,16 @@ class ProductionDashboardPage extends StatelessWidget {
             title: 'Mano de Obra',
             subtitle: 'Registrar y administrar trabajadores de producción.',
             page: const LaborCostsPage(),
+          ),
+
+          _menuCard(
+            context: context,
+            icon: Icons.precision_manufacturing_rounded,
+            iconColor: Colors.orange,
+            title: 'Depreciación',
+            subtitle: 'Administrar equipos y costos de depreciación.',
+            page: const DepreciationAssetsPage(),
+
           ),
 
           _menuCard(

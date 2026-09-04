@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../models/cost_record.dart';
 import '../services/cost_record_service.dart';
-import 'labor_costs_page.dart';
 
 class CostsPage extends StatelessWidget {
   CostsPage({super.key});
@@ -17,7 +16,6 @@ class CostsPage extends StatelessWidget {
 
     final rawMaterial = record?.rawMaterialCost ?? 0;
 
-    final labor = record?.laborCost ?? 0;
 
     final operating = record?.operatingCost ?? 0;
 
@@ -66,7 +64,6 @@ class CostsPage extends StatelessWidget {
             Colors.red,
           ),
 
-          _buildCard(Icons.groups, "Mano de Obra", labor, Colors.blue, onTap: () { Navigator.push(context, MaterialPageRoute(builder: (_) => const LaborCostsPage())); }),
 
           _buildCard(
             Icons.business,
