@@ -6,6 +6,7 @@ import 'production_recipe_page.dart';
 import 'productions_page.dart';
 import 'manual_production_page.dart';
 import 'elaboration/elaboration_recipe_list_page.dart';
+import 'labor_costs_page.dart';
 
 class ProductionDashboardPage extends StatelessWidget {
   const ProductionDashboardPage({super.key});
@@ -70,6 +71,15 @@ class ProductionDashboardPage extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
+
+          _menuCard(
+            context: context,
+            icon: Icons.groups_rounded,
+            iconColor: Colors.blue,
+            title: 'Mano de Obra',
+            subtitle: 'Registrar y administrar trabajadores de producción.',
+            page: const LaborCostsPage(),
+          ),
 
           _menuCard(
             context: context,
