@@ -8,6 +8,7 @@ import 'manual_production_page.dart';
 import 'elaboration/elaboration_recipe_list_page.dart';
 import 'labor_costs_page.dart';
 import 'depreciation_assets_page.dart';
+import 'operating_expenses_page.dart';
 
 class ProductionDashboardPage extends StatelessWidget {
   const ProductionDashboardPage({super.key});
@@ -90,6 +91,15 @@ class ProductionDashboardPage extends StatelessWidget {
             subtitle: 'Administrar equipos y costos de depreciación.',
             page: const DepreciationAssetsPage(),
 
+          ),
+
+          _menuCard(
+            context: context,
+            icon: Icons.receipt_long_rounded,
+            iconColor: Colors.teal,
+            title: 'Gastos Operativos',
+            subtitle: 'Administrar luz, agua, aseo, gas y otros gastos.',
+            page: const OperatingExpensesPage(),
           ),
 
           _menuCard(
