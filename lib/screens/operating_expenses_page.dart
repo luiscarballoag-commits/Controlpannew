@@ -307,7 +307,7 @@ class _OperatingExpensesPageState
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '$_expenses.length registrados · '
+                                '${_expenses.length} registrados · '
                                 '$activeCount activos',
                               ),
                             ],
