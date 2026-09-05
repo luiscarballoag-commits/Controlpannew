@@ -74,32 +74,89 @@ class ProductionDashboardPage extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          _menuCard(
-            context: context,
-            icon: Icons.groups_rounded,
-            iconColor: Colors.blue,
-            title: 'Mano de Obra',
-            subtitle: 'Registrar y administrar trabajadores de producción.',
-            page: const LaborCostsPage(),
-          ),
-
-          _menuCard(
-            context: context,
-            icon: Icons.precision_manufacturing_rounded,
-            iconColor: Colors.orange,
-            title: 'Depreciación',
-            subtitle: 'Administrar equipos y costos de depreciación.',
-            page: const DepreciationAssetsPage(),
-
-          ),
-
-          _menuCard(
-            context: context,
-            icon: Icons.receipt_long_rounded,
-            iconColor: Colors.teal,
-            title: 'Gastos Operativos',
-            subtitle: 'Administrar luz, agua, aseo, gas y otros gastos.',
-            page: const OperatingExpensesPage(),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: ExpansionTile(
+              leading: const CircleAvatar(
+                backgroundColor: Colors.brown,
+                child: Icon(
+                  Icons.account_balance_wallet_rounded,
+                  color: Colors.white,
+                ),
+              ),
+              title: const Text(
+                'Costos de Producción',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: const Text(
+                'Mano de obra, gastos operativos y depreciación.',
+              ),
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.groups_rounded,
+                    color: Colors.blue,
+                  ),
+                  title: const Text('Mano de Obra'),
+                  subtitle: const Text(
+                    'Registrar y administrar trabajadores de producción.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LaborCostsPage(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.receipt_long_rounded,
+                    color: Colors.teal,
+                  ),
+                  title: const Text('Gastos Operativos'),
+                  subtitle: const Text(
+                    'Administrar luz, agua, aseo, gas y otros gastos.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const OperatingExpensesPage(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.precision_manufacturing_rounded,
+                    color: Colors.orange,
+                  ),
+                  title: const Text('Depreciación'),
+                  subtitle: const Text(
+                    'Administrar equipos y costos de depreciación.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const DepreciationAssetsPage(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
 
           _menuCard(
