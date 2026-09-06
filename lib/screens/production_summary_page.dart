@@ -780,6 +780,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                           totalUnits: totalPieces,
                           laborCost: _calculateLaborCost(),
                           operatingCost: operatingExpenseService.getTotalCostForDays(days: 1),
+  depreciationCost: _calculateDepreciationCost(),
                         );
 
                         costRecordService.saveRecord(
