@@ -7,6 +7,7 @@ import '../models/cost_record.dart';
 import '../models/recipe.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
+import '../services/labor_service.dart';
 import 'production_elaboration_page.dart';
 import '../services/cost_service.dart';
 import '../services/cost_record_service.dart';
@@ -37,6 +38,9 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
   final ProductionInventoryService inventoryService =
       ProductionInventoryService();
   final ProductionManager productionManager = ProductionManager();
+  final LaborService laborService = LaborService();
+  final Map<String, double> _workerHours = {};
+  final List<String> _selectedWorkerIds = [];
 
   double totalMassGrams = 0;
 
@@ -86,6 +90,236 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
     );
 
     totalMassGrams = resultado.totalMass;
+  }
+
+  void _addWorker(String workerId) {
+    if (_selectedWorkerIds.contains(workerId)) return;
+
+    setState(() {
+      _selectedWorkerIds.add(workerId);
+      _workerHours[workerId] = 0;
+    });
+  }
+
+  void _removeWorker(String workerId) {
+    setState(() {
+      _selectedWorkerIds.remove(workerId);
+      _workerHours.remove(workerId);
+    });
+  }
+
+  double _calculateLaborCost() {
+    double total = 0;
+
+    final workers = laborService.getActiveWorkers();
+
+    for (final workerId in _selectedWorkerIds) {
+      final worker = workers.where((worker) => worker.id == workerId).firstOrNull;
+
+      if (worker == null) continue;
+
+      final hours = _workerHours[workerId] ?? 0;
+
+      total += laborService.getProductionLaborCost(
+            worker: worker,
+            hours: hours,
+          ) *
+          worker.quantity;
+    }
+
+    return total;
+  }
+
+  void _showAddWorkerDialog() {
+    final workers = laborService.getActiveWorkers()
+        .where((worker) => !_selectedWorkerIds.contains(worker.id))
+        .toList();
+
+    if (workers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No hay trabajadores disponibles para agregar.'),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Agregar trabajador'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: workers.length,
+              itemBuilder: (context, index) {
+                final worker = workers[index];
+
+                return ListTile(
+                  leading: const Icon(Icons.person),
+                  title: Text(worker.role),
+                  subtitle: Text(
+                    '${worker.quantity.toStringAsFixed(0)} trabajador(es)',
+                  ),
+                  onTap: () {
+                    _addWorker(worker.id);
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLaborCostCard() {
+    final workers = laborService.getActiveWorkers();
+
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.groups_rounded,
+                  color: Color(0xFF8D6E63),
+                ),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Costos adicionales',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: _showAddWorkerDialog,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Agregar trabajador'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Mano de Obra',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (_selectedWorkerIds.isEmpty)
+              const Text(
+                'No hay trabajadores agregados a esta producción.',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ..._selectedWorkerIds.map((workerId) {
+              final worker = workers.where(
+                (item) => item.id == workerId,
+              ).firstOrNull;
+
+              if (worker == null) {
+                return const SizedBox.shrink();
+              }
+
+              final hours = _workerHours[workerId] ?? 0;
+              final cost = laborService.getProductionLaborCost(
+                    worker: worker,
+                    hours: hours,
+                  ) *
+                  worker.quantity;
+
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          worker.role,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 75,
+                        child: TextFormField(
+                          initialValue: hours == 0
+                              ? ''
+                              : hours.toString(),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: 'Horas',
+                            isDense: true,
+                          ),
+                          onChanged: (value) {
+                            final parsed = double.tryParse(value) ?? 0;
+
+                            setState(() {
+                              _workerHours[workerId] = parsed;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 75,
+                        child: Text(
+                          '\$${cost.toStringAsFixed(2)}',
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => _removeWorker(workerId),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            const Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Total mano de obra',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '\$${_calculateLaborCost().toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -238,7 +472,8 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
 
             const SizedBox(height: 10),
 
-            Expanded(
+            SizedBox(
+              height: 260,
               child: ListView.builder(
                 itemCount: widget.recipe.ingredients.length,
                 itemBuilder: (context, index) {
@@ -270,7 +505,11 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
+
+            _buildLaborCostCard(),
+
+            const SizedBox(height: 8),
 
             SizedBox(
               width: double.infinity,
@@ -316,6 +555,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                           lots: widget.lots,
                           totalWeightKg: totalMassGrams / 1000,
                           totalUnits: totalPieces,
+                          laborCost: _calculateLaborCost(),
                         );
 
                         costRecordService.saveRecord(
