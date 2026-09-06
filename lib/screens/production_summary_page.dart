@@ -341,7 +341,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
         backgroundColor: const Color(0xFF8D6E63),
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
