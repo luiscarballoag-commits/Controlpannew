@@ -16,6 +16,7 @@ class CostsPage extends StatelessWidget {
 
     final rawMaterial = record?.rawMaterialCost ?? 0;
 
+    final labor = record?.laborCost ?? 0;
 
     final operating = record?.operatingCost ?? 0;
 
@@ -58,10 +59,10 @@ class CostsPage extends StatelessWidget {
           ),
 
           _buildCard(
-            Icons.local_fire_department,
-            "Producción",
-            total,
-            Colors.red,
+            Icons.groups,
+            "Mano de Obra",
+            labor,
+            Colors.blue,
           ),
 
 
