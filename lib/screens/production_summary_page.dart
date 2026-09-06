@@ -8,6 +8,7 @@ import '../models/recipe.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
 import '../services/labor_service.dart';
+import '../services/operating_expense_service.dart';
 import 'production_elaboration_page.dart';
 import '../services/cost_service.dart';
 import '../services/cost_record_service.dart';
@@ -39,6 +40,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
       ProductionInventoryService();
   final ProductionManager productionManager = ProductionManager();
   final LaborService laborService = LaborService();
+  final OperatingExpenseService operatingExpenseService = OperatingExpenseService();
   final Map<String, double> _workerHours = {};
   final List<String> _selectedWorkerIds = [];
 
@@ -556,6 +558,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                           totalWeightKg: totalMassGrams / 1000,
                           totalUnits: totalPieces,
                           laborCost: _calculateLaborCost(),
+                          operatingCost: operatingExpenseService.getTotalCostForDays(days: 1),
                         );
 
                         costRecordService.saveRecord(
