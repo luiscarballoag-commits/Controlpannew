@@ -9,6 +9,7 @@ import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
 import '../services/labor_service.dart';
 import '../services/operating_expense_service.dart';
+import '../services/depreciation_service.dart';
 import 'production_elaboration_page.dart';
 import '../services/cost_service.dart';
 import '../services/cost_record_service.dart';
@@ -41,8 +42,12 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
   final ProductionManager productionManager = ProductionManager();
   final LaborService laborService = LaborService();
   final OperatingExpenseService operatingExpenseService = OperatingExpenseService();
+  final DepreciationService depreciationService = DepreciationService();
   final Map<String, double> _workerHours = {};
   final List<String> _selectedWorkerIds = [];
+
+  final Map<String, double> _assetHours = {};
+  final List<String> _selectedAssetIds = [];
 
   double totalMassGrams = 0;
 
@@ -110,6 +115,42 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
     });
   }
 
+  void _addAsset(String assetId) {
+    if (_selectedAssetIds.contains(assetId)) return;
+
+    setState(() {
+      _selectedAssetIds.add(assetId);
+      _assetHours[assetId] = 0;
+    });
+  }
+
+  void _removeAsset(String assetId) {
+    setState(() {
+      _selectedAssetIds.remove(assetId);
+      _assetHours.remove(assetId);
+    });
+  }
+
+  double _calculateDepreciationCost() {
+    double total = 0;
+
+    final assets = depreciationService.getActiveAssets();
+
+    for (final assetId in _selectedAssetIds) {
+      final asset = assets.where((item) => item.id == assetId).firstOrNull;
+      if (asset == null) continue;
+
+      final hours = _assetHours[assetId] ?? 0;
+
+      total += depreciationService.getProductionDepreciation(
+        asset: asset,
+        hours: hours,
+      );
+    }
+
+    return total;
+  }
+
   double _calculateLaborCost() {
     double total = 0;
 
@@ -167,6 +208,53 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                   ),
                   onTap: () {
                     _addWorker(worker.id);
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAddAssetDialog() {
+    final assets = depreciationService
+        .getActiveAssets()
+        .where((asset) => !_selectedAssetIds.contains(asset.id))
+        .toList();
+
+    if (assets.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No hay equipos disponibles para agregar.'),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Agregar equipo'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: assets.length,
+              itemBuilder: (context, index) {
+                final asset = assets[index];
+
+                return ListTile(
+                  leading: const Icon(Icons.precision_manufacturing),
+                  title: Text(asset.name),
+                  subtitle: Text(
+                    '\$${depreciationService.getHourlyDepreciation(asset).toStringAsFixed(4)} por hora',
+                  ),
+                  onTap: () {
+                    _addAsset(asset.id);
                     Navigator.pop(context);
                   },
                 );
@@ -330,6 +418,120 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 ),
                 Text(
                   '\$${operatingExpenseService.getTotalCostForDays(days: 1).toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Depreciación',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: _showAddAssetDialog,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Agregar equipo'),
+                ),
+              ],
+            ),
+            if (_selectedAssetIds.isEmpty)
+              const Text(
+                'No hay equipos agregados a esta producción.',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ..._selectedAssetIds.map((assetId) {
+              final asset = depreciationService
+                  .getActiveAssets()
+                  .where((item) => item.id == assetId)
+                  .firstOrNull;
+
+              if (asset == null) {
+                return const SizedBox.shrink();
+              }
+
+              final hours = _assetHours[assetId] ?? 0;
+              final cost = depreciationService.getProductionDepreciation(
+                asset: asset,
+                hours: hours,
+              );
+
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          asset.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 75,
+                        child: TextFormField(
+                          initialValue: hours == 0
+                              ? ''
+                              : hours.toString(),
+                          keyboardType:
+                              const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: 'Horas',
+                            isDense: true,
+                          ),
+                          onChanged: (value) {
+                            final parsed = double.tryParse(value) ?? 0;
+
+                            setState(() {
+                              _assetHours[assetId] = parsed;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 75,
+                        child: Text(
+                          '\$${cost.toStringAsFixed(2)}',
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => _removeAsset(assetId),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            const Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Total depreciación',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '\$${_calculateDepreciationCost().toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
