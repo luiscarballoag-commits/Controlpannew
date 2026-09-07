@@ -8,6 +8,7 @@ class OperatingExpenseService {
   static const double daysPerWeek = 6;
   static const double daysPerMonth = 26;
   static const double monthsPerYear = 12;
+  static const double hoursPerDay = 8;
 
   Box<OperatingExpense> get _box =>
       Hive.box<OperatingExpense>(boxName);
@@ -69,6 +70,29 @@ class OperatingExpenseService {
       default:
         return 0;
     }
+  }
+
+  /// Convierte el costo diario equivalente a costo por hora.
+  double getHourlyCost(OperatingExpense expense) {
+    return getDailyCost(expense) / hoursPerDay;
+  }
+
+  /// Calcula el costo total de los gastos operativos activos
+  /// para una cantidad determinada de horas.
+  double getTotalCostForHours({
+    required double hours,
+  }) {
+    if (hours <= 0) {
+      return 0;
+    }
+
+    double total = 0;
+
+    for (final expense in getActiveExpenses()) {
+      total += getHourlyCost(expense) * hours;
+    }
+
+    return total;
   }
 
   /// Calcula el costo operativo correspondiente a una cantidad de días.

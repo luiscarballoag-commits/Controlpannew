@@ -49,6 +49,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
   final Map<String, double> _assetHours = {};
   final List<String> _selectedAssetIds = [];
 
+  double _productionHours = 0;
   double totalMassGrams = 0;
 
   @override
@@ -408,16 +409,35 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
             ),
             const SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Gastos Operativos',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                const Expanded(
+                  child: Text(
+                    'Gastos Operativos',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
+                SizedBox(
+                  width: 90,
+                  child: TextFormField(
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Horas',
+                      isDense: true,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _productionHours = double.tryParse(value) ?? 0;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
                 Text(
-                  '\$${operatingExpenseService.getTotalCostForDays(days: 1).toStringAsFixed(2)}',
+                  '\$${operatingExpenseService.getTotalCostForHours(hours: _productionHours).toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -779,8 +799,10 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                           totalWeightKg: totalMassGrams / 1000,
                           totalUnits: totalPieces,
                           laborCost: _calculateLaborCost(),
-                          operatingCost: operatingExpenseService.getTotalCostForDays(days: 1),
-  depreciationCost: _calculateDepreciationCost(),
+                          operatingCost: operatingExpenseService.getTotalCostForHours(
+                            hours: _productionHours,
+                          ),
+                          depreciationCost: _calculateDepreciationCost(),
                         );
 
                         costRecordService.saveRecord(
