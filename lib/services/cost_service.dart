@@ -5,15 +5,22 @@ import '../core/inventory/unit_converter.dart';
 
 import '../models/ingredient_catalog.dart';
 import '../models/recipe.dart';
+import '../models/elaboration/elaboration_recipe.dart';
 
 import 'ingredient_service.dart';
 import 'production_service.dart';
 import 'recipe_service.dart';
+import 'elaboration/elaboration_production_service.dart';
+import 'elaboration/elaboration_recipe_service.dart';
 
 class CostService {
   final IngredientService ingredientService = IngredientService();
   final ProductionService productionService = ProductionService();
   final RecipeService recipeService = RecipeService();
+  final ElaborationProductionService elaborationProductionService =
+      ElaborationProductionService();
+  final ElaborationRecipeService elaborationRecipeService =
+      ElaborationRecipeService();
 
   /// Calcula el costo de la última producción registrada.
   CostResult? calculateLastProductionCost() {
@@ -34,30 +41,20 @@ class CostService {
       lots: production.lots.toDouble(),
       totalWeightKg: production.totalMassKg,
       totalUnits: production.totalPieces,
+      productionId: production.id,
     );
   }
 
   /// Calcula el costo completo de una receta.
   ///
-  /// El precio de cada ingrediente se obtiene a partir de:
-  ///
-  /// precio del envase / cantidad que contiene el envase
-  ///
-  /// Ejemplo:
-  /// Harina:
-  /// 1 saco = 45 kg
-  /// precio = $50
-  ///
-  /// Costo por kg:
-  /// 50 / 45 = $1.1111
-  ///
-  /// Si la receta utiliza 20 kg:
-  /// 20 × 1.1111 = $22.22
+  /// Si se proporciona [productionId], también incorpora la materia prima
+  /// utilizada por las elaboraciones asociadas a esa producción.
   CostResult calculateRecipeCost({
     required Recipe recipe,
     required double lots,
     required double totalWeightKg,
     required int totalUnits,
+    String? productionId,
     double laborCost = 0,
     double operatingCost = 0,
     double depreciationCost = 0,
@@ -66,6 +63,10 @@ class CostService {
     final inventory = ingredientService.getAllIngredients();
 
     final List<CostItem> items = [];
+
+    // ============================================================
+    // MATERIA PRIMA DE LA RECETA PRINCIPAL
+    // ============================================================
 
     for (final recipeIngredient in recipe.ingredients) {
       final ingredient = inventory.cast<IngredientCatalog?>().firstWhere(
@@ -90,8 +91,7 @@ class CostService {
         continue;
       }
 
-      final unitPrice =
-          ingredient.purchasePrice / quantityPerPackage;
+      final unitPrice = ingredient.purchasePrice / quantityPerPackage;
 
       items.add(
         CostItem(
@@ -102,6 +102,67 @@ class CostService {
         ),
       );
     }
+
+    // ============================================================
+    // MATERIA PRIMA DE LAS ELABORACIONES
+    // ============================================================
+
+    if (productionId != null && productionId.isNotEmpty) {
+      final elaborations = elaborationProductionService
+          .getAll()
+          .where((production) => production.productionId == productionId)
+          .toList();
+
+      for (final elaboration in elaborations) {
+        final ElaborationRecipe? elaborationRecipe =
+            elaborationRecipeService.getRecipe(elaboration.recipeId);
+
+        if (elaborationRecipe == null) {
+          continue;
+        }
+
+        for (final elaborationIngredient
+            in elaborationRecipe.ingredients) {
+          final ingredient = inventory.cast<IngredientCatalog?>().firstWhere(
+            (item) => item?.id == elaborationIngredient.ingredientId,
+            orElse: () => null,
+          );
+
+          if (ingredient == null) {
+            continue;
+          }
+
+          final quantityUsed =
+              elaborationIngredient.quantity * elaboration.quantity;
+
+          final quantityPerPackage = UnitConverter.normalize(
+            quantity: 1,
+            packageSize: ingredient.packageSize,
+            packageUnit: ingredient.packageUnit,
+            consumptionUnit: elaborationIngredient.unit,
+          );
+
+          if (quantityPerPackage <= 0) {
+            continue;
+          }
+
+          final unitPrice = ingredient.purchasePrice / quantityPerPackage;
+
+          items.add(
+            CostItem(
+              name: '${ingredient.name} (Elaboración)',
+              category: 'Materia Prima',
+              amount: quantityUsed,
+              unitPrice: unitPrice,
+            ),
+          );
+        }
+      }
+    }
+
+    // ============================================================
+    // MANO DE OBRA
+    // ============================================================
 
     if (laborCost > 0) {
       items.add(
@@ -114,6 +175,10 @@ class CostService {
       );
     }
 
+    // ============================================================
+    // GASTOS OPERATIVOS
+    // ============================================================
+
     if (operatingCost > 0) {
       items.add(
         CostItem(
@@ -124,6 +189,10 @@ class CostService {
         ),
       );
     }
+
+    // ============================================================
+    // DEPRECIACIÓN
+    // ============================================================
 
     if (depreciationCost > 0) {
       items.add(

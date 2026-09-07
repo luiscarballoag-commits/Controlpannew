@@ -798,6 +798,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                           lots: widget.lots,
                           totalWeightKg: totalMassGrams / 1000,
                           totalUnits: totalPieces,
+                          productionId: productionId,
                           laborCost: _calculateLaborCost(),
                           operatingCost: operatingExpenseService.getTotalCostForHours(
                             hours: _productionHours,
