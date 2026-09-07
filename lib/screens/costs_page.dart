@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'production_report_page.dart';
+
 
 import '../models/cost_record.dart';
+
 import '../services/cost_record_service.dart';
+
 
 class CostsPage extends StatelessWidget {
   CostsPage({super.key});
@@ -131,6 +135,14 @@ class CostsPage extends StatelessWidget {
             "Reporte de Producción",
             "Consultar historial de producciones",
             Colors.brown,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductionReportPage(),
+                ),
+              );
+            },
           ),
 
           _buildActionCard(
@@ -292,8 +304,9 @@ class CostsPage extends StatelessWidget {
     IconData icon,
     String title,
     String subtitle,
-    Color color,
-  ) {
+    Color color, {
+    VoidCallback? onTap,
+  }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 4,
@@ -306,11 +319,14 @@ class CostsPage extends StatelessWidget {
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-        onTap: () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("$title próximamente.")));
-        },
+        onTap: onTap ??
+            () {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(
+                SnackBar(content: Text("$title próximamente.")),
+              );
+            },
       ),
     );
   }
