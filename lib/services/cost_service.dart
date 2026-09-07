@@ -90,7 +90,8 @@ class CostService {
         continue;
       }
 
-      final unitPrice = ingredient.purchasePrice;
+      final unitPrice =
+          ingredient.purchasePrice / quantityPerPackage;
 
       items.add(
         CostItem(
