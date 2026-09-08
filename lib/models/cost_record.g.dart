@@ -30,7 +30,7 @@ class CostRecordAdapter extends TypeAdapter<CostRecord> {
       costPerPiece: fields[10] as double,
       profitPercentage: fields[11] as double,
       suggestedSalePrice: fields[12] as double,
-      elaborationCost: fields[13] as double,
+      elaborationCost: fields[13] == null ? 0.0 : fields[13] as double,
     );
   }
 

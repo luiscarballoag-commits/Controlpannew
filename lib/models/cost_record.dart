@@ -43,7 +43,7 @@ class CostRecord extends HiveObject {
   @HiveField(12)
   final double suggestedSalePrice;
 
-  @HiveField(13)
+  @HiveField(13, defaultValue: 0.0)
   final double elaborationCost;
 
   CostRecord({
