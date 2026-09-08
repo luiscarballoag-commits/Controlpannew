@@ -1,5 +1,6 @@
 class CostResult {
   final double rawMaterialCost;
+  final double elaborationCost;
   final double productionCost;
   final double laborCost;
   final double operatingCost;
@@ -21,6 +22,7 @@ class CostResult {
 
   const CostResult({
     required this.rawMaterialCost,
+    required this.elaborationCost,
     required this.productionCost,
     required this.laborCost,
     required this.operatingCost,

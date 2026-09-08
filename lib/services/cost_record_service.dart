@@ -31,6 +31,12 @@ class CostRecordService {
     return _box.getAt(index);
   }
 
+  List<CostRecord> getRecordsBetween(DateTime start, DateTime end) {
+    return _box.values.where((record) {
+      return !record.date.isBefore(start) && record.date.isBefore(end);
+    }).toList();
+  }
+
   CostRecord? getLastRecord() {
     if (_box.isEmpty) {
       return null;

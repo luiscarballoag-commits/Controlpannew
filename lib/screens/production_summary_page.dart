@@ -813,6 +813,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                             productionId: productionId,
                             recipeName: widget.recipe.name,
                             rawMaterialCost: costResult.rawMaterialCost,
+                            elaborationCost: costResult.elaborationCost,
                             laborCost: costResult.laborCost,
                             operatingCost: costResult.operatingCost,
                             depreciationCost: costResult.depreciationCost,

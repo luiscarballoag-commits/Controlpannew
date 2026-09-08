@@ -30,13 +30,14 @@ class CostRecordAdapter extends TypeAdapter<CostRecord> {
       costPerPiece: fields[10] as double,
       profitPercentage: fields[11] as double,
       suggestedSalePrice: fields[12] as double,
+      elaborationCost: fields[13] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, CostRecord obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,7 +63,9 @@ class CostRecordAdapter extends TypeAdapter<CostRecord> {
       ..writeByte(11)
       ..write(obj.profitPercentage)
       ..writeByte(12)
-      ..write(obj.suggestedSalePrice);
+      ..write(obj.suggestedSalePrice)
+      ..writeByte(13)
+      ..write(obj.elaborationCost);
   }
 
   @override

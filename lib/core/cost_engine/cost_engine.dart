@@ -9,6 +9,7 @@ class CostEngine {
     double profitMargin = 30.0,
   }) {
     double rawMaterial = 0.0;
+    double elaboration = 0.0;
     double production = 0.0;
     double labor = 0.0;
     double operating = 0.0;
@@ -18,6 +19,10 @@ class CostEngine {
       switch (item.category) {
         case 'Materia Prima':
           rawMaterial += item.total;
+          break;
+
+        case 'Elaboraciones':
+          elaboration += item.total;
           break;
 
         case 'Producción':
@@ -39,7 +44,7 @@ class CostEngine {
     }
 
     final double totalCost =
-        rawMaterial + production + labor + operating + depreciation;
+        rawMaterial + elaboration + production + labor + operating + depreciation;
 
     final double costPerKg = totalWeight > 0 ? totalCost / totalWeight : 0.0;
 
@@ -50,6 +55,7 @@ class CostEngine {
 
     return CostResult(
       rawMaterialCost: rawMaterial,
+      elaborationCost: elaboration,
       productionCost: production,
       laborCost: labor,
       operatingCost: operating,

@@ -27,6 +27,7 @@ class CostRecord extends HiveObject {
 
   @HiveField(7)
   final double depreciationCost;
+
   @HiveField(8)
   final double totalCost;
 
@@ -42,6 +43,9 @@ class CostRecord extends HiveObject {
   @HiveField(12)
   final double suggestedSalePrice;
 
+  @HiveField(13)
+  final double elaborationCost;
+
   CostRecord({
     required this.id,
     required this.date,
@@ -56,5 +60,6 @@ class CostRecord extends HiveObject {
     required this.costPerPiece,
     required this.profitPercentage,
     required this.suggestedSalePrice,
+    required this.elaborationCost,
   });
 }

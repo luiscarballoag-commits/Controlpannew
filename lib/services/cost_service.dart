@@ -151,7 +151,7 @@ class CostService {
           items.add(
             CostItem(
               name: '${ingredient.name} (Elaboración)',
-              category: 'Materia Prima',
+              category: 'Elaboraciones',
               amount: quantityUsed,
               unitPrice: unitPrice,
             ),
