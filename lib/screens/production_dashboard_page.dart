@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../services/dashboard_service.dart';
 
 import 'production_recipe_page.dart';
-import 'productions_page.dart';
 import 'manual_production_page.dart';
 import 'elaboration/elaboration_recipe_list_page.dart';
 import 'labor_costs_page.dart';
@@ -184,15 +183,6 @@ class ProductionDashboardPage extends StatelessWidget {
             title: 'Nueva Producción',
             subtitle: 'Iniciar una nueva producción.',
             page: const ProductionRecipePage(),
-          ),
-
-          _menuCard(
-            context: context,
-            icon: Icons.history_rounded,
-            iconColor: Colors.deepPurple,
-            title: 'Historial de Producción',
-            subtitle: 'Ver masas producidas, panes y elaboraciones.',
-            page: const ProductionsPage(),
           ),
 
           _menuCard(
