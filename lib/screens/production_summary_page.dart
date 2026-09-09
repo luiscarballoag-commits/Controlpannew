@@ -793,38 +793,6 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                           ),
                         );
 
-                        final costResult = costService.calculateRecipeCost(
-                          recipe: widget.recipe,
-                          lots: widget.lots,
-                          totalWeightKg: totalMassGrams / 1000,
-                          totalUnits: totalPieces,
-                          productionId: productionId,
-                          laborCost: _calculateLaborCost(),
-                          operatingCost: operatingExpenseService.getTotalCostForHours(
-                            hours: _productionHours,
-                          ),
-                          depreciationCost: _calculateDepreciationCost(),
-                        );
-
-                        costRecordService.saveRecord(
-                          CostRecord(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            date: DateTime.now(),
-                            productionId: productionId,
-                            recipeName: widget.recipe.name,
-                            rawMaterialCost: costResult.rawMaterialCost,
-                            elaborationCost: costResult.elaborationCost,
-                            laborCost: costResult.laborCost,
-                            operatingCost: costResult.operatingCost,
-                            depreciationCost: costResult.depreciationCost,
-                            totalCost: costResult.totalCost,
-                            costPerKg: costResult.costPerKg,
-                            costPerPiece: costResult.costPerUnit,
-                            profitPercentage: costResult.profitMargin,
-                            suggestedSalePrice: costResult.suggestedSalePrice,
-                          ),
-                        );
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -870,6 +838,40 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                                       ),
                                     );
                                     if (!mounted) return;
+
+final costResult = costService.calculateRecipeCost(
+                          recipe: widget.recipe,
+                          lots: widget.lots,
+                          totalWeightKg: totalMassGrams / 1000,
+                          totalUnits: totalPieces,
+                          productionId: productionId,
+                          laborCost: _calculateLaborCost(),
+                          operatingCost: operatingExpenseService.getTotalCostForHours(
+                            hours: _productionHours,
+                          ),
+                          depreciationCost: _calculateDepreciationCost(),
+                        );
+
+                        costRecordService.saveRecord(
+                          CostRecord(
+                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            date: DateTime.now(),
+                            productionId: productionId,
+                            recipeName: widget.recipe.name,
+                            rawMaterialCost: costResult.rawMaterialCost,
+                            elaborationCost: costResult.elaborationCost,
+                            laborCost: costResult.laborCost,
+                            operatingCost: costResult.operatingCost,
+                            depreciationCost: costResult.depreciationCost,
+                            totalCost: costResult.totalCost,
+                            costPerKg: costResult.costPerKg,
+                            costPerPiece: costResult.costPerUnit,
+                            profitPercentage: costResult.profitMargin,
+                            suggestedSalePrice: costResult.suggestedSalePrice,
+                          ),
+                        );
+
+                        
                                     navigator.popUntil(
                                       (route) => route.isFirst,
                                     );
