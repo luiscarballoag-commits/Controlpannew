@@ -25,6 +25,13 @@ class ProductionReportPage extends StatelessWidget {
       totalPieces += production.totalPieces;
     }
 
+    final Map<String, int> piecesByVariety = {};
+
+    for (final record in elaborationRecordService.getAll()) {
+      piecesByVariety[record.productName] =
+          (piecesByVariety[record.productName] ?? 0) + record.quantity;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reporte de Producción'),
@@ -60,25 +67,13 @@ class ProductionReportPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildSummaryCard(
-                        icon: Icons.scale,
-                        title: 'Kg producidos',
-                        value: totalMassKg.toStringAsFixed(2),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _buildSummaryCard(
-                        icon: Icons.bakery_dining,
-                        title: 'Piezas',
-                        value: totalPieces.toString(),
-                      ),
-                    ),
-                  ],
+                _buildSummaryCard(
+                  icon: Icons.scale,
+                  title: 'Kg producidos',
+                  value: totalMassKg.toStringAsFixed(2),
                 ),
+                const SizedBox(height: 10),
+                _buildVarietiesSummaryCard(piecesByVariety, totalPieces),
                 const SizedBox(height: 24),
                 const Text(
                   'Historial de Producción',
@@ -128,6 +123,82 @@ class ProductionReportPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVarietiesSummaryCard(
+    Map<String, int> piecesByVariety,
+    int totalPieces,
+  ) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.bakery_dining, size: 30),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Piezas por variedad',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Text(
+                  totalPieces.toString(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            if (piecesByVariety.isEmpty) ...[
+              const SizedBox(height: 12),
+              const Text('No hay variedades registradas.'),
+            ] else ...[
+              const SizedBox(height: 12),
+              ...piecesByVariety.entries.map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.bakery_dining,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          entry.key,
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${entry.value} piezas',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
