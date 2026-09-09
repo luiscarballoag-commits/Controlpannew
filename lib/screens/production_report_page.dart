@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../models/production.dart';
 import '../services/production_service.dart';
+import '../services/elaboration/elaboration_record_service.dart';
 
 class ProductionReportPage extends StatelessWidget {
   ProductionReportPage({super.key});
 
   final ProductionService productionService = ProductionService();
+  final ElaborationRecordService elaborationRecordService =
+      ElaborationRecordService();
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +137,18 @@ class ProductionReportPage extends StatelessWidget {
   Widget _buildProductionCard(Production production) {
     final date = production.date.toString().substring(0, 16);
 
+    final records = elaborationRecordService
+        .getAll()
+        .where((record) => record.productionId == production.id)
+        .toList();
+
+    final Map<String, int> varieties = {};
+
+    for (final record in records) {
+      varieties[record.productName] =
+          (varieties[record.productName] ?? 0) + record.quantity;
+    }
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 3,
@@ -173,6 +188,49 @@ class ProductionReportPage extends StatelessWidget {
               'Peso por pieza: '
               '${production.pieceWeightGrams.toStringAsFixed(0)} g',
             ),
+
+            if (varieties.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 8),
+              const Text(
+                'Variedades producidas',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...varieties.entries.map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.bakery_dining,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          entry.key,
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${entry.value} piezas',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
             if (production.notes.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text('Observaciones: ${production.notes}'),
