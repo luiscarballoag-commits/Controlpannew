@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'production_report_page.dart';
+import 'inventory_report_page.dart';
 import '../models/cost_record.dart';
 import '../services/cost_record_service.dart';
 
@@ -259,6 +260,14 @@ class _CostsPageState extends State<CostsPage> {
             'Reporte de Inventario',
             'Entradas, salidas y existencias',
             Colors.teal,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => InventoryReportPage(),
+                ),
+              );
+            },
           ),
 
           _buildActionCard(
