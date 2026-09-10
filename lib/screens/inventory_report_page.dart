@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/ingredient_catalog.dart';
 import '../services/ingredient_service.dart';
 import '../services/inventory_kardex_service.dart';
+import '../core/inventory/unit_converter.dart';
 
 class InventoryReportPage extends StatelessWidget {
   InventoryReportPage({super.key});
@@ -16,6 +17,21 @@ class InventoryReportPage extends StatelessWidget {
     }
 
     return value.toStringAsFixed(2);
+  }
+
+  double _getNormalizedUnitPrice(IngredientCatalog ingredient) {
+    final quantityPerPackage = UnitConverter.normalize(
+      quantity: 1,
+      packageSize: ingredient.packageSize,
+      packageUnit: ingredient.packageUnit,
+      consumptionUnit: ingredient.unit,
+    );
+
+    if (quantityPerPackage <= 0) {
+      return 0;
+    }
+
+    return ingredient.purchasePrice / quantityPerPackage;
   }
 
   @override
@@ -68,8 +84,11 @@ class InventoryReportPage extends StatelessWidget {
     final lastPrice =
         _kardexService.getLastPurchasePrice(ingredient);
 
+    final normalizedUnitPrice =
+        _getNormalizedUnitPrice(ingredient);
+
     final inventoryValue =
-        available > 0 ? available * (lastPrice > 0 ? lastPrice : 0) : 0;
+        available > 0 ? available * normalizedUnitPrice : 0;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -101,6 +120,10 @@ class InventoryReportPage extends StatelessWidget {
             _buildRow(
               'Último precio',
               '\$${lastPrice.toStringAsFixed(2)}',
+            ),
+            _buildRow(
+              'Costo por ${ingredient.unit}',
+              '\$${normalizedUnitPrice.toStringAsFixed(4)}',
             ),
             const Divider(),
             _buildRow(
