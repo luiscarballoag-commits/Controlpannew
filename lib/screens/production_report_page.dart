@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart' as pdf;
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../models/production.dart';
 import '../services/production_service.dart';
@@ -10,6 +13,285 @@ class ProductionReportPage extends StatelessWidget {
   final ProductionService productionService = ProductionService();
   final ElaborationRecordService elaborationRecordService =
       ElaborationRecordService();
+
+  String _formatDate(DateTime date) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString();
+
+    return '$day/$month/$year';
+  }
+
+  Future<void> _exportPdf() async {
+    final productions = productionService.getAllProductions();
+
+    int totalLots = 0;
+    double totalMassKg = 0;
+    int totalPieces = 0;
+
+    for (final production in productions) {
+      totalLots += production.lots;
+      totalMassKg += production.totalMassKg;
+      totalPieces += production.totalPieces;
+    }
+
+    final records = elaborationRecordService.getAll();
+
+    final Map<String, int> piecesByVariety = {};
+
+    for (final record in records) {
+      piecesByVariety[record.productName] =
+          (piecesByVariety[record.productName] ?? 0) + record.quantity;
+    }
+
+    final document = pw.Document();
+
+    document.addPage(
+      pw.MultiPage(
+        pageFormat: pdf.PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        build: (context) {
+          return [
+            pw.Text(
+              'CONTROLPAN',
+              style: pw.TextStyle(
+                fontSize: 24,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(
+              'Reporte de Producción',
+              style: pw.TextStyle(
+                fontSize: 18,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 4),
+            pw.Text(
+              'Generado: ${_formatDate(DateTime.now())}',
+              style: const pw.TextStyle(fontSize: 10),
+            ),
+            pw.SizedBox(height: 20),
+
+            pw.Text(
+              'Resumen de producción',
+              style: pw.TextStyle(
+                fontSize: 16,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 8),
+
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: pdf.PdfColors.grey400,
+              ),
+              children: [
+                _pdfSummaryRow(
+                  'Producciones',
+                  productions.length.toString(),
+                ),
+                _pdfSummaryRow(
+                  'Lotes',
+                  totalLots.toString(),
+                ),
+                _pdfSummaryRow(
+                  'Kg producidos',
+                  totalMassKg.toStringAsFixed(2),
+                ),
+                _pdfSummaryRow(
+                  'Piezas producidas',
+                  totalPieces.toString(),
+                ),
+              ],
+            ),
+
+            pw.SizedBox(height: 20),
+
+            pw.Text(
+              'Piezas por variedad',
+              style: pw.TextStyle(
+                fontSize: 16,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 8),
+
+            if (piecesByVariety.isEmpty)
+              pw.Text('No hay variedades registradas.')
+            else
+              pw.Table(
+                border: pw.TableBorder.all(
+                  color: pdf.PdfColors.grey400,
+                ),
+                columnWidths: {
+                  0: const pw.FlexColumnWidth(3),
+                  1: const pw.FlexColumnWidth(1),
+                },
+                children: [
+                  pw.TableRow(
+                    decoration: const pw.BoxDecoration(
+                      color: pdf.PdfColors.grey200,
+                    ),
+                    children: [
+                      _pdfCell('Variedad', bold: true),
+                      _pdfCell('Piezas', bold: true),
+                    ],
+                  ),
+                  ...piecesByVariety.entries.map(
+                    (entry) => pw.TableRow(
+                      children: [
+                        _pdfCell(entry.key),
+                        _pdfCell(entry.value.toString()),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+            pw.SizedBox(height: 24),
+
+            pw.Text(
+              'Detalle de producciones',
+              style: pw.TextStyle(
+                fontSize: 16,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 10),
+
+            ...productions.map(
+              (production) => _buildPdfProduction(
+                production,
+                records,
+              ),
+            ),
+          ];
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (format) async => document.save(),
+    );
+  }
+
+  pw.Widget _buildPdfProduction(
+    Production production,
+    List<dynamic> records,
+  ) {
+    final productionRecords = records
+        .where(
+          (record) => record.productionId == production.id,
+        )
+        .toList();
+
+    final Map<String, int> varieties = {};
+
+    for (final record in productionRecords) {
+      varieties[record.productName] =
+          (varieties[record.productName] ?? 0) + record.quantity as int;
+    }
+
+    final List<pw.Widget> varietyRows = [];
+
+    if (varieties.isNotEmpty) {
+      varietyRows.add(
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(top: 8, bottom: 4),
+          child: pw.Text(
+            'Variedades producidas',
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+
+      for (final entry in varieties.entries) {
+        varietyRows.add(
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 2),
+            child: pw.Row(
+              children: [
+                pw.Expanded(
+                  child: pw.Text(entry.key),
+                ),
+                pw.Text('${entry.value} piezas'),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(bottom: 16),
+      padding: const pw.EdgeInsets.all(12),
+      decoration: pw.BoxDecoration(
+        border: pw.Border.all(
+          color: pdf.PdfColors.grey400,
+        ),
+        borderRadius: pw.BorderRadius.circular(6),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            '${production.id} • ${production.recipeName}',
+            style: pw.TextStyle(
+              fontSize: 14,
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+          pw.SizedBox(height: 6),
+          pw.Text('Fecha: ${_formatDate(production.date)}'),
+          pw.Text('Lotes: ${production.lots}'),
+          pw.Text(
+            'Masa: ${production.totalMassKg.toStringAsFixed(2)} kg',
+          ),
+          pw.Text('Piezas: ${production.totalPieces}'),
+          pw.Text(
+            'Peso por pieza: '
+            '${production.pieceWeightGrams.toStringAsFixed(0)} g',
+          ),
+          ...varietyRows,
+          if (production.notes.isNotEmpty) ...[
+            pw.SizedBox(height: 6),
+            pw.Text('Observaciones: ${production.notes}'),
+          ],
+        ],
+      ),
+    );
+  }
+
+  pw.TableRow _pdfSummaryRow(
+    String label,
+    String value,
+  ) {
+    return pw.TableRow(
+      children: [
+        _pdfCell(label),
+        _pdfCell(value, bold: true),
+      ],
+    );
+  }
+
+  pw.Widget _pdfCell(
+    String text, {
+    bool bold = false,
+  }) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +318,13 @@ class ProductionReportPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Reporte de Producción'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            tooltip: 'Exportar a PDF',
+            onPressed: productions.isEmpty ? null : _exportPdf,
+          ),
+        ],
       ),
       body: productions.isEmpty
           ? const Center(
@@ -259,7 +548,6 @@ class ProductionReportPage extends StatelessWidget {
               'Peso por pieza: '
               '${production.pieceWeightGrams.toStringAsFixed(0)} g',
             ),
-
             if (varieties.isNotEmpty) ...[
               const SizedBox(height: 16),
               const Divider(),
@@ -301,7 +589,6 @@ class ProductionReportPage extends StatelessWidget {
                 ),
               ),
             ],
-
             if (production.notes.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text('Observaciones: ${production.notes}'),
