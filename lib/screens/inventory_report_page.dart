@@ -291,8 +291,14 @@ class InventoryReportPage extends StatelessWidget {
       ),
     );
 
+    final bakeryName = _settingsService.bakeryName.trim();
+    final safeBakeryName = (bakeryName.isEmpty ? 'ControlPan' : bakeryName)
+        .replaceAll(RegExp(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]'), '')
+        .replaceAll(RegExp(r'\\s+'), '_');
+
     await Printing.layoutPdf(
       onLayout: (format) async => document.save(),
+      name: '${safeBakeryName}_Reporte_Inventario.pdf',
     );
   }
 

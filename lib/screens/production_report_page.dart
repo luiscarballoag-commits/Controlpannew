@@ -6,6 +6,7 @@ import 'package:printing/printing.dart';
 import '../models/production.dart';
 import '../services/production_service.dart';
 import '../services/elaboration/elaboration_record_service.dart';
+import '../services/settings_service.dart';
 
 class ProductionReportPage extends StatelessWidget {
   ProductionReportPage({super.key});
@@ -46,6 +47,8 @@ class ProductionReportPage extends StatelessWidget {
 
     final document = pw.Document();
 
+    final settingsService = SettingsService();
+
     document.addPage(
       pw.MultiPage(
         pageFormat: pdf.PdfPageFormat.a4,
@@ -53,7 +56,9 @@ class ProductionReportPage extends StatelessWidget {
         build: (context) {
           return [
             pw.Text(
-              'CONTROLPAN',
+              settingsService.bakeryName.trim().isEmpty
+                  ? 'ControlPan'
+                  : settingsService.bakeryName.trim(),
               style: pw.TextStyle(
                 fontSize: 24,
                 fontWeight: pw.FontWeight.bold,
@@ -172,8 +177,14 @@ class ProductionReportPage extends StatelessWidget {
       ),
     );
 
+    final bakeryName = settingsService.bakeryName.trim();
+    final safeBakeryName = (bakeryName.isEmpty ? 'ControlPan' : bakeryName)
+        .replaceAll(RegExp(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]'), '')
+        .replaceAll(RegExp(r'\s+'), '_');
+
     await Printing.layoutPdf(
       onLayout: (format) async => document.save(),
+      name: '${safeBakeryName}_Reporte_Produccion.pdf',
     );
   }
 

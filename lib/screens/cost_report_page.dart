@@ -5,6 +5,7 @@ import 'package:printing/printing.dart';
 
 import '../models/cost_record.dart';
 import '../services/cost_record_service.dart';
+import '../services/settings_service.dart';
 
 class CostReportPage extends StatefulWidget {
   const CostReportPage({super.key});
@@ -14,6 +15,7 @@ class CostReportPage extends StatefulWidget {
 }
 
 class _CostReportPageState extends State<CostReportPage> {
+  final SettingsService _settingsService = SettingsService();
   final CostRecordService _costRecordService = CostRecordService();
 
   String selectedPeriod = 'Hoy';
@@ -98,7 +100,9 @@ class _CostReportPageState extends State<CostReportPage> {
         margin: const pw.EdgeInsets.all(32),
         build: (context) => [
           pw.Text(
-            'CONTROLPAN',
+            _settingsService.bakeryName.trim().isEmpty
+                ? 'ControlPan'
+                : _settingsService.bakeryName.trim(),
             style: pw.TextStyle(
               fontSize: 22,
               fontWeight: pw.FontWeight.bold,
@@ -278,10 +282,15 @@ class _CostReportPageState extends State<CostReportPage> {
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await document.save(),
-      filename:
-          'reporte_costos_${selectedPeriod.toLowerCase().replaceAll(' ', '_')}.pdf',
+    final bakeryName = _settingsService.bakeryName.trim();
+    final safeBakeryName = (bakeryName.isEmpty ? 'ControlPan' : bakeryName)
+        .replaceAll(RegExp(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]'), '')
+        .replaceAll(RegExp(r'\\s+'), '_');
+
+    await Printing.layoutPdf(
+      onLayout: (format) async => document.save(),
+      name:
+          '${safeBakeryName}_Reporte_Costos_${selectedPeriod.toLowerCase().replaceAll(' ', '_')}.pdf',
     );
   }
 
