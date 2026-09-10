@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'production_report_page.dart';
 import 'inventory_report_page.dart';
+import 'cost_report_page.dart';
 import '../models/cost_record.dart';
 import '../services/cost_record_service.dart';
 
@@ -276,6 +277,14 @@ class _CostsPageState extends State<CostsPage> {
             'Reporte de Costos',
             'Análisis detallado de costos',
             Colors.orange,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CostReportPage(),
+                ),
+              );
+            },
           ),
 
           _buildActionCard(

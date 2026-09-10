@@ -8,6 +8,9 @@ environment:
   sdk: ^3.12.2
 
 dependencies:
+  pdf: ^3.11.3
+  printing: ^5.14.2
+  excel: ^4.0.6
   flutter:
     sdk: flutter
 
