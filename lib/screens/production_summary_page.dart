@@ -565,6 +565,44 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
     );
   }
 
+  Future<void> _saveProductionCost(String productionId) async {
+    final totalUnits = widget.pieceWeight > 0
+        ? (totalMassGrams / widget.pieceWeight).floor()
+        : 0;
+
+    final costResult = costService.calculateRecipeCost(
+      recipe: widget.recipe,
+      lots: widget.lots,
+      totalWeightKg: totalMassGrams / 1000,
+      totalUnits: totalUnits,
+      productionId: productionId,
+      laborCost: _calculateLaborCost(),
+      operatingCost: operatingExpenseService.getTotalCostForHours(
+        hours: _productionHours,
+      ),
+      depreciationCost: _calculateDepreciationCost(),
+    );
+
+    costRecordService.saveRecord(
+      CostRecord(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        date: DateTime.now(),
+        productionId: productionId,
+        recipeName: widget.recipe.name,
+        rawMaterialCost: costResult.rawMaterialCost,
+        elaborationCost: costResult.elaborationCost,
+        laborCost: costResult.laborCost,
+        operatingCost: costResult.operatingCost,
+        depreciationCost: costResult.depreciationCost,
+        totalCost: costResult.totalCost,
+        costPerKg: costResult.costPerKg,
+        costPerPiece: costResult.costPerUnit,
+        profitPercentage: costResult.profitMargin,
+        suggestedSalePrice: costResult.suggestedSalePrice,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final totalPieces = widget.pieceWeight > 0
@@ -839,39 +877,8 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                                     );
                                     if (!mounted) return;
 
-final costResult = costService.calculateRecipeCost(
-                          recipe: widget.recipe,
-                          lots: widget.lots,
-                          totalWeightKg: totalMassGrams / 1000,
-                          totalUnits: totalPieces,
-                          productionId: productionId,
-                          laborCost: _calculateLaborCost(),
-                          operatingCost: operatingExpenseService.getTotalCostForHours(
-                            hours: _productionHours,
-                          ),
-                          depreciationCost: _calculateDepreciationCost(),
-                        );
+                                    await _saveProductionCost(productionId);
 
-                        costRecordService.saveRecord(
-                          CostRecord(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            date: DateTime.now(),
-                            productionId: productionId,
-                            recipeName: widget.recipe.name,
-                            rawMaterialCost: costResult.rawMaterialCost,
-                            elaborationCost: costResult.elaborationCost,
-                            laborCost: costResult.laborCost,
-                            operatingCost: costResult.operatingCost,
-                            depreciationCost: costResult.depreciationCost,
-                            totalCost: costResult.totalCost,
-                            costPerKg: costResult.costPerKg,
-                            costPerPiece: costResult.costPerUnit,
-                            profitPercentage: costResult.profitMargin,
-                            suggestedSalePrice: costResult.suggestedSalePrice,
-                          ),
-                        );
-
-                        
                                     navigator.popUntil(
                                       (route) => route.isFirst,
                                     );
@@ -879,8 +886,11 @@ final costResult = costService.calculateRecipeCost(
                                   child: const Text("Elaborar Productos"),
                                 ),
                                 OutlinedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     Navigator.pop(dialogContext);
+                                    await _saveProductionCost(productionId);
+                                    if (!mounted) return;
+
                                     Navigator.popUntil(
                                       context,
                                       (route) => route.isFirst,
