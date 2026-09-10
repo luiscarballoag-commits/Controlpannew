@@ -887,12 +887,13 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                                 ),
                                 OutlinedButton(
                                   onPressed: () async {
+                                    final navigator = Navigator.of(context);
+
                                     Navigator.pop(dialogContext);
                                     await _saveProductionCost(productionId);
                                     if (!mounted) return;
 
-                                    Navigator.popUntil(
-                                      context,
+                                    navigator.popUntil(
                                       (route) => route.isFirst,
                                     );
                                   },
