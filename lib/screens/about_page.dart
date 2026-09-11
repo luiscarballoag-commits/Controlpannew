@@ -13,43 +13,43 @@ class AboutPage extends StatelessWidget {
       ),
       insetPadding: const EdgeInsets.symmetric(
         horizontal: 24,
-        vertical: 28,
+        vertical: 24,
       ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxWidth: 430,
-          maxHeight: 650,
+          maxHeight: 600,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 22, 24, 14),
+          padding: const EdgeInsets.fromLTRB(22, 16, 22, 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
                 'assets/images/controlpan_logo.jpg',
-                width: 105,
-                height: 105,
+                width: 85,
+                height: 85,
                 fit: BoxFit.contain,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               const Text(
                 'ControlPan',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 27,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 3),
               Text(
                 'La forma inteligente de gestionar tu panadería.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 13),
               const Text(
                 'ControlPan es una aplicación diseñada para facilitar '
                 'la gestión de panaderías y pastelerías, permitiendo '
@@ -57,33 +57,33 @@ class AboutPage extends StatelessWidget {
                 'desde un solo lugar.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
+                  fontSize: 12.5,
+                  height: 1.35,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 11),
               const Text(
                 'Desarrollado por un maestro panadero para ayudar a '
                 'los panaderos a tomar mejores decisiones y conocer '
                 'realmente cuánto cuesta producir.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
+                  fontSize: 12.5,
+                  height: 1.35,
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 13),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Funciones principales',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 7),
+              const SizedBox(height: 4),
               const _FeatureItem(
                 icon: Icons.inventory_2_outlined,
                 text: 'Gestión inteligente de inventario',
@@ -112,15 +112,15 @@ class AboutPage extends StatelessWidget {
                 icon: Icons.assessment_outlined,
                 text: 'Reportes de producción, inventario y costos',
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 9),
               Text(
                 'Versión 1.0',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 2),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -129,7 +129,7 @@ class AboutPage extends StatelessWidget {
                     'CERRAR',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -154,21 +154,21 @@ class _FeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             icon,
-            size: 19,
+            size: 17,
             color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(width: 9),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               text,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
           ),
