@@ -5,69 +5,51 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
       ),
       insetPadding: const EdgeInsets.symmetric(
         horizontal: 24,
-        vertical: 40,
+        vertical: 28,
       ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           maxWidth: 430,
-          maxHeight: 700,
+          maxHeight: 650,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
+          padding: const EdgeInsets.fromLTRB(24, 22, 24, 14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                ),
-                child: Center(
-                  child: Text(
-                    'C',
-                    style: TextStyle(
-                      fontSize: 82,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
+              Image.asset(
+                'assets/images/controlpan_logo.jpg',
+                width: 105,
+                height: 105,
+                fit: BoxFit.contain,
               ),
-
-              const SizedBox(height: 24),
-
+              const SizedBox(height: 12),
               const Text(
                 'ControlPan',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 27,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
-              const SizedBox(height: 8),
-
+              const SizedBox(height: 5),
               Text(
                 'La forma inteligente de gestionar tu panadería.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurfaceVariant,
+                  fontSize: 15,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-
-              const SizedBox(height: 28),
-
+              const SizedBox(height: 18),
               const Text(
                 'ControlPan es una aplicación diseñada para facilitar '
                 'la gestión de panaderías y pastelerías, permitiendo '
@@ -75,39 +57,33 @@ class AboutPage extends StatelessWidget {
                 'desde un solo lugar.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 17,
-                  height: 1.55,
+                  fontSize: 14,
+                  height: 1.4,
                 ),
               ),
-
-              const SizedBox(height: 24),
-
+              const SizedBox(height: 16),
               const Text(
                 'Desarrollado por un maestro panadero para ayudar a '
                 'los panaderos a tomar mejores decisiones y conocer '
                 'realmente cuánto cuesta producir.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 17,
-                  height: 1.55,
+                  fontSize: 14,
+                  height: 1.4,
                 ),
               ),
-
-              const SizedBox(height: 28),
-
+              const SizedBox(height: 18),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Funciones principales',
                   style: TextStyle(
-                    fontSize: 19,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
-              const SizedBox(height: 12),
-
+              const SizedBox(height: 7),
               const _FeatureItem(
                 icon: Icons.inventory_2_outlined,
                 text: 'Gestión inteligente de inventario',
@@ -136,21 +112,15 @@ class AboutPage extends StatelessWidget {
                 icon: Icons.assessment_outlined,
                 text: 'Reportes de producción, inventario y costos',
               ),
-
-              const SizedBox(height: 24),
-
+              const SizedBox(height: 14),
               Text(
                 'Versión 1.0',
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurfaceVariant,
+                  fontSize: 14,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-
-              const SizedBox(height: 12),
-
+              const SizedBox(height: 5),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -159,7 +129,7 @@ class AboutPage extends StatelessWidget {
                     'CERRAR',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -184,21 +154,21 @@ class _FeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             icon,
-            size: 22,
+            size: 19,
             color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 9),
           Expanded(
             child: Text(
               text,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
           ),
