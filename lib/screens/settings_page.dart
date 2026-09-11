@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/settings_service.dart';
 import '../widgets/settings/bakery_info_card.dart';
+import 'about_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,15 +15,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final SettingsService _settingsService = SettingsService();
 
   String get _currencyLabel {
-    switch (_settingsService.currency) {
-      case 'VES':
-        return 'Bolívar (Bs.)';
-      case 'EUR':
-        return 'Euro (€)';
-      case 'USD':
-      default:
-        return 'Dólar estadounidense (\$)';
-    }
+    return _settingsService.currencyDisplay;
   }
 
   Future<void> _selectCurrency() async {
@@ -36,12 +29,44 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             RadioGroup<String>(
               groupValue: currentCurrency,
-              onChanged: (value) => Navigator.pop(context, value),
+              onChanged: (value) {
+                if (value != null) {
+                  Navigator.pop(context, value);
+                }
+              },
               child: const Column(
                 children: [
                   RadioListTile<String>(
                     value: 'VES',
-                    title: Text('Bolívar (Bs.)'),
+                    title: Text('Bolívar venezolano (Bs.)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'COP',
+                    title: Text('Peso colombiano (\$)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'BRL',
+                    title: Text('Real brasileño (R\$)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'PEN',
+                    title: Text('Sol peruano (S/)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'CLP',
+                    title: Text('Peso chileno (\$)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'MXN',
+                    title: Text('Peso mexicano (\$)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'ARS',
+                    title: Text('Peso argentino (\$)'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'BOB',
+                    title: Text('Boliviano (Bs.)'),
                   ),
                   RadioListTile<String>(
                     value: 'USD',
@@ -71,8 +96,17 @@ class _SettingsPageState extends State<SettingsPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Moneda cambiada a $_currencyLabel'),
+        content: Text(
+          'Moneda cambiada a $_currencyLabel',
+        ),
       ),
+    );
+  }
+
+  void _showAbout() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => const AboutPage(),
     );
   }
 
@@ -104,11 +138,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
         const Divider(),
 
-        const ListTile(
-          leading: Icon(Icons.info_outline),
-          title: Text('Acerca de'),
-          subtitle: Text('ControlPan versión 1.0'),
-          trailing: Icon(Icons.chevron_right),
+        ListTile(
+          leading: const Icon(Icons.info_outline),
+          title: const Text('Acerca de'),
+          subtitle: const Text('ControlPan versión 1.0'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _showAbout,
         ),
       ],
     );
