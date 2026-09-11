@@ -7,6 +7,7 @@ class SettingsService {
   static const String bakeryAddressKey = 'bakery_address';
   static const String bakeryPhoneKey = 'bakery_phone';
   static const String bakeryOwnerKey = 'bakery_owner';
+  static const String currencyKey = 'currency';
 
   Box get _box => Hive.box(_boxName);
 
@@ -30,6 +31,22 @@ class SettingsService {
     return _box.get(bakeryOwnerKey, defaultValue: '') as String;
   }
 
+  String get currency {
+    return _box.get(currencyKey, defaultValue: 'USD') as String;
+  }
+
+  String get currencySymbol {
+    switch (currency) {
+      case 'VES':
+        return 'Bs.';
+      case 'EUR':
+        return '€';
+      case 'USD':
+      default:
+        return r'$';
+    }
+  }
+
   Future<void> saveBakeryName(String name) async {
     await _box.put(bakeryNameKey, name);
   }
@@ -44,5 +61,9 @@ class SettingsService {
 
   Future<void> saveBakeryOwner(String owner) async {
     await _box.put(bakeryOwnerKey, owner);
+  }
+
+  Future<void> saveCurrency(String value) async {
+    await _box.put(currencyKey, value);
   }
 }
