@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/settings_service.dart';
+import '../services/backup_service.dart';
 import '../widgets/settings/bakery_info_card.dart';
 import 'about_page.dart';
 
@@ -110,6 +111,31 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future<void> _createBackup() async {
+    try {
+      final backupService = BackupService();
+      final file = await backupService.createBackup();
+
+      if (!mounted || file == null) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Respaldo creado correctamente.'),
+        ),
+      );
+
+      await backupService.shareBackup(file);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo crear el respaldo: $e'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -129,11 +155,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
         const Divider(),
 
-        const ListTile(
-          leading: Icon(Icons.backup),
-          title: Text('Respaldo'),
-          subtitle: Text('Exportar e importar datos'),
-          trailing: Icon(Icons.chevron_right),
+        ListTile(
+          leading: const Icon(Icons.backup),
+          title: const Text('Respaldo'),
+          subtitle: const Text('Exportar datos de ControlPan'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _createBackup,
         ),
 
         const Divider(),
