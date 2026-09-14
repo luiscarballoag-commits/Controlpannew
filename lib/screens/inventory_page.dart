@@ -8,6 +8,7 @@ import 'inventory_entry_page.dart';
 import 'inventory_exit_page.dart';
 import 'inventory_history_page.dart';
 import 'current_stock_page.dart';
+import 'low_stock_page.dart';
 
 class InventoryPage extends StatelessWidget {
   InventoryPage({super.key});
@@ -119,7 +120,14 @@ class InventoryPage extends StatelessWidget {
             color: Colors.red,
             title: "Stock Bajo",
             subtitle: "${lowStock.length} alertas",
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => LowStockPage(),
+                ),
+              );
+            },
           ),
 
           _buildCard(
