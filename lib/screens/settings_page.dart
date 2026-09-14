@@ -136,6 +136,64 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  Future<void> _restoreBackup() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Restaurar respaldo'),
+          content: const Text(
+            'Esta acción reemplazará los datos actuales de ControlPan '
+            'por los datos contenidos en el respaldo seleccionado. '
+            '¿Deseas continuar?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('CANCELAR'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('RESTAURAR'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    try {
+      final backupService = BackupService();
+      final restored = await backupService.restoreBackup();
+
+      if (!mounted) return;
+
+      if (!restored) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Respaldo restaurado correctamente. '
+            'Reinicia ControlPan para cargar todos los datos.',
+          ),
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo restaurar el respaldo: $e'),
+          duration: const Duration(seconds: 6),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -161,6 +219,14 @@ class _SettingsPageState extends State<SettingsPage> {
           subtitle: const Text('Exportar datos de ControlPan'),
           trailing: const Icon(Icons.chevron_right),
           onTap: _createBackup,
+        ),
+
+        ListTile(
+          leading: const Icon(Icons.restore),
+          title: const Text('Restaurar respaldo'),
+          subtitle: const Text('Importar datos desde un archivo ZIP'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _restoreBackup,
         ),
 
         const Divider(),

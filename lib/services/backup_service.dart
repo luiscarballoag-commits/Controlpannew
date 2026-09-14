@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -130,6 +131,208 @@ class BackupService {
         text: 'Respaldo de datos de ControlPan',
       ),
     );
+  }
+
+  Future<bool> restoreBackup() async {
+    final result = await FilePicker.pickFiles(
+      dialogTitle: 'Seleccionar respaldo de ControlPan',
+      type: FileType.custom,
+      allowedExtensions: ['zip'],
+    );
+
+    if (result.isEmpty) {
+      return false;
+    }
+
+    final selectedFile = result.single;
+    final bytes = await selectedFile.readAsBytes();
+
+    if (bytes.isEmpty) {
+      throw Exception(
+        'No se pudo leer el archivo de respaldo seleccionado.',
+      );
+    }
+
+    final archive = ZipDecoder().decodeBytes(bytes);
+
+    final metadataFile = _findArchiveFile(
+      archive,
+      'backup_info.txt',
+    );
+
+    if (metadataFile == null) {
+      throw Exception(
+        'El archivo seleccionado no contiene un respaldo válido de ControlPan.',
+      );
+    }
+
+    final metadata = utf8.decode(
+      metadataFile.content as List<int>,
+      allowMalformed: true,
+    );
+
+    if (!metadata.contains('ControlPan Backup') ||
+        !metadata.contains('Version: $backupVersion')) {
+      throw Exception(
+        'La versión del respaldo no es compatible con ControlPan.',
+      );
+    }
+
+    final backupFiles = <ArchiveFile>[];
+
+    for (final boxName in _boxNames) {
+      final hiveFile = _findArchiveFile(
+        archive,
+        '$boxName.hive',
+      );
+
+      final compactedFile = _findArchiveFile(
+        archive,
+        '$boxName.hivec',
+      );
+
+      if (hiveFile != null) {
+        backupFiles.add(hiveFile);
+      }
+
+      if (compactedFile != null) {
+        backupFiles.add(compactedFile);
+      }
+    }
+
+    if (backupFiles.isEmpty) {
+      throw Exception(
+        'El respaldo no contiene datos de ControlPan.',
+      );
+    }
+
+    final appDirectory = await getApplicationDocumentsDirectory();
+    final tempDirectory = await getTemporaryDirectory();
+    final rollbackDirectory = Directory(
+      '${tempDirectory.path}/controlpan_restore_rollback',
+    );
+
+    if (await rollbackDirectory.exists()) {
+      await rollbackDirectory.delete(recursive: true);
+    }
+
+    await rollbackDirectory.create(recursive: true);
+
+    await Hive.close();
+
+    try {
+      await _createRollback(
+        appDirectory,
+        rollbackDirectory,
+      );
+
+      await _removeHiveFiles(appDirectory);
+
+      for (final archiveFile in backupFiles) {
+        final outputFile = File(
+          '${appDirectory.path}/${archiveFile.name}',
+        );
+
+        await outputFile.writeAsBytes(
+          archiveFile.content as List<int>,
+          flush: true,
+        );
+      }
+
+      await _reopenBoxes();
+
+      await rollbackDirectory.delete(recursive: true);
+
+      return true;
+    } catch (error) {
+      await _restoreRollback(
+        appDirectory,
+        rollbackDirectory,
+      );
+
+      await _reopenBoxes();
+
+      if (await rollbackDirectory.exists()) {
+        await rollbackDirectory.delete(recursive: true);
+      }
+
+      throw Exception(
+        'No se pudo restaurar el respaldo. '
+        'Los datos anteriores fueron conservados. '
+        'Detalle: $error',
+      );
+    }
+  }
+
+  ArchiveFile? _findArchiveFile(
+    Archive archive,
+    String name,
+  ) {
+    for (final file in archive.files) {
+      if (file.name == name && file.isFile) {
+        return file;
+      }
+    }
+
+    return null;
+  }
+
+  Future<void> _createRollback(
+    Directory appDirectory,
+    Directory rollbackDirectory,
+  ) async {
+    for (final boxName in _boxNames) {
+      for (final extension in ['hive', 'hivec']) {
+        final source = File(
+          '${appDirectory.path}/$boxName.$extension',
+        );
+
+        if (await source.exists()) {
+          final destination = File(
+            '${rollbackDirectory.path}/$boxName.$extension',
+          );
+
+          await source.copy(destination.path);
+        }
+      }
+    }
+  }
+
+  Future<void> _removeHiveFiles(
+    Directory appDirectory,
+  ) async {
+    for (final boxName in _boxNames) {
+      for (final extension in ['hive', 'hivec']) {
+        final file = File(
+          '${appDirectory.path}/$boxName.$extension',
+        );
+
+        if (await file.exists()) {
+          await file.delete();
+        }
+      }
+    }
+  }
+
+  Future<void> _restoreRollback(
+    Directory appDirectory,
+    Directory rollbackDirectory,
+  ) async {
+    await _removeHiveFiles(appDirectory);
+
+    if (!await rollbackDirectory.exists()) {
+      return;
+    }
+
+    await for (final entity in rollbackDirectory.list()) {
+      if (entity is File) {
+        final destination = File(
+          '${appDirectory.path}/${entity.uri.pathSegments.last}',
+        );
+
+        await entity.copy(destination.path);
+      }
+    }
   }
 
   Future<void> _reopenBoxes() async {
