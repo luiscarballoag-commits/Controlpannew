@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../services/dashboard_service.dart';
-
 import 'production_recipe_page.dart';
 import 'manual_production_page.dart';
 import 'elaboration/elaboration_recipe_list_page.dart';
@@ -17,8 +15,6 @@ class ProductionDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dashboard = DashboardService();
-
     return Scaffold(
       backgroundColor: _background,
       appBar: AppBar(
@@ -34,38 +30,6 @@ class ProductionDashboardPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
         children: [
-          const Text(
-            'Resumen de Hoy',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-          ),
-
-          const SizedBox(height: 18),
-
-          Row(
-            children: [
-              _infoCard(
-                icon: Icons.factory,
-                title: 'Producciones',
-                value: dashboard.productionsToday.toString(),
-                color: Colors.brown,
-              ),
-              _infoCard(
-                icon: Icons.scale,
-                title: 'Kg',
-                value: dashboard.totalMassToday.toStringAsFixed(1),
-                color: Colors.orange,
-              ),
-              _infoCard(
-                icon: Icons.bakery_dining,
-                title: 'Panes',
-                value: dashboard.totalPiecesToday.toString(),
-                color: Colors.green,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-
           const Text(
             'Operaciones',
             style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
@@ -194,50 +158,6 @@ class ProductionDashboardPage extends StatelessWidget {
             page: const ManualProductionPage(),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _infoCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Expanded(
-      child: Container(
-        height: 120,
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              blurRadius: 8,
-              color: Colors.black12,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 23,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white70, fontSize: 13),
-            ),
-          ],
-        ),
       ),
     );
   }
