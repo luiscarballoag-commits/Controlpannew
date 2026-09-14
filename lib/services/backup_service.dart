@@ -30,6 +30,9 @@ class BackupService {
 
   Future<File?> createBackup() async {
     final appDirectory = await getApplicationDocumentsDirectory();
+    final tempDirectory = await getTemporaryDirectory();
+
+    late Uint8List backupBytes;
 
     await Hive.close();
 
@@ -37,17 +40,11 @@ class BackupService {
       final archive = Archive();
 
       for (final boxName in _boxNames) {
-        final hiveFile = File(
-          '${appDirectory.path}/$boxName.hive',
-        );
-
-        final compactedFile = File(
-          '${appDirectory.path}/$boxName.hivec',
-        );
+        final hiveFile = File('${appDirectory.path}/$boxName.hive');
+        final compactedFile = File('${appDirectory.path}/$boxName.hivec');
 
         if (await hiveFile.exists()) {
           final bytes = await hiveFile.readAsBytes();
-
           archive.addFile(
             ArchiveFile(
               '$boxName.hive',
@@ -59,7 +56,6 @@ class BackupService {
 
         if (await compactedFile.exists()) {
           final bytes = await compactedFile.readAsBytes();
-
           archive.addFile(
             ArchiveFile(
               '$boxName.hivec',
@@ -70,13 +66,16 @@ class BackupService {
         }
       }
 
-      final metadata = ArchiveFile(
-        'backup_info.txt',
-        backupVersion.length,
-        backupVersion.codeUnits,
-      );
+      const metadata = 'ControlPan Backup\nVersion: $backupVersion\n';
+      final metadataBytes = Uint8List.fromList(metadata.codeUnits);
 
-      archive.addFile(metadata);
+      archive.addFile(
+        ArchiveFile(
+          'backup_info.txt',
+          metadataBytes.length,
+          metadataBytes,
+        ),
+      );
 
       final zipBytes = ZipEncoder().encode(archive);
 
@@ -84,29 +83,46 @@ class BackupService {
         return null;
       }
 
-      final backupBytes = Uint8List.fromList(zipBytes);
-
-      final result = await FilePicker.saveFile(
-        dialogTitle: 'Guardar respaldo de ControlPan',
-        fileName:
-            'ControlPan_Respaldo_${DateTime.now().millisecondsSinceEpoch}.zip',
-        bytes: backupBytes,
-        mimeType: 'application/zip',
-        type: FileType.custom,
-        allowedExtensions: ['zip'],
-      );
-
-      if (result == null) {
-        return null;
-      }
-
-      return File(result.toFilePath());
+      backupBytes = Uint8List.fromList(zipBytes);
     } finally {
       await _reopenBoxes();
     }
+
+    if (backupBytes.isEmpty) {
+      return null;
+    }
+
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final temporaryFile = File(
+      '${tempDirectory.path}/ControlPan_Respaldo_$timestamp.zip',
+    );
+
+    await temporaryFile.writeAsBytes(
+      backupBytes,
+      flush: true,
+    );
+
+    final result = await FilePicker.saveFile(
+      dialogTitle: 'Guardar respaldo de ControlPan',
+      fileName: 'ControlPan_Respaldo_$timestamp.zip',
+      bytes: backupBytes,
+      mimeType: 'application/zip',
+      type: FileType.custom,
+      allowedExtensions: ['zip'],
+    );
+
+    if (result == null) {
+      return null;
+    }
+
+    return temporaryFile;
   }
 
   Future<void> shareBackup(File file) async {
+    if (!await file.exists()) {
+      throw Exception('El archivo temporal del respaldo no existe.');
+    }
+
     await SharePlus.instance.share(
       ShareParams(
         files: [XFile(file.path)],
