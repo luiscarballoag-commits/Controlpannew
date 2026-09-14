@@ -7,6 +7,7 @@ import 'ingredients_page.dart';
 import 'inventory_entry_page.dart';
 import 'inventory_exit_page.dart';
 import 'inventory_history_page.dart';
+import 'current_stock_page.dart';
 
 class InventoryPage extends StatelessWidget {
   InventoryPage({super.key});
@@ -102,7 +103,14 @@ class InventoryPage extends StatelessWidget {
             color: Colors.blue,
             title: "Stock Actual",
             subtitle: "${items.length} ingredientes",
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CurrentStockPage(),
+                ),
+              );
+            },
           ),
 
           _buildCard(
