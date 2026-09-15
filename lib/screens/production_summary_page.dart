@@ -271,13 +271,13 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
     final workers = laborService.getActiveWorkers();
 
     return Card(
-      elevation: 4,
+      elevation: 3,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -286,7 +286,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 Container(
                   padding: const EdgeInsets.all(9),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF8D6E63).withValues(alpha: 0.12),
+                    color: const Color(0xFF8D6E63).withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
@@ -296,54 +296,58 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
-                  child: Text(
-                    'Costos adicionales',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Costos adicionales',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Costos asociados a esta producción',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
 
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.groups_rounded,
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(width: 10),
-                  const Expanded(
-                    child: Text(
-                      'Mano de Obra',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+            Row(
+              children: [
+                const Icon(
+                  Icons.groups_rounded,
+                  size: 21,
+                  color: Color(0xFF8D6E63),
+                ),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Mano de Obra',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  TextButton.icon(
-                    onPressed: _showAddWorkerDialog,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Agregar'),
-                  ),
-                ],
-              ),
+                ),
+                TextButton.icon(
+                  onPressed: _showAddWorkerDialog,
+                  icon: const Icon(Icons.add, size: 19),
+                  label: const Text('Agregar'),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 10),
+            const Divider(height: 14),
 
             if (_selectedWorkerIds.isEmpty)
               const Padding(
@@ -370,66 +374,65 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                   ) *
                   worker.quantity;
 
-              return Card(
-                elevation: 1,
-                margin: const EdgeInsets.only(bottom: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          worker.role,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        worker.role,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(
-                        width: 78,
-                        child: TextFormField(
-                          initialValue: hours == 0
-                              ? ''
-                              : hours.toString(),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
+                    ),
+                    SizedBox(
+                      width: 78,
+                      child: TextFormField(
+                        initialValue: hours == 0 ? '' : hours.toString(),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Horas',
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
                           ),
-                          decoration: const InputDecoration(
-                            labelText: 'Horas',
-                            isDense: true,
-                          ),
-                          onChanged: (value) {
-                            final parsed = double.tryParse(value) ?? 0;
+                        ),
+                        onChanged: (value) {
+                          final parsed = double.tryParse(value) ?? 0;
 
-                            setState(() {
-                              _workerHours[workerId] = parsed;
-                            });
-                          },
+                          setState(() {
+                            _workerHours[workerId] = parsed;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 68,
+                      child: Text(
+                        '\$${cost.toStringAsFixed(2)}',
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 70,
-                        child: Text(
-                          '\$${cost.toStringAsFixed(2)}',
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                    ),
+                    SizedBox(
+                      width: 42,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          size: 21,
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline),
                         onPressed: () => _removeWorker(workerId),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }),
@@ -455,98 +458,85 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
               ],
             ),
 
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
 
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.teal.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.receipt_long_rounded,
-                    color: Colors.teal,
-                  ),
-                  const SizedBox(width: 10),
-                  const Expanded(
-                    child: Text(
-                      'Gastos Operativos',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 78,
-                    child: TextFormField(
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Horas',
-                        isDense: true,
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _productionHours = double.tryParse(value) ?? 0;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '\$${operatingExpenseService.getTotalCostForHours(hours: _productionHours).toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 17,
+            Row(
+              children: [
+                const Icon(
+                  Icons.receipt_long_rounded,
+                  size: 21,
+                  color: Color(0xFF8D6E63),
+                ),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Gastos Operativos',
+                    style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 18),
-
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.precision_manufacturing_rounded,
-                    color: Colors.orange,
-                  ),
-                  const SizedBox(width: 10),
-                  const Expanded(
-                    child: Text(
-                      'Depreciación',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                ),
+                SizedBox(
+                  width: 78,
+                  child: TextFormField(
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Horas',
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
                       ),
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        _productionHours = double.tryParse(value) ?? 0;
+                      });
+                    },
                   ),
-                  TextButton.icon(
-                    onPressed: _showAddAssetDialog,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Agregar'),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  '\$${operatingExpenseService.getTotalCostForHours(hours: _productionHours).toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
+
+            Row(
+              children: [
+                const Icon(
+                  Icons.precision_manufacturing_rounded,
+                  size: 21,
+                  color: Color(0xFF8D6E63),
+                ),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Depreciación',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: _showAddAssetDialog,
+                  icon: const Icon(Icons.add, size: 19),
+                  label: const Text('Agregar'),
+                ),
+              ],
+            ),
+
+            const Divider(height: 14),
 
             if (_selectedAssetIds.isEmpty)
               const Padding(
@@ -573,67 +563,66 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 hours: hours,
               );
 
-              return Card(
-                elevation: 1,
-                margin: const EdgeInsets.only(bottom: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          asset.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        asset.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(
-                        width: 78,
-                        child: TextFormField(
-                          initialValue: hours == 0
-                              ? ''
-                              : hours.toString(),
-                          keyboardType:
-                              const TextInputType.numberWithOptions(
-                            decimal: true,
+                    ),
+                    SizedBox(
+                      width: 78,
+                      child: TextFormField(
+                        initialValue: hours == 0 ? '' : hours.toString(),
+                        keyboardType:
+                            const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Horas',
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
                           ),
-                          decoration: const InputDecoration(
-                            labelText: 'Horas',
-                            isDense: true,
-                          ),
-                          onChanged: (value) {
-                            final parsed = double.tryParse(value) ?? 0;
+                        ),
+                        onChanged: (value) {
+                          final parsed = double.tryParse(value) ?? 0;
 
-                            setState(() {
-                              _assetHours[assetId] = parsed;
-                            });
-                          },
+                          setState(() {
+                            _assetHours[assetId] = parsed;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 68,
+                      child: Text(
+                        '\$${cost.toStringAsFixed(2)}',
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 70,
-                        child: Text(
-                          '\$${cost.toStringAsFixed(2)}',
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                    ),
+                    SizedBox(
+                      width: 42,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          size: 21,
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline),
                         onPressed: () => _removeAsset(assetId),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }),
