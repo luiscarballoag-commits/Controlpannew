@@ -271,23 +271,30 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
     final workers = laborService.getActiveWorkers();
 
     return Card(
-      elevation: 3,
+      elevation: 4,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.groups_rounded,
-                  color: Color(0xFF8D6E63),
+                Container(
+                  padding: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF8D6E63).withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.account_balance_wallet_rounded,
+                    color: Color(0xFF8D6E63),
+                  ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 const Expanded(
                   child: Text(
                     'Costos adicionales',
@@ -297,27 +304,56 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                     ),
                   ),
                 ),
-                TextButton.icon(
-                  onPressed: _showAddWorkerDialog,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Agregar trabajador'),
-                ),
               ],
             ),
-            const SizedBox(height: 10),
-            const Text(
-              'Mano de Obra',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+
+            const SizedBox(height: 18),
+
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.groups_rounded,
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Text(
+                      'Mano de Obra',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: _showAddWorkerDialog,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Agregar'),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 10),
+
             if (_selectedWorkerIds.isEmpty)
-              const Text(
-                'No hay trabajadores agregados a esta producción.',
-                style: TextStyle(color: Colors.grey),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  'No hay trabajadores agregados a esta producción.',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
+
             ..._selectedWorkerIds.map((workerId) {
               final worker = workers.where(
                 (item) => item.id == workerId,
@@ -335,13 +371,19 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                   worker.quantity;
 
               return Card(
+                elevation: 1,
                 margin: const EdgeInsets.only(bottom: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 2,
                         child: Text(
                           worker.role,
                           style: const TextStyle(
@@ -350,7 +392,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 75,
+                        width: 78,
                         child: TextFormField(
                           initialValue: hours == 0
                               ? ''
@@ -373,10 +415,13 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                       ),
                       const SizedBox(width: 10),
                       SizedBox(
-                        width: 75,
+                        width: 70,
                         child: Text(
                           '\$${cost.toStringAsFixed(2)}',
                           textAlign: TextAlign.right,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       IconButton(
@@ -388,7 +433,9 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 ),
               );
             }),
-            const Divider(),
+
+            const Divider(height: 24),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -407,68 +454,109 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Gastos Operativos',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 90,
-                  child: TextFormField(
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    decoration: const InputDecoration(
-                      labelText: 'Horas',
-                      isDense: true,
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _productionHours = double.tryParse(value) ?? 0;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  '\$${operatingExpenseService.getTotalCostForHours(hours: _productionHours).toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Depreciación',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: _showAddAssetDialog,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Agregar equipo'),
-                ),
-              ],
-            ),
-            if (_selectedAssetIds.isEmpty)
-              const Text(
-                'No hay equipos agregados a esta producción.',
-                style: TextStyle(color: Colors.grey),
+
+            const SizedBox(height: 18),
+
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
               ),
+              decoration: BoxDecoration(
+                color: Colors.teal.shade50,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.receipt_long_rounded,
+                    color: Colors.teal,
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Text(
+                      'Gastos Operativos',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 78,
+                    child: TextFormField(
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Horas',
+                        isDense: true,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _productionHours = double.tryParse(value) ?? 0;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    '\$${operatingExpenseService.getTotalCostForHours(hours: _productionHours).toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 18),
+
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.precision_manufacturing_rounded,
+                    color: Colors.orange,
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Text(
+                      'Depreciación',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: _showAddAssetDialog,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Agregar'),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            if (_selectedAssetIds.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  'No hay equipos agregados a esta producción.',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+
             ..._selectedAssetIds.map((assetId) {
               final asset = depreciationService
                   .getActiveAssets()
@@ -486,13 +574,19 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
               );
 
               return Card(
+                elevation: 1,
                 margin: const EdgeInsets.only(bottom: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 2,
                         child: Text(
                           asset.name,
                           style: const TextStyle(
@@ -501,7 +595,7 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                         ),
                       ),
                       SizedBox(
-                        width: 75,
+                        width: 78,
                         child: TextFormField(
                           initialValue: hours == 0
                               ? ''
@@ -525,10 +619,13 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                       ),
                       const SizedBox(width: 10),
                       SizedBox(
-                        width: 75,
+                        width: 70,
                         child: Text(
                           '\$${cost.toStringAsFixed(2)}',
                           textAlign: TextAlign.right,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       IconButton(
@@ -540,7 +637,9 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                 ),
               );
             }),
-            const Divider(),
+
+            const Divider(height: 24),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
