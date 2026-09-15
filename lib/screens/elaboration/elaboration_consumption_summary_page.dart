@@ -5,6 +5,7 @@ import "../../models/elaboration/consumption_item.dart";
 import 'elaboration_production_success_page.dart';
 
 class ElaborationConsumptionSummaryPage extends StatelessWidget {
+  final String productionId;
   final List<ConsumptionItem> ingredients;
   final String productName;
 
@@ -12,6 +13,7 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
 
   ElaborationConsumptionSummaryPage({
     super.key,
+    required this.productionId,
     required this.productName,
     required this.quantity,
     required this.ingredients,
@@ -86,6 +88,7 @@ class ElaborationConsumptionSummaryPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => ElaborationProductionSuccessPage(
+                            productionId: productionId,
                             productName: productName,
                             quantity: quantity,
                             ingredients: ingredients,

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import '../add_production_costs_page.dart';
 
 import '../../models/elaboration/consumption_item.dart';
 
 class ElaborationProductionSuccessPage extends StatelessWidget {
+  final String productionId;
   final String productName;
   final int quantity;
   final List<ConsumptionItem> ingredients;
 
   const ElaborationProductionSuccessPage({
     super.key,
+    required this.productionId,
     required this.productName,
     required this.quantity,
     required this.ingredients,
@@ -77,7 +80,14 @@ class ElaborationProductionSuccessPage extends StatelessWidget {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AddProductionCostsPage(
+                        productionId: productionId,
+                      ),
+                    ),
+                  );
                 },
                 child: const Text("FINALIZAR"),
               ),

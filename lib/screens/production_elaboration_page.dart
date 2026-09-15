@@ -201,6 +201,7 @@ class _ProductionElaborationPageState extends State<ProductionElaborationPage> {
                         await navigator.push(
                           MaterialPageRoute(
                             builder: (_) => ElaborationConsumptionSummaryPage(
+                              productionId: widget.productionId,
                               productName: lastRecipeName,
                               quantity: lastPieces,
                               ingredients: consumption,

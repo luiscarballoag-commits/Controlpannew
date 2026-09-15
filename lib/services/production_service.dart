@@ -23,6 +23,15 @@ class ProductionService {
     return _box.getAt(index);
   }
 
+  Production? getProductionById(String id) {
+    for (final production in _box.values) {
+      if (production.id == id) {
+        return production;
+      }
+    }
+    return null;
+  }
+
   int count() {
     return _box.length;
   }

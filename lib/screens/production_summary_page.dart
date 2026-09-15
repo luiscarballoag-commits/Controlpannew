@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../core/production_manager/production_manager.dart';
 import '../core/production_engine/ingredient.dart';
 import '../models/production.dart';
-import '../models/cost_record.dart';
 import '../models/recipe.dart';
 import '../services/production_inventory_service.dart';
 import '../services/production_service.dart';
@@ -11,8 +10,6 @@ import '../services/labor_service.dart';
 import '../services/operating_expense_service.dart';
 import '../services/depreciation_service.dart';
 import 'production_elaboration_page.dart';
-import '../services/cost_service.dart';
-import '../services/cost_record_service.dart';
 
 class ProductionSummaryPage extends StatefulWidget {
   final Recipe recipe;
@@ -33,9 +30,7 @@ class ProductionSummaryPage extends StatefulWidget {
 class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
   final ProductionService productionService = ProductionService();
 
-  final CostService costService = CostService();
 
-  final CostRecordService costRecordService = CostRecordService();
 
   final ProductionInventoryService inventoryService =
       ProductionInventoryService();
@@ -653,44 +648,6 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
     );
   }
 
-  Future<void> _saveProductionCost(String productionId) async {
-    final totalUnits = widget.pieceWeight > 0
-        ? (totalMassGrams / widget.pieceWeight).floor()
-        : 0;
-
-    final costResult = costService.calculateRecipeCost(
-      recipe: widget.recipe,
-      lots: widget.lots,
-      totalWeightKg: totalMassGrams / 1000,
-      totalUnits: totalUnits,
-      productionId: productionId,
-      laborCost: _calculateLaborCost(),
-      operatingCost: operatingExpenseService.getTotalCostForHours(
-        hours: _productionHours,
-      ),
-      depreciationCost: _calculateDepreciationCost(),
-    );
-
-    costRecordService.saveRecord(
-      CostRecord(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        date: DateTime.now(),
-        productionId: productionId,
-        recipeName: widget.recipe.name,
-        rawMaterialCost: costResult.rawMaterialCost,
-        elaborationCost: costResult.elaborationCost,
-        laborCost: costResult.laborCost,
-        operatingCost: costResult.operatingCost,
-        depreciationCost: costResult.depreciationCost,
-        totalCost: costResult.totalCost,
-        costPerKg: costResult.costPerKg,
-        costPerPiece: costResult.costPerUnit,
-        profitPercentage: costResult.profitMargin,
-        suggestedSalePrice: costResult.suggestedSalePrice,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final totalPieces = widget.pieceWeight > 0
@@ -965,7 +922,6 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                                     );
                                     if (!mounted) return;
 
-                                    await _saveProductionCost(productionId);
 
                                     navigator.popUntil(
                                       (route) => route.isFirst,
@@ -978,7 +934,6 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                                     final navigator = Navigator.of(context);
 
                                     Navigator.pop(dialogContext);
-                                    await _saveProductionCost(productionId);
                                     if (!mounted) return;
 
                                     navigator.popUntil(
