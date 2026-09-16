@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../models/cost_record.dart';
+import 'production_service.dart';
 
 class CostRecordService {
   static const String boxName = 'costs';
@@ -57,5 +58,44 @@ class CostRecordService {
 
   void saveRecord(CostRecord record) {
     _box.add(record);
+  }
+
+  double? getAverageCostPerPieceForRecipeToday(String recipeName) {
+    final productionService = ProductionService();
+
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final startOfTomorrow = startOfDay.add(const Duration(days: 1));
+
+    double weightedCost = 0.0;
+    int totalPieces = 0;
+
+    for (final record in _box.values) {
+      if (record.recipeName.trim().toLowerCase() !=
+          recipeName.trim().toLowerCase()) {
+        continue;
+      }
+
+      if (record.date.isBefore(startOfDay) ||
+          !record.date.isBefore(startOfTomorrow)) {
+        continue;
+      }
+
+      final production =
+          productionService.getProductionById(record.productionId);
+
+      if (production == null || production.totalPieces <= 0) {
+        continue;
+      }
+
+      weightedCost += record.costPerPiece * production.totalPieces;
+      totalPieces += production.totalPieces;
+    }
+
+    if (totalPieces == 0) {
+      return null;
+    }
+
+    return weightedCost / totalPieces;
   }
 }

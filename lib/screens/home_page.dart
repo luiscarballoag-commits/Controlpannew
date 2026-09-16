@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     'Inventario',
     'Producción',
     'Costos',
-    'Configuración',
+    'Ajustes',
   ];
 
   String getGreeting() {
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings),
-            label: "Configuración",
+            label: "Ajustes",
           ),
         ],
       ),
