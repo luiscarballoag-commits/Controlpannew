@@ -10,6 +10,7 @@ import '../services/labor_service.dart';
 import '../services/operating_expense_service.dart';
 import '../services/depreciation_service.dart';
 import 'production_elaboration_page.dart';
+import 'add_production_costs_page.dart';
 
 class ProductionSummaryPage extends StatefulWidget {
   final Recipe recipe;
@@ -375,6 +376,16 @@ class _ProductionSummaryPageState extends State<ProductionSummaryPage> {
                                     final navigator = Navigator.of(context);
 
                                     Navigator.pop(dialogContext);
+                                    if (!mounted) return;
+
+                                    await navigator.push(
+                                      MaterialPageRoute(
+                                        builder: (_) => AddProductionCostsPage(
+                                          productionId: productionId,
+                                        ),
+                                      ),
+                                    );
+
                                     if (!mounted) return;
 
                                     navigator.popUntil(

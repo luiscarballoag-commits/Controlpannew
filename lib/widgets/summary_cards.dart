@@ -91,6 +91,8 @@ class _SummaryCardsState extends State<SummaryCards> {
     String value,
     Color color,
   ) {
+    final isRecipeCard = title == _mainRecipeName;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 5,
@@ -98,25 +100,43 @@ class _SummaryCardsState extends State<SummaryCards> {
         borderRadius: BorderRadius.circular(18),
       ),
       child: ListTile(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: isRecipeCard ? 8 : 0,
+        ),
         leading: CircleAvatar(
           backgroundColor: color,
           child: Icon(icon, color: Colors.white),
         ),
         title: Text(
           title,
+          maxLines: isRecipeCard ? 2 : 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        trailing: Text(
-          value,
-          textAlign: TextAlign.end,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
-          ),
-        ),
+        subtitle: isRecipeCard
+            ? Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              )
+            : null,
+        trailing: isRecipeCard
+            ? null
+            : Text(
+                value,
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
       ),
     );
   }
