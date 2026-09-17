@@ -13,6 +13,30 @@ class InventoryKardexPage extends StatelessWidget {
     required this.ingredient,
   });
 
+  String _formatConsumptionCost(double value) {
+    if (value == 0) {
+      return '\$0.00';
+    }
+
+    if (value >= 0.01) {
+      return '\$${value.toStringAsFixed(2)}';
+    }
+
+    if (value >= 0.001) {
+      return '\$${value.toStringAsFixed(3)}';
+    }
+
+    if (value >= 0.0001) {
+      return '\$${value.toStringAsFixed(4)}';
+    }
+
+    if (value >= 0.00001) {
+      return '\$${value.toStringAsFixed(5)}';
+    }
+
+    return '\$${value.toStringAsFixed(6)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final kardexService = InventoryKardexService();
@@ -47,7 +71,7 @@ class InventoryKardexPage extends StatelessWidget {
     final costPerConsumptionUnit =
         normalizedPerPackage > 0
             ? purchasePrice / normalizedPerPackage
-            : 0;
+            : 0.0;
 
     final inventoryValue =
         available * costPerConsumptionUnit;
@@ -144,7 +168,7 @@ class InventoryKardexPage extends StatelessWidget {
                     'Costo por ${ingredient.unit}',
                   ),
                   trailing: Text(
-                    '\$${costPerConsumptionUnit.toStringAsFixed(2)}',
+                    _formatConsumptionCost(costPerConsumptionUnit),
                   ),
                 ),
 

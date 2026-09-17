@@ -21,7 +21,7 @@ class _SummaryCardsState extends State<SummaryCards> {
   int _lowStockAlerts = 0;
   double? _averageCostPerPiece;
 
-  static const String _mainRecipeName = 'Pan Salado Campesino';
+  static const String _mainRecipeName = 'Pan Campesino';
 
   @override
   void initState() {

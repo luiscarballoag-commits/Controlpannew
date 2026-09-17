@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   final SettingsService settingsService = SettingsService();
 
   int _selectedIndex = 0;
+  int _homeRefreshKey = 0;
 
   final List<String> _titles = [
     'Inicio',
@@ -83,6 +84,7 @@ class _HomePageState extends State<HomePage> {
         index: _selectedIndex,
         children: [
           HomeDashboard(
+            key: ValueKey(_homeRefreshKey),
             greeting: getGreeting(),
             bakeryName: settingsService.bakeryName,
             message: getMessage(),
@@ -105,6 +107,10 @@ class _HomePageState extends State<HomePage> {
         onDestinationSelected: (index) {
           setState(() {
             _selectedIndex = index;
+
+            if (index == 0) {
+              _homeRefreshKey++;
+            }
           });
         },
         destinations: const [
