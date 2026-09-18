@@ -58,10 +58,11 @@ class InventoryKardexPage extends StatelessWidget {
     final available =
         kardexService.getAvailableStockNormalized(ingredient);
 
-    final purchasePrice = ingredient.purchasePrice;
+    final purchasePrice = kardexService.getLastPurchasePrice(ingredient);
+    final normalizedCost = ingredient.purchasePrice;
 
     final inventoryValue =
-        available * purchasePrice;
+        available * normalizedCost;
 
     final purchaseUnit = ingredient.purchaseUnit.isEmpty
         ? 'unidad'
@@ -155,7 +156,7 @@ class InventoryKardexPage extends StatelessWidget {
                     'Costo por ${ingredient.unit}',
                   ),
                   trailing: Text(
-                    _formatConsumptionCost(purchasePrice),
+                    _formatConsumptionCost(normalizedCost),
                   ),
                 ),
 
