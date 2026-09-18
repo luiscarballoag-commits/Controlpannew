@@ -71,8 +71,18 @@ class CostRecordService {
     int totalPieces = 0;
 
     for (final record in _box.values) {
-      if (record.recipeName.trim().toLowerCase() !=
-          recipeName.trim().toLowerCase()) {
+      final recordRecipeName =
+          record.recipeName.trim().toLowerCase().replaceFirst(
+                RegExp(r'\s+\d+$'),
+                '',
+              );
+      final targetRecipeName =
+          recipeName.trim().toLowerCase().replaceFirst(
+                RegExp(r'\s+\d+$'),
+                '',
+              );
+
+      if (recordRecipeName != targetRecipeName) {
         continue;
       }
 

@@ -47,13 +47,25 @@ class InventoryManager {
 
     final previousValue = previousQuantity * ingredient.purchasePrice;
 
-    final purchaseValue = normalizedPurchase * purchasePrice;
+    final normalizedPerPackage = UnitConverter.normalize(
+      quantity: 1,
+      packageSize: ingredient.packageSize,
+      packageUnit: ingredient.packageUnit,
+      consumptionUnit: ingredient.unit,
+    );
+
+    final purchaseUnitCost =
+        normalizedPerPackage > 0
+            ? purchasePrice / normalizedPerPackage
+            : purchasePrice;
+
+    final purchaseValue = normalizedPurchase * purchaseUnitCost;
 
     final totalQuantity = previousQuantity + normalizedPurchase;
 
     final averageCost = totalQuantity > 0
         ? (previousValue + purchaseValue) / totalQuantity
-        : purchasePrice;
+        : purchaseUnitCost;
 
     final updated = ingredient.copyWith(
       // purchasePrice pasa a representar el costo promedio

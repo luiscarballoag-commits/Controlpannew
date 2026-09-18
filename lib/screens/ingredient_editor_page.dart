@@ -133,6 +133,21 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
       consumptionUnit: selectedUnit ?? "",
     );
 
+    final enteredPurchasePrice =
+        double.tryParse(_priceController.text) ?? 0;
+
+    final normalizedPerPackage = UnitConverter.normalize(
+      quantity: 1,
+      packageSize: packageSize,
+      packageUnit: selectedPackageUnit ?? "",
+      consumptionUnit: selectedUnit ?? "",
+    );
+
+    final normalizedUnitPrice =
+        normalizedPerPackage > 0
+            ? enteredPurchasePrice / normalizedPerPackage
+            : enteredPurchasePrice;
+
     final ingredient = IngredientCatalog(
       id:
           widget.ingredient?.id ??
@@ -144,7 +159,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
 
       unit: selectedUnit ?? "",
 
-      purchasePrice: double.tryParse(_priceController.text) ?? 0,
+      purchasePrice: normalizedUnitPrice,
 
       stock: stock,
 
@@ -176,7 +191,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
             unit: ingredient.purchaseUnit,
             type: 'Entrada',
             reference: 'Compra inicial',
-            purchasePrice: ingredient.purchasePrice,
+            purchasePrice: enteredPurchasePrice,
             notes: ingredient.notes,
           ),
         );

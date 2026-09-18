@@ -135,18 +135,28 @@ class CostService {
           final quantityUsed =
               elaborationIngredient.quantity * elaboration.quantity;
 
-          final quantityPerPackage = UnitConverter.normalize(
-            quantity: 1,
-            packageSize: ingredient.packageSize,
-            packageUnit: ingredient.packageUnit,
-            consumptionUnit: elaborationIngredient.unit,
-          );
+          final ingredientUnit = ingredient.unit.trim().toLowerCase();
+          final elaborationUnit =
+              elaborationIngredient.unit.trim().toLowerCase();
 
-          if (quantityPerPackage <= 0) {
-            continue;
+          double unitPrice = ingredient.purchasePrice;
+
+          if (ingredientUnit != elaborationUnit) {
+            if (ingredientUnit == 'kg' && elaborationUnit == 'g') {
+              unitPrice = ingredient.purchasePrice / 1000;
+            } else if (ingredientUnit == 'g' &&
+                elaborationUnit == 'kg') {
+              unitPrice = ingredient.purchasePrice * 1000;
+            } else if (ingredientUnit == 'l' &&
+                elaborationUnit == 'ml') {
+              unitPrice = ingredient.purchasePrice / 1000;
+            } else if (ingredientUnit == 'ml' &&
+                elaborationUnit == 'l') {
+              unitPrice = ingredient.purchasePrice * 1000;
+            } else {
+              continue;
+            }
           }
-
-          final unitPrice = ingredient.purchasePrice / quantityPerPackage;
 
           items.add(
             CostItem(
