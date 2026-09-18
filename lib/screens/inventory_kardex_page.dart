@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/inventory/unit_converter.dart';
 import '../models/ingredient_catalog.dart';
 import '../models/inventory_movement.dart';
 import '../services/inventory_kardex_service.dart';
@@ -59,22 +58,10 @@ class InventoryKardexPage extends StatelessWidget {
     final available =
         kardexService.getAvailableStockNormalized(ingredient);
 
-    final normalizedPerPackage = UnitConverter.normalize(
-      quantity: 1,
-      packageSize: ingredient.packageSize,
-      packageUnit: ingredient.packageUnit,
-      consumptionUnit: ingredient.unit,
-    );
-
     final purchasePrice = ingredient.purchasePrice;
 
-    final costPerConsumptionUnit =
-        normalizedPerPackage > 0
-            ? purchasePrice / normalizedPerPackage
-            : 0.0;
-
     final inventoryValue =
-        available * costPerConsumptionUnit;
+        available * purchasePrice;
 
     final purchaseUnit = ingredient.purchaseUnit.isEmpty
         ? 'unidad'
@@ -168,7 +155,7 @@ class InventoryKardexPage extends StatelessWidget {
                     'Costo por ${ingredient.unit}',
                   ),
                   trailing: Text(
-                    _formatConsumptionCost(costPerConsumptionUnit),
+                    _formatConsumptionCost(purchasePrice),
                   ),
                 ),
 
