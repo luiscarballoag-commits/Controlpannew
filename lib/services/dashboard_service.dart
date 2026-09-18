@@ -91,7 +91,7 @@ class DashboardService {
     double total = 0;
 
     for (final item in inventory) {
-      total += item.stock * item.purchasePrice;
+      total += item.normalizedStock * item.purchasePrice;
     }
 
     return total;
