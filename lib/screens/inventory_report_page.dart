@@ -6,7 +6,6 @@ import 'package:printing/printing.dart';
 import '../models/ingredient_catalog.dart';
 import '../services/ingredient_service.dart';
 import '../services/inventory_kardex_service.dart';
-import '../core/inventory/unit_converter.dart';
 import '../services/settings_service.dart';
 
 class InventoryReportPage extends StatelessWidget {
@@ -25,18 +24,7 @@ class InventoryReportPage extends StatelessWidget {
   }
 
   double _getNormalizedUnitPrice(IngredientCatalog ingredient) {
-    final quantityPerPackage = UnitConverter.normalize(
-      quantity: 1,
-      packageSize: ingredient.packageSize,
-      packageUnit: ingredient.packageUnit,
-      consumptionUnit: ingredient.unit,
-    );
-
-    if (quantityPerPackage <= 0) {
-      return 0;
-    }
-
-    return ingredient.purchasePrice / quantityPerPackage;
+    return ingredient.purchasePrice;
   }
 
   String _formatDate(DateTime date) {
