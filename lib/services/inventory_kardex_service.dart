@@ -87,7 +87,7 @@ class InventoryKardexService {
       }
     }
 
-    return ingredient.purchasePrice;
+    return ingredient.packagePurchasePrice;
   }
 
   /// Historial del ingrediente.

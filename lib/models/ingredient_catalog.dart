@@ -44,6 +44,9 @@ class IngredientCatalog extends HiveObject {
   @HiveField(11)
   final double normalizedStock;
 
+  @HiveField(12, defaultValue: 0.0)
+  final double packagePurchasePrice;
+
   IngredientCatalog({
     required this.id,
     required this.name,
@@ -57,6 +60,7 @@ class IngredientCatalog extends HiveObject {
     this.packageSize = 1,
     this.packageUnit = '',
     this.normalizedStock = 0,
+    this.packagePurchasePrice = 0,
   });
 
   IngredientCatalog copyWith({
@@ -72,6 +76,7 @@ class IngredientCatalog extends HiveObject {
     double? packageSize,
     String? packageUnit,
     double? normalizedStock,
+    double? packagePurchasePrice,
   }) {
     return IngredientCatalog(
       id: id ?? this.id,
@@ -86,6 +91,8 @@ class IngredientCatalog extends HiveObject {
       packageSize: packageSize ?? this.packageSize,
       packageUnit: packageUnit ?? this.packageUnit,
       normalizedStock: normalizedStock ?? this.normalizedStock,
+      packagePurchasePrice:
+          packagePurchasePrice ?? this.packagePurchasePrice,
     );
   }
 }

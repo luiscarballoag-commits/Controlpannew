@@ -4,6 +4,7 @@ import '../models/ingredient_catalog.dart';
 import '../core/inventory/unit_converter.dart';
 import '../services/ingredient_service.dart';
 import '../services/inventory_movement_service.dart';
+import '../services/inventory_kardex_service.dart';
 import '../models/inventory_movement.dart';
 
 class IngredientEditorPage extends StatefulWidget {
@@ -71,6 +72,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
 
   final IngredientService ingredientService = IngredientService();
   final InventoryMovementService movementService = InventoryMovementService();
+  final InventoryKardexService kardexService = InventoryKardexService();
   @override
   void initState() {
     super.initState();
@@ -86,7 +88,10 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
 
       selectedPackageUnit = widget.ingredient!.packageUnit;
 
-      _priceController.text = widget.ingredient!.purchasePrice.toString();
+      final packagePrice = widget.ingredient!.packagePurchasePrice > 0
+          ? widget.ingredient!.packagePurchasePrice
+          : kardexService.getLastPurchasePrice(widget.ingredient!);
+      _priceController.text = packagePrice.toString();
 
       _stockController.text = widget.ingredient!.stock.toString();
 
@@ -160,6 +165,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
       unit: selectedUnit ?? "",
 
       purchasePrice: normalizedUnitPrice,
+      packagePurchasePrice: enteredPurchasePrice,
 
       stock: stock,
 

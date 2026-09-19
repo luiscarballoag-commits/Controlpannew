@@ -101,7 +101,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
                           "⚠️ Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)} ${ingredient.unit}",
                         ),
                         Text(
-                          "💲 Precio: \$${ingredient.purchasePrice.toStringAsFixed(2)}",
+                          "💲 Precio: \$${ingredient.packagePurchasePrice.toStringAsFixed(2)}",
                         ),
                       ],
                     ),

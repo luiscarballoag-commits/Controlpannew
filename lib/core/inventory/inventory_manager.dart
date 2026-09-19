@@ -71,6 +71,7 @@ class InventoryManager {
       // purchasePrice pasa a representar el costo promedio
       // por unidad de consumo.
       purchasePrice: averageCost,
+      packagePurchasePrice: purchasePrice,
 
       // Cantidad expresada en la unidad de compra.
       stock: ingredient.stock + quantity,

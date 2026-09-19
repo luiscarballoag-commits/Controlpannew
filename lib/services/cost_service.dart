@@ -1,7 +1,6 @@
 import '../core/cost_engine/cost_engine.dart';
 import '../core/cost_engine/cost_item.dart';
 import '../core/cost_engine/cost_result.dart';
-import '../core/inventory/unit_converter.dart';
 
 import '../models/ingredient_catalog.dart';
 import '../models/recipe.dart';
@@ -80,18 +79,7 @@ class CostService {
 
       final quantityUsed = recipeIngredient.quantity * lots;
 
-      final quantityPerPackage = UnitConverter.normalize(
-        quantity: 1,
-        packageSize: ingredient.packageSize,
-        packageUnit: ingredient.packageUnit,
-        consumptionUnit: ingredient.unit,
-      );
-
-      if (quantityPerPackage <= 0) {
-        continue;
-      }
-
-      final unitPrice = ingredient.purchasePrice / quantityPerPackage;
+      final unitPrice = ingredient.purchasePrice;
 
       items.add(
         CostItem(

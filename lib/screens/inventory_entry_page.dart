@@ -74,7 +74,7 @@ class _InventoryEntryPageState extends State<InventoryEntryPage> {
       quantity: quantity,
       purchasePrice:
           double.tryParse(_priceController.text) ??
-          selectedIngredient!.purchasePrice,
+          selectedIngredient!.packagePurchasePrice,
       reference: _invoiceController.text.trim().isEmpty
           ? "Compra Manual"
           : _invoiceController.text,
