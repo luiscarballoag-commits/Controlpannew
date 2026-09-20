@@ -127,9 +127,9 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
       return;
     }
 
-    final stock = double.tryParse(_stockController.text) ?? 0;
+    final stock = double.tryParse(_stockController.text.trim().replaceAll(',', '.')) ?? 0;
 
-    final packageSize = double.tryParse(_packageSizeController.text) ?? 0;
+    final packageSize = double.tryParse(_packageSizeController.text.trim().replaceAll(',', '.')) ?? 0;
 
     final normalizedStock = UnitConverter.normalize(
       quantity: stock,
@@ -139,7 +139,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
     );
 
     final enteredPurchasePrice =
-        double.tryParse(_priceController.text) ?? 0;
+        double.tryParse(_priceController.text.trim().replaceAll(',', '.')) ?? 0;
 
     final normalizedPerPackage = UnitConverter.normalize(
       quantity: 1,
@@ -169,7 +169,7 @@ class _IngredientEditorPageState extends State<IngredientEditorPage> {
 
       stock: stock,
 
-      minimumStock: double.tryParse(_minimumController.text) ?? 0,
+      minimumStock: double.tryParse(_minimumController.text.trim().replaceAll(',', '.')) ?? 0,
 
       purchaseUnit: selectedPurchaseUnit ?? "",
 

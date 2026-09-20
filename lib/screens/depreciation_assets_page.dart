@@ -130,11 +130,11 @@ class _DepreciationAssetsPageState
                   onPressed: () {
                     final name = nameController.text.trim();
                     final purchaseValue =
-                        double.tryParse(valueController.text) ?? 0;
+                        double.tryParse(valueController.text.trim().replaceAll(',', '.')) ?? 0;
                     final usefulLife =
-                        double.tryParse(lifeController.text) ?? 0;
+                        double.tryParse(lifeController.text.trim().replaceAll(',', '.')) ?? 0;
                     final productiveHours =
-                        double.tryParse(hoursController.text) ?? 0;
+                        double.tryParse(hoursController.text.trim().replaceAll(',', '.')) ?? 0;
 
                     if (name.isEmpty ||
                         purchaseValue <= 0 ||

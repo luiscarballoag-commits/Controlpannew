@@ -64,60 +64,60 @@ class _ManualProductionPageState extends State<ManualProductionPage> {
       Ingredient(
         id: 'harina',
         name: 'Harina',
-        quantity: double.tryParse(harinaController.text) ?? 0,
+        quantity: double.tryParse(harinaController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'agua',
         name: 'Agua',
-        quantity: double.tryParse(aguaController.text) ?? 0,
+        quantity: double.tryParse(aguaController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'azucar',
         name: 'Azúcar',
-        quantity: double.tryParse(azucarController.text) ?? 0,
+        quantity: double.tryParse(azucarController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'sal',
         name: 'Sal',
-        quantity: double.tryParse(salController.text) ?? 0,
+        quantity: double.tryParse(salController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'margarina',
         name: 'Margarina',
-        quantity: double.tryParse(margarinaController.text) ?? 0,
+        quantity: double.tryParse(margarinaController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'levadura',
         name: 'Levadura',
-        quantity: double.tryParse(levaduraController.text) ?? 0,
+        quantity: double.tryParse(levaduraController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'esencia',
         name: 'Esencia',
-        quantity: double.tryParse(esenciaController.text) ?? 0,
+        quantity: double.tryParse(esenciaController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
       Ingredient(
         id: 'otros',
         name: 'Otros',
-        quantity: double.tryParse(otrosController.text) ?? 0,
+        quantity: double.tryParse(otrosController.text.trim().replaceAll(',', '.')) ?? 0,
         unit: UnitType.grams,
       ),
     ];
 
     final resultado = productionManager.calculateProduction(
       ingredients: ingredientes,
-      pieceWeight: double.tryParse(pesoController.text) ?? 250,
+      pieceWeight: double.tryParse(pesoController.text.trim().replaceAll(',', '.')) ?? 250,
     );
     await productionManager.saveManualProduction(
       totalMassKg: resultado.totalMassKg,
-      pieceWeightGrams: double.tryParse(pesoController.text) ?? 250,
+      pieceWeightGrams: double.tryParse(pesoController.text.trim().replaceAll(',', '.')) ?? 250,
       totalPieces: resultado.totalPieces,
     );
 

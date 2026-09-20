@@ -76,7 +76,7 @@ class _RecipeEditorPageState extends State<RecipeEditorPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                final quantity = double.tryParse(controller.text) ?? 0;
+                final quantity = double.tryParse(controller.text.trim().replaceAll(',', '.')) ?? 0;
 
                 setState(() {
                   ingredients.add(

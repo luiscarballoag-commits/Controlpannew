@@ -66,14 +66,14 @@ class _InventoryEntryPageState extends State<InventoryEntryPage> {
       return;
     }
 
-    final quantity = double.tryParse(_quantityController.text) ?? 0;
+    final quantity = double.tryParse(_quantityController.text.trim().replaceAll(',', '.')) ?? 0;
 
     await inventoryManager.purchaseIngredient(
       index: selectedIndex!,
       ingredient: selectedIngredient!,
       quantity: quantity,
       purchasePrice:
-          double.tryParse(_priceController.text) ??
+          double.tryParse(_priceController.text.trim().replaceAll(',', '.')) ??
           selectedIngredient!.packagePurchasePrice,
       reference: _invoiceController.text.trim().isEmpty
           ? "Compra Manual"

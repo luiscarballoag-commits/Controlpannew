@@ -76,7 +76,7 @@ class _InventoryExitPageState extends State<InventoryExitPage> {
       return;
     }
 
-    final quantity = double.tryParse(_quantityController.text) ?? 0;
+    final quantity = double.tryParse(_quantityController.text.trim().replaceAll(',', '.')) ?? 0;
 
     if (quantity <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(

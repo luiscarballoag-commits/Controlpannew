@@ -83,9 +83,9 @@ class _ProductionLotsPageState extends State<ProductionLotsPage> {
                     MaterialPageRoute(
                       builder: (_) => ProductionSummaryPage(
                         recipe: widget.recipe,
-                        lots: double.tryParse(lotsController.text) ?? 1,
+                        lots: double.tryParse(lotsController.text.trim().replaceAll(',', '.')) ?? 1,
                         pieceWeight:
-                            double.tryParse(pieceWeightController.text) ?? 250,
+                            double.tryParse(pieceWeightController.text.trim().replaceAll(',', '.')) ?? 250,
                       ),
                     ),
                   );

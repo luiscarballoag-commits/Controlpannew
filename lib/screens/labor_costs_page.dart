@@ -154,11 +154,11 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                   onPressed: () {
                     final role = roleController.text.trim();
                     final quantity =
-                        double.tryParse(quantityController.text) ?? 0;
+                        double.tryParse(quantityController.text.trim().replaceAll(',', '.')) ?? 0;
                     final cost =
-                        double.tryParse(costController.text) ?? 0;
+                        double.tryParse(costController.text.trim().replaceAll(',', '.')) ?? 0;
                     final hours =
-                        double.tryParse(hoursController.text) ?? 8;
+                        double.tryParse(hoursController.text.trim().replaceAll(',', '.')) ?? 8;
 
                     if (role.isEmpty ||
                         quantity <= 0 ||

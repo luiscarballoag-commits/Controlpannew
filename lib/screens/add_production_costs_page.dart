@@ -528,7 +528,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                         onChanged: (value) {
                           setState(() {
                             _workerHours[workerId] =
-                                double.tryParse(value) ?? 0;
+                                double.tryParse(value.trim().replaceAll(',', '.')) ?? 0;
                           });
                         },
                       ),
@@ -607,7 +607,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                 onChanged: (value) {
                   setState(() {
                     _productionHours =
-                        double.tryParse(value) ?? 0;
+                        double.tryParse(value.trim().replaceAll(',', '.')) ?? 0;
                   });
                 },
               ),
@@ -716,7 +716,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                         onChanged: (value) {
                           setState(() {
                             _assetHours[assetId] =
-                                double.tryParse(value) ?? 0;
+                                double.tryParse(value.trim().replaceAll(',', '.')) ?? 0;
                           });
                         },
                       ),

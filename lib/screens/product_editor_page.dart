@@ -38,7 +38,7 @@ class _ProductEditorPageState extends State<ProductEditorPage> {
       name: _nameController.text.trim(),
 
       massRecipeId: "BASE",
-      pieceWeightGrams: double.parse(_weightController.text),
+      pieceWeightGrams: double.parse(_weightController.text.trim().replaceAll(',', '.')),
       isFilled: _isFilled,
       isActive: _isActive,
 
@@ -95,7 +95,7 @@ class _ProductEditorPageState extends State<ProductEditorPage> {
                   return "Ingrese el peso";
                 }
 
-                if (double.tryParse(value) == null) {
+                if (double.tryParse(value.trim().replaceAll(',', '.')) == null) {
                   return "Peso inválido";
                 }
 

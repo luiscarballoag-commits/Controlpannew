@@ -61,7 +61,7 @@ class _ElaborationRecipeFormPageState extends State<ElaborationRecipeFormPage> {
               onPressed: () {
                 Navigator.pop(
                   dialogContext,
-                  double.tryParse(quantityController.text) ?? 0,
+                  double.tryParse(quantityController.text.trim().replaceAll(',', '.')) ?? 0,
                 );
               },
               child: const Text("Aceptar"),
