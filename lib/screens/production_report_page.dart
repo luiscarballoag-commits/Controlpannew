@@ -111,21 +111,15 @@ class ProductionReportPage extends StatelessWidget {
                 ),
               ],
             ),
-
-            pw.SizedBox(height: 20),
-
-            pw.Text(
-              'Piezas por variedad',
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.bold,
+            if (piecesByVariety.isNotEmpty) ...[
+              pw.Text(
+                'Piezas por variedad',
+                style: pw.TextStyle(
+                  fontSize: 16,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
-            ),
-            pw.SizedBox(height: 8),
-
-            if (piecesByVariety.isEmpty)
-              pw.Text('No hay variedades registradas.')
-            else
+              pw.SizedBox(height: 8),
               pw.Table(
                 border: pw.TableBorder.all(
                   color: pdf.PdfColors.grey400,
@@ -154,6 +148,7 @@ class ProductionReportPage extends StatelessWidget {
                   ),
                 ],
               ),
+            ],
 
             pw.SizedBox(height: 24),
 
@@ -250,7 +245,7 @@ class ProductionReportPage extends StatelessWidget {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
-            '${production.id} • ${production.recipeName}',
+            '${production.id} - ${production.recipeName}',
             style: pw.TextStyle(
               fontSize: 14,
               fontWeight: pw.FontWeight.bold,
@@ -263,6 +258,10 @@ class ProductionReportPage extends StatelessWidget {
             'Masa: ${production.totalMassKg.toStringAsFixed(2)} kg',
           ),
           pw.Text('Piezas: ${production.totalPieces}'),
+          pw.Text(
+            'Masa excedente: '
+            '${((production.totalMassKg * 1000) - (production.totalPieces * production.pieceWeightGrams)).round()} g',
+          ),
           pw.Text(
             'Peso por pieza: '
             '${production.pieceWeightGrams.toStringAsFixed(0)} g',
@@ -553,6 +552,10 @@ class ProductionReportPage extends StatelessWidget {
             Text('Lotes: ${production.lots}'),
             Text(
               'Masa: ${production.totalMassKg.toStringAsFixed(2)} kg',
+            ),
+            Text(
+              'Masa excedente: '
+              '${((production.totalMassKg * 1000) - (production.totalPieces * production.pieceWeightGrams)).round()} g',
             ),
             Text('Piezas: ${production.totalPieces}'),
             Text(

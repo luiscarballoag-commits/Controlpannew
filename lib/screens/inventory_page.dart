@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../services/inventory_service.dart';
+import '../models/ingredient_catalog.dart';
+import '../models/inventory_movement.dart';
 import '../services/inventory_movement_service.dart';
 
 import 'ingredients_page.dart';
@@ -10,12 +13,42 @@ import 'inventory_history_page.dart';
 import 'current_stock_page.dart';
 import 'low_stock_page.dart';
 
-class InventoryPage extends StatelessWidget {
-  InventoryPage({super.key});
+class InventoryPage extends StatefulWidget {
+  const InventoryPage({super.key});
 
+  @override
+  State<InventoryPage> createState() => _InventoryPageState();
+}
+
+class _InventoryPageState extends State<InventoryPage> {
   final InventoryService inventoryService = InventoryService();
 
   final InventoryMovementService movementService = InventoryMovementService();
+
+  late final Box<IngredientCatalog> ingredientsBox;
+  late final Box<InventoryMovement> movementsBox;
+
+  @override
+  void initState() {
+    super.initState();
+    ingredientsBox = Hive.box<IngredientCatalog>('ingredients');
+    movementsBox = Hive.box<InventoryMovement>('inventory_movements');
+    ingredientsBox.listenable().addListener(_onInventoryChanged);
+    movementsBox.listenable().addListener(_onInventoryChanged);
+  }
+
+  void _onInventoryChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    ingredientsBox.listenable().removeListener(_onInventoryChanged);
+    movementsBox.listenable().removeListener(_onInventoryChanged);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
