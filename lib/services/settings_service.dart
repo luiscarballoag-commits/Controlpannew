@@ -8,6 +8,7 @@ class SettingsService {
   static const String bakeryPhoneKey = 'bakery_phone';
   static const String bakeryOwnerKey = 'bakery_owner';
   static const String currencyKey = 'currency';
+  static const String profitMarginKey = 'profit_margin';
 
   Box get _box => Hive.box(_boxName);
 
@@ -64,6 +65,17 @@ class SettingsService {
 
   Future<void> saveCurrency(String value) async {
     await _box.put(currencyKey, value);
+  }
+
+  double get profitMargin {
+    return (_box.get(
+      profitMarginKey,
+      defaultValue: 30.0,
+    ) as num).toDouble();
+  }
+
+  Future<void> saveProfitMargin(double value) async {
+    await _box.put(profitMarginKey, value);
   }
 
   String get currencyName {

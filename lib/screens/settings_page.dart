@@ -19,6 +19,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return _settingsService.currencyDisplay;
   }
 
+  double get _profitMargin {
+    return _settingsService.profitMargin;
+  }
+
   Future<void> _selectCurrency() async {
     final currentCurrency = _settingsService.currency;
 
@@ -102,6 +106,54 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _editProfitMargin() async {
+    final controller = TextEditingController(
+      text: _profitMargin.toStringAsFixed(0),
+    );
+
+    final value = await showDialog<double>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Margen de ganancia'),
+          content: TextField(
+            controller: controller,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(
+              labelText: 'Margen (%)',
+              suffixText: '%',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('CANCELAR'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final value = double.tryParse(
+                  controller.text.trim().replaceAll(',', '.'),
+                );
+                if (value == null || value < 0) return;
+                Navigator.pop(context, value);
+              },
+              child: const Text('GUARDAR'),
+            ),
+          ],
+        );
+      },
+    );
+
+    controller.dispose();
+
+    if (value == null) return;
+
+    await _settingsService.saveProfitMargin(value);
+
+    if (!mounted) return;
+    setState(() {});
   }
 
   void _showAbout() {
@@ -209,6 +261,14 @@ class _SettingsPageState extends State<SettingsPage> {
           subtitle: Text(_currencyLabel),
           trailing: const Icon(Icons.chevron_right),
           onTap: _selectCurrency,
+        ),
+
+        ListTile(
+          leading: const Icon(Icons.percent),
+          title: const Text('Margen de ganancia'),
+          subtitle: Text('${_profitMargin.toStringAsFixed(0)} %'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _editProfitMargin,
         ),
 
         const Divider(),
