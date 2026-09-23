@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/depreciation_asset.dart';
 import '../services/depreciation_service.dart';
+import '../services/settings_service.dart';
 
 class DepreciationAssetsPage extends StatefulWidget {
   const DepreciationAssetsPage({super.key});
@@ -14,6 +15,7 @@ class DepreciationAssetsPage extends StatefulWidget {
 class _DepreciationAssetsPageState
     extends State<DepreciationAssetsPage> {
   final DepreciationService _service = DepreciationService();
+  final SettingsService settingsService = SettingsService();
 
   List<DepreciationAsset> _assets = [];
 
@@ -283,7 +285,7 @@ class _DepreciationAssetsPageState
                         ),
                         const Divider(),
                         Text(
-                          'Valor de compra: \$${asset.purchaseValue.toStringAsFixed(2)}',
+                          'Valor de compra: ${settingsService.formatCurrency(asset.purchaseValue)}',
                         ),
                         Text(
                           'Vida útil: ${asset.usefulLifeYears.toStringAsFixed(1)} años',
@@ -294,12 +296,10 @@ class _DepreciationAssetsPageState
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Depreciación mensual: '
-                          '\$${monthly.toStringAsFixed(2)}',
+                          'Depreciación mensual: ${settingsService.formatCurrency(monthly)}',
                         ),
                         Text(
-                          'Depreciación por hora: '
-                          '\$${hourly.toStringAsFixed(4)}',
+                          'Depreciación por hora: ${settingsService.formatCurrency(hourly, decimals: 4)}',
                         ),
                         const SizedBox(height: 8),
                         Row(

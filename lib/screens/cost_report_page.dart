@@ -32,8 +32,7 @@ class _CostReportPageState extends State<CostReportPage> {
       case 'Esta semana':
         final today = DateTime(now.year, now.month, now.day);
         final daysFromMonday = today.weekday - DateTime.monday;
-        final start =
-            today.subtract(Duration(days: daysFromMonday));
+        final start = today.subtract(Duration(days: daysFromMonday));
         final end = start.add(const Duration(days: 7));
         return _costRecordService.getRecordsBetween(start, end);
 
@@ -55,7 +54,6 @@ class _CostReportPageState extends State<CostReportPage> {
     final month = date.month.toString().padLeft(2, '0');
     return '$day/$month/${date.year}';
   }
-
 
   Future<void> _exportPdf() async {
     final records = _getPeriodRecords();
@@ -86,11 +84,9 @@ class _CostReportPageState extends State<CostReportPage> {
       }
     }
 
-    final costPerKg =
-        totalWeight > 0 ? total / totalWeight : 0.0;
+    final costPerKg = totalWeight > 0 ? total / totalWeight : 0.0;
 
-    final costPerPiece =
-        totalPieces > 0 ? total / totalPieces : 0.0;
+    final costPerPiece = totalPieces > 0 ? total / totalPieces : 0.0;
 
     final document = pw.Document();
 
@@ -103,121 +99,84 @@ class _CostReportPageState extends State<CostReportPage> {
             _settingsService.bakeryName.trim().isEmpty
                 ? 'ControlPan'
                 : _settingsService.bakeryName.trim(),
-            style: pw.TextStyle(
-              fontSize: 22,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 4),
           pw.Text(
             'Reporte de Costos',
-            style: pw.TextStyle(
-              fontSize: 18,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 6),
           pw.Text('Período: $selectedPeriod'),
-          pw.Text(
-            'Generado: ${_formatDate(DateTime.now())}',
-          ),
+          pw.Text('Generado: ${_formatDate(DateTime.now())}'),
           pw.SizedBox(height: 20),
 
           pw.Text(
             'Resumen financiero',
-            style: pw.TextStyle(
-              fontSize: 16,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 8),
 
           _pdfRow(
             'Costo Total',
-            '\$${total.toStringAsFixed(2)}',
+            _settingsService.formatCurrency(total),
             bold: true,
           ),
-          _pdfRow(
-            'Producciones',
-            records.length.toString(),
-          ),
-          _pdfRow(
-            'Kg producidos',
-            totalWeight.toStringAsFixed(2),
-          ),
-          _pdfRow(
-            'Piezas producidas',
-            totalPieces.toStringAsFixed(0),
-          ),
+          _pdfRow('Producciones', records.length.toString()),
+          _pdfRow('Kg producidos', totalWeight.toStringAsFixed(2)),
+          _pdfRow('Piezas producidas', totalPieces.toStringAsFixed(0)),
           _pdfRow(
             'Costo promedio por Kg',
-            '\$${costPerKg.toStringAsFixed(2)}',
+            _settingsService.formatCurrency(costPerKg),
           ),
           _pdfRow(
             'Costo promedio por pieza',
-            '\$${costPerPiece.toStringAsFixed(2)}',
+            _settingsService.formatCurrency(costPerPiece),
           ),
 
           pw.SizedBox(height: 20),
 
           pw.Text(
             'Composición del costo',
-            style: pw.TextStyle(
-              fontSize: 16,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 8),
 
           _pdfRow(
             'Materia Prima',
-            '\$${rawMaterial.toStringAsFixed(2)}',
+            _settingsService.formatCurrency(rawMaterial),
           ),
-          _pdfRow(
-            'Complementos',
-            '\$${elaboration.toStringAsFixed(2)}',
-          ),
-          _pdfRow(
-            'Mano de Obra',
-            '\$${labor.toStringAsFixed(2)}',
-          ),
+          _pdfRow('Complementos', _settingsService.formatCurrency(elaboration)),
+          _pdfRow('Mano de Obra', _settingsService.formatCurrency(labor)),
           _pdfRow(
             'Gastos Operativos',
-            '\$${operating.toStringAsFixed(2)}',
+            _settingsService.formatCurrency(operating),
           ),
           _pdfRow(
             'Depreciación',
-            '\$${depreciation.toStringAsFixed(2)}',
+            _settingsService.formatCurrency(depreciation),
           ),
 
           pw.SizedBox(height: 20),
 
           pw.Text(
             'Detalle de producciones',
-            style: pw.TextStyle(
-              fontSize: 16,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 8),
 
           if (records.isEmpty)
-            pw.Text(
-              'No hay registros de costos para este período.',
-            )
+            pw.Text('No hay registros de costos para este período.')
           else
             ...records.map(
               (record) => pw.Container(
                 margin: const pw.EdgeInsets.only(bottom: 12),
                 padding: const pw.EdgeInsets.all(10),
                 decoration: pw.BoxDecoration(
-                  border: pw.Border.all(
-                    color: pdf.PdfColors.grey400,
-                  ),
+                  border: pw.Border.all(color: pdf.PdfColors.grey400),
                 ),
                 child: pw.Column(
-                  crossAxisAlignment:
-                      pw.CrossAxisAlignment.start,
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
                       record.recipeName,
@@ -227,43 +186,41 @@ class _CostReportPageState extends State<CostReportPage> {
                       ),
                     ),
                     pw.SizedBox(height: 4),
-                    pw.Text(
-                      'Fecha: ${_formatDate(record.date)}',
-                    ),
+                    pw.Text('Fecha: ${_formatDate(record.date)}'),
                     pw.SizedBox(height: 6),
                     _pdfRow(
                       'Materia Prima',
-                      '\$${record.rawMaterialCost.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.rawMaterialCost),
                     ),
                     _pdfRow(
                       'Complementos',
-                      '\$${record.elaborationCost.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.elaborationCost),
                     ),
                     _pdfRow(
                       'Mano de Obra',
-                      '\$${record.laborCost.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.laborCost),
                     ),
                     _pdfRow(
                       'Gastos Operativos',
-                      '\$${record.operatingCost.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.operatingCost),
                     ),
                     _pdfRow(
                       'Depreciación',
-                      '\$${record.depreciationCost.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.depreciationCost),
                     ),
                     pw.Divider(),
                     _pdfRow(
                       'Costo Total',
-                      '\$${record.totalCost.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.totalCost),
                       bold: true,
                     ),
                     _pdfRow(
                       'Costo por Kg',
-                      '\$${record.costPerKg.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.costPerKg),
                     ),
                     _pdfRow(
                       'Costo por Pieza',
-                      '\$${record.costPerPiece.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(record.costPerPiece),
                     ),
                     _pdfRow(
                       'Margen',
@@ -271,7 +228,9 @@ class _CostReportPageState extends State<CostReportPage> {
                     ),
                     _pdfRow(
                       'Precio Sugerido',
-                      '\$${record.suggestedSalePrice.toStringAsFixed(2)}',
+                      _settingsService.formatCurrency(
+                        record.suggestedSalePrice,
+                      ),
                       bold: true,
                     ),
                   ],
@@ -294,11 +253,7 @@ class _CostReportPageState extends State<CostReportPage> {
     );
   }
 
-  pw.Widget _pdfRow(
-    String title,
-    String value, {
-    bool bold = false,
-  }) {
+  pw.Widget _pdfRow(String title, String value, {bool bold = false}) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 3),
       child: pw.Row(
@@ -307,17 +262,13 @@ class _CostReportPageState extends State<CostReportPage> {
           pw.Text(
             title,
             style: pw.TextStyle(
-              fontWeight: bold
-                  ? pw.FontWeight.bold
-                  : pw.FontWeight.normal,
+              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
             ),
           ),
           pw.Text(
             value,
             style: pw.TextStyle(
-              fontWeight: bold
-                  ? pw.FontWeight.bold
-                  : pw.FontWeight.normal,
+              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
             ),
           ),
         ],
@@ -356,11 +307,9 @@ class _CostReportPageState extends State<CostReportPage> {
       }
     }
 
-    final costPerKg =
-        totalWeight > 0 ? total / totalWeight : 0.0;
+    final costPerKg = totalWeight > 0 ? total / totalWeight : 0.0;
 
-    final costPerPiece =
-        totalPieces > 0 ? total / totalPieces : 0.0;
+    final costPerPiece = totalPieces > 0 ? total / totalPieces : 0.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
@@ -382,18 +331,12 @@ class _CostReportPageState extends State<CostReportPage> {
         children: [
           const Text(
             'Análisis detallado de costos',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 6),
           const Text(
             'Resumen financiero de las producciones realizadas.',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 15,
-            ),
+            style: TextStyle(color: Colors.grey, fontSize: 15),
           ),
           const SizedBox(height: 16),
 
@@ -412,22 +355,13 @@ class _CostReportPageState extends State<CostReportPage> {
                   prefixIcon: Icon(Icons.date_range),
                 ),
                 items: const [
-                  DropdownMenuItem(
-                    value: 'Hoy',
-                    child: Text('Hoy'),
-                  ),
+                  DropdownMenuItem(value: 'Hoy', child: Text('Hoy')),
                   DropdownMenuItem(
                     value: 'Esta semana',
                     child: Text('Esta semana'),
                   ),
-                  DropdownMenuItem(
-                    value: 'Este mes',
-                    child: Text('Este mes'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Todo',
-                    child: Text('Todo'),
-                  ),
+                  DropdownMenuItem(value: 'Este mes', child: Text('Este mes')),
+                  DropdownMenuItem(value: 'Todo', child: Text('Todo')),
                 ],
                 onChanged: (value) {
                   if (value == null) return;
@@ -448,10 +382,7 @@ class _CostReportPageState extends State<CostReportPage> {
 
           const Text(
             'Composición del costo',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 12),
@@ -470,12 +401,7 @@ class _CostReportPageState extends State<CostReportPage> {
             Colors.deepOrange,
           ),
 
-          _buildCostRow(
-            Icons.groups,
-            'Mano de Obra',
-            labor,
-            Colors.blue,
-          ),
+          _buildCostRow(Icons.groups, 'Mano de Obra', labor, Colors.blue),
 
           _buildCostRow(
             Icons.business,
@@ -505,17 +431,11 @@ class _CostReportPageState extends State<CostReportPage> {
                 children: [
                   const Text(
                     'Indicadores',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 14),
 
-                  _buildIndicatorRow(
-                    'Producciones',
-                    records.length.toString(),
-                  ),
+                  _buildIndicatorRow('Producciones', records.length.toString()),
 
                   _buildIndicatorRow(
                     'Kg producidos',
@@ -529,12 +449,12 @@ class _CostReportPageState extends State<CostReportPage> {
 
                   _buildIndicatorRow(
                     'Costo promedio por Kg',
-                    '\$${costPerKg.toStringAsFixed(2)}',
+                    _settingsService.formatCurrency(costPerKg),
                   ),
 
                   _buildIndicatorRow(
                     'Costo promedio por pieza',
-                    '\$${costPerPiece.toStringAsFixed(2)}',
+                    _settingsService.formatCurrency(costPerPiece),
                   ),
                 ],
               ),
@@ -545,10 +465,7 @@ class _CostReportPageState extends State<CostReportPage> {
 
           const Text(
             'Detalle de producciones',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 12),
@@ -568,10 +485,7 @@ class _CostReportPageState extends State<CostReportPage> {
                     const Text(
                       'No hay registros de costos para este período.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -587,23 +501,18 @@ class _CostReportPageState extends State<CostReportPage> {
   Widget _buildTotalCard(double total, int productions) {
     return Card(
       elevation: 7,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             const Text(
               'Costo Total del Período',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
-              '\$${total.toStringAsFixed(2)}',
+              _settingsService.formatCurrency(total),
               style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -613,9 +522,7 @@ class _CostReportPageState extends State<CostReportPage> {
             const SizedBox(height: 6),
             Text(
               '$productions producción(es)',
-              style: const TextStyle(
-                color: Colors.grey,
-              ),
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),
@@ -623,38 +530,20 @@ class _CostReportPageState extends State<CostReportPage> {
     );
   }
 
-  Widget _buildCostRow(
-    IconData icon,
-    String title,
-    double value,
-    Color color,
-  ) {
+  Widget _buildCostRow(IconData icon, String title, double value, Color color) {
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color,
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
+          child: Icon(icon, color: Colors.white),
         ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         trailing: Text(
-          '\$${value.toStringAsFixed(2)}',
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          ),
+          _settingsService.formatCurrency(value),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -668,17 +557,11 @@ class _CostReportPageState extends State<CostReportPage> {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -689,72 +572,30 @@ class _CostReportPageState extends State<CostReportPage> {
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: ExpansionTile(
-        leading: const CircleAvatar(
-          child: Icon(Icons.factory),
-        ),
+        leading: const CircleAvatar(child: Icon(Icons.factory)),
         title: Text(
           record.recipeName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          _formatDate(record.date),
-        ),
-        childrenPadding: const EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          16,
-        ),
+        subtitle: Text(_formatDate(record.date)),
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         children: [
-          _buildDetailRow(
-            'Materia Prima',
-            record.rawMaterialCost,
-          ),
-          _buildDetailRow(
-            'Complementos',
-            record.elaborationCost,
-          ),
-          _buildDetailRow(
-            'Mano de Obra',
-            record.laborCost,
-          ),
-          _buildDetailRow(
-            'Gastos Operativos',
-            record.operatingCost,
-          ),
-          _buildDetailRow(
-            'Depreciación',
-            record.depreciationCost,
-          ),
+          _buildDetailRow('Materia Prima', record.rawMaterialCost),
+          _buildDetailRow('Complementos', record.elaborationCost),
+          _buildDetailRow('Mano de Obra', record.laborCost),
+          _buildDetailRow('Gastos Operativos', record.operatingCost),
+          _buildDetailRow('Depreciación', record.depreciationCost),
           const Divider(),
 
-          _buildDetailRow(
-            'Costo Total',
-            record.totalCost,
-            bold: true,
-          ),
+          _buildDetailRow('Costo Total', record.totalCost, bold: true),
 
-          _buildDetailRow(
-            'Costo por Kg',
-            record.costPerKg,
-          ),
+          _buildDetailRow('Costo por Kg', record.costPerKg),
 
-          _buildDetailRow(
-            'Costo por Pieza',
-            record.costPerPiece,
-          ),
+          _buildDetailRow('Costo por Pieza', record.costPerPiece),
 
-          _buildDetailRow(
-            'Margen',
-            record.profitPercentage,
-            suffix: '%',
-          ),
+          _buildDetailRow('Margen', record.profitPercentage, suffix: '%'),
 
           _buildDetailRow(
             'Precio Sugerido',
@@ -780,17 +621,15 @@ class _CostReportPageState extends State<CostReportPage> {
           Text(
             title,
             style: TextStyle(
-              fontWeight:
-                  bold ? FontWeight.bold : FontWeight.normal,
+              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
             ),
           ),
           Text(
             suffix == '%'
                 ? '${value.toStringAsFixed(1)}%'
-                : '\$${value.toStringAsFixed(2)}',
+                : _settingsService.formatCurrency(value),
             style: TextStyle(
-              fontWeight:
-                  bold ? FontWeight.bold : FontWeight.normal,
+              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ],

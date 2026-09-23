@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/operating_expense.dart';
 import '../services/operating_expense_service.dart';
+import '../services/settings_service.dart';
 
 class OperatingExpensesPage extends StatefulWidget {
   const OperatingExpensesPage({super.key});
@@ -15,6 +16,7 @@ class _OperatingExpensesPageState
     extends State<OperatingExpensesPage> {
   final OperatingExpenseService _service =
       OperatingExpenseService();
+  final SettingsService settingsService = SettingsService();
 
   List<OperatingExpense> _expenses = [];
 
@@ -358,7 +360,7 @@ class _OperatingExpensesPageState
                                       const SizedBox(height: 4),
                                       Text(
                                         '${expense.period} · '
-                                        '\$${expense.cost.toStringAsFixed(2)}',
+                                        '${settingsService.formatCurrency(expense.cost)}',
                                       ),
                                     ],
                                   ),
@@ -377,7 +379,7 @@ class _OperatingExpensesPageState
                               children: [
                                 const Text('Costo diario equivalente'),
                                 Text(
-                                  '\$${dailyCost.toStringAsFixed(2)}',
+                                  '${settingsService.formatCurrency(dailyCost)}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),

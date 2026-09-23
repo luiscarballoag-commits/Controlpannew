@@ -11,6 +11,7 @@ import 'production_service.dart';
 import 'recipe_service.dart';
 import 'elaboration/elaboration_production_service.dart';
 import 'elaboration/elaboration_recipe_service.dart';
+import 'settings_service.dart';
 
 class CostService {
   final IngredientService ingredientService = IngredientService();
@@ -20,6 +21,7 @@ class CostService {
       ElaborationProductionService();
   final ElaborationRecipeService elaborationRecipeService =
       ElaborationRecipeService();
+  final SettingsService settingsService = SettingsService();
 
   /// Calcula el costo de la última producción registrada.
   CostResult? calculateLastProductionCost() {
@@ -57,8 +59,9 @@ class CostService {
     double laborCost = 0,
     double operatingCost = 0,
     double depreciationCost = 0,
-    double profitMargin = 30,
+    double? profitMargin,
   }) {
+    final effectiveProfitMargin = profitMargin ?? settingsService.profitMargin;
     final inventory = ingredientService.getAllIngredients();
 
     final List<CostItem> items = [];
@@ -207,7 +210,7 @@ class CostService {
       items: items,
       totalWeight: totalWeightKg,
       totalUnits: totalUnits,
-      profitMargin: profitMargin,
+      profitMargin: effectiveProfitMargin,
     );
   }
 }

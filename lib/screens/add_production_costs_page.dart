@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import '../models/cost_record.dart';import '../services/cost_record_service.dart';import '../services/cost_service.dart';
+import '../models/cost_record.dart';
+import '../services/cost_record_service.dart';
+import '../services/cost_service.dart';
 
 import '../services/depreciation_service.dart';
 import '../services/labor_service.dart';
 import '../services/operating_expense_service.dart';
 import '../services/production_service.dart';
+import '../services/settings_service.dart';
 
 class AddProductionCostsPage extends StatefulWidget {
   final String productionId;
 
-  const AddProductionCostsPage({
-    super.key,
-    required this.productionId,
-  });
+  const AddProductionCostsPage({super.key, required this.productionId});
 
   @override
-  State<AddProductionCostsPage> createState() =>
-      _AddProductionCostsPageState();
+  State<AddProductionCostsPage> createState() => _AddProductionCostsPageState();
 }
 
 class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
+  final SettingsService _settingsService = SettingsService();
   final ProductionService productionService = ProductionService();
   final LaborService laborService = LaborService();
   final OperatingExpenseService operatingExpenseService =
@@ -39,18 +39,14 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
     final workers = laborService.getActiveWorkers();
 
     for (final workerId in _selectedWorkerIds) {
-      final worker =
-          workers.where((item) => item.id == workerId).firstOrNull;
+      final worker = workers.where((item) => item.id == workerId).firstOrNull;
 
       if (worker == null) continue;
 
       final hours = _workerHours[workerId] ?? 0;
 
       total +=
-          laborService.getProductionLaborCost(
-            worker: worker,
-            hours: hours,
-          ) *
+          laborService.getProductionLaborCost(worker: worker, hours: hours) *
           worker.quantity;
     }
 
@@ -62,8 +58,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
     final assets = depreciationService.getActiveAssets();
 
     for (final assetId in _selectedAssetIds) {
-      final asset =
-          assets.where((item) => item.id == assetId).firstOrNull;
+      final asset = assets.where((item) => item.id == assetId).firstOrNull;
 
       if (asset == null) continue;
 
@@ -139,13 +134,9 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                 final worker = workers[index];
 
                 return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person),
-                  ),
+                  leading: const CircleAvatar(child: Icon(Icons.person)),
                   title: Text(worker.role),
-                  subtitle: Text(
-                    '${worker.quantity} trabajador(es)',
-                  ),
+                  subtitle: Text('${worker.quantity} trabajador(es)'),
                   onTap: () {
                     Navigator.pop(dialogContext, worker.id);
                   },
@@ -213,30 +204,23 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final production =
-        productionService.getProductionById(widget.productionId);
+    final production = productionService.getProductionById(widget.productionId);
 
     if (production == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Agregar gastos de producción'),
-        ),
-        body: const Center(
-          child: Text('No se encontró la producción.'),
-        ),
+        appBar: AppBar(title: const Text('Agregar gastos de producción')),
+        body: const Center(child: Text('No se encontró la producción.')),
       );
     }
 
-    final operatingCost =
-        operatingExpenseService.getTotalCostForHours(
+    final operatingCost = operatingExpenseService.getTotalCostForHours(
       hours: _productionHours,
     );
 
     final laborCost = _calculateLaborCost();
     final depreciationCost = _calculateDepreciationCost();
 
-    final additionalCost =
-        laborCost + operatingCost + depreciationCost;
+    final additionalCost = laborCost + operatingCost + depreciationCost;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1EB),
@@ -260,16 +244,11 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
             child: ListTile(
               leading: const CircleAvatar(
                 backgroundColor: Color(0xFF8D6E63),
-                child: Icon(
-                  Icons.bakery_dining,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.bakery_dining, color: Colors.white),
               ),
               title: Text(
                 production.recipeName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                 '${production.totalPieces} piezas · '
@@ -295,13 +274,10 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                 children: [
                   const Text(
                     'Gastos adicionales',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '\$${additionalCost.toStringAsFixed(2)}',
+                    _settingsService.formatCurrency(additionalCost),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -321,10 +297,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
               icon: const Icon(Icons.check),
               label: const Text(
                 'FINALIZAR',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF8D6E63),
@@ -340,24 +313,19 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
     );
   }
 
-
   Future<void> _finalizeProduction() async {
-    final production =
-        productionService.getProductionById(widget.productionId);
+    final production = productionService.getProductionById(widget.productionId);
 
     if (production == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No se encontró la producción.'),
-        ),
+        const SnackBar(content: Text('No se encontró la producción.')),
       );
       return;
     }
 
     final laborCost = _calculateLaborCost();
 
-    final operatingCost =
-        operatingExpenseService.getTotalCostForHours(
+    final operatingCost = operatingExpenseService.getTotalCostForHours(
       hours: _productionHours,
     );
 
@@ -365,9 +333,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
 
     final costService = CostService();
 
-    final recipe = costService.recipeService.getRecipeById(
-      production.recipeId,
-    );
+    final recipe = costService.recipeService.getRecipeById(production.recipeId);
 
     if (recipe == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -418,8 +384,8 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
         return AlertDialog(
           title: const Text('Producción finalizada'),
           content: Text(
-            'Costo total: \$${costResult.totalCost.toStringAsFixed(2)}\n'
-            'Costo por pieza: \$${costResult.costPerUnit.toStringAsFixed(2)}',
+            'Costo total: ${_settingsService.formatCurrency(costResult.totalCost)}\n'
+            'Costo por pieza: ${_settingsService.formatCurrency(costResult.costPerUnit)}',
           ),
           actions: [
             ElevatedButton(
@@ -444,9 +410,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
         child: Column(
@@ -454,18 +418,12 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.groups_rounded,
-                  color: Color(0xFF8D6E63),
-                ),
+                const Icon(Icons.groups_rounded, color: Color(0xFF8D6E63)),
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
                     'Mano de Obra',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ),
                 TextButton.icon(
@@ -487,8 +445,9 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
               ),
 
             ..._selectedWorkerIds.map((workerId) {
-              final worker =
-                  workers.where((item) => item.id == workerId).firstOrNull;
+              final worker = workers
+                  .where((item) => item.id == workerId)
+                  .firstOrNull;
 
               if (worker == null) {
                 return const SizedBox.shrink();
@@ -505,9 +464,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
               return ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(worker.role),
-                subtitle: Text(
-                  '\$${cost.toStringAsFixed(2)}',
-                ),
+                subtitle: Text(_settingsService.formatCurrency(cost)),
                 leading: const Icon(Icons.person_outline),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -528,7 +485,10 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                         onChanged: (value) {
                           setState(() {
                             _workerHours[workerId] =
-                                double.tryParse(value.trim().replaceAll(',', '.')) ?? 0;
+                                double.tryParse(
+                                  value.trim().replaceAll(',', '.'),
+                                ) ??
+                                0;
                           });
                         },
                       ),
@@ -552,7 +512,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '\$${total.toStringAsFixed(2)}',
+                  _settingsService.formatCurrency(total),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -570,25 +530,17 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
         child: Row(
           children: [
-            const Icon(
-              Icons.receipt_long_rounded,
-              color: Color(0xFF8D6E63),
-            ),
+            const Icon(Icons.receipt_long_rounded, color: Color(0xFF8D6E63)),
             const SizedBox(width: 8),
             const Expanded(
               child: Text(
                 'Gastos Operativos',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
@@ -614,10 +566,8 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
             ),
             const SizedBox(width: 12),
             Text(
-              '\$${total.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              _settingsService.formatCurrency(total),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -631,9 +581,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
         child: Column(
@@ -649,10 +597,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                 const Expanded(
                   child: Text(
                     'Depreciación',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ),
                 TextButton.icon(
@@ -674,16 +619,16 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
               ),
 
             ..._selectedAssetIds.map((assetId) {
-              final asset =
-                  assets.where((item) => item.id == assetId).firstOrNull;
+              final asset = assets
+                  .where((item) => item.id == assetId)
+                  .firstOrNull;
 
               if (asset == null) {
                 return const SizedBox.shrink();
               }
 
               final hours = _assetHours[assetId] ?? 0;
-              final cost =
-                  depreciationService.getProductionDepreciation(
+              final cost = depreciationService.getProductionDepreciation(
                 asset: asset,
                 hours: hours,
               );
@@ -691,12 +636,8 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
               return ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(asset.name),
-                subtitle: Text(
-                  '\$${cost.toStringAsFixed(2)}',
-                ),
-                leading: const Icon(
-                  Icons.precision_manufacturing_outlined,
-                ),
+                subtitle: Text(_settingsService.formatCurrency(cost)),
+                leading: const Icon(Icons.precision_manufacturing_outlined),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -716,7 +657,10 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                         onChanged: (value) {
                           setState(() {
                             _assetHours[assetId] =
-                                double.tryParse(value.trim().replaceAll(',', '.')) ?? 0;
+                                double.tryParse(
+                                  value.trim().replaceAll(',', '.'),
+                                ) ??
+                                0;
                           });
                         },
                       ),
@@ -740,7 +684,7 @@ class _AddProductionCostsPageState extends State<AddProductionCostsPage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '\$${total.toStringAsFixed(2)}',
+                  _settingsService.formatCurrency(total),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

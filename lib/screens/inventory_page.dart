@@ -5,6 +5,7 @@ import '../services/inventory_service.dart';
 import '../models/ingredient_catalog.dart';
 import '../models/inventory_movement.dart';
 import '../services/inventory_movement_service.dart';
+import '../services/settings_service.dart';
 
 import 'ingredients_page.dart';
 import 'inventory_entry_page.dart';
@@ -24,6 +25,7 @@ class _InventoryPageState extends State<InventoryPage> {
   final InventoryService inventoryService = InventoryService();
 
   final InventoryMovementService movementService = InventoryMovementService();
+  final SettingsService settingsService = SettingsService();
 
   late final Box<IngredientCatalog> ingredientsBox;
   late final Box<InventoryMovement> movementsBox;
@@ -168,7 +170,7 @@ class _InventoryPageState extends State<InventoryPage> {
             icon: Icons.attach_money,
             color: Colors.teal,
             title: "Valor del Inventario",
-            subtitle: "\$${inventoryValue.toStringAsFixed(2)}",
+            subtitle: settingsService.formatCurrency(inventoryValue),
             onTap: () {},
           ),
 
@@ -237,7 +239,7 @@ class _InventoryPageState extends State<InventoryPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     trailing: Text(
-                      "\$${inventoryValue.toStringAsFixed(2)}",
+                      settingsService.formatCurrency(inventoryValue),
                       style: const TextStyle(
                         color: Colors.green,
                         fontSize: 18,

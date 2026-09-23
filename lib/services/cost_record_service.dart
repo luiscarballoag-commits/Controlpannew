@@ -60,6 +60,56 @@ class CostRecordService {
     _box.add(record);
   }
 
+  double? getAverageSuggestedSalePriceForRecipeToday(String recipeName) {
+    final productionService = ProductionService();
+
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final startOfTomorrow = startOfDay.add(const Duration(days: 1));
+
+    double weightedPrice = 0.0;
+    int totalPieces = 0;
+
+    for (final record in _box.values) {
+      final recordRecipeName =
+          record.recipeName.trim().toLowerCase().replaceFirst(
+                RegExp(r'\s+\d+$'),
+                '',
+              );
+      final targetRecipeName =
+          recipeName.trim().toLowerCase().replaceFirst(
+                RegExp(r'\s+\d+$'),
+                '',
+              );
+
+      if (recordRecipeName != targetRecipeName) {
+        continue;
+      }
+
+      if (record.date.isBefore(startOfDay) ||
+          !record.date.isBefore(startOfTomorrow)) {
+        continue;
+      }
+
+      final production =
+          productionService.getProductionById(record.productionId);
+
+      if (production == null || production.totalPieces <= 0) {
+        continue;
+      }
+
+      weightedPrice +=
+          record.suggestedSalePrice * production.totalPieces;
+      totalPieces += production.totalPieces;
+    }
+
+    if (totalPieces == 0) {
+      return null;
+    }
+
+    return weightedPrice / totalPieces;
+  }
+
   double? getAverageCostPerPieceForRecipeToday(String recipeName) {
     final productionService = ProductionService();
 

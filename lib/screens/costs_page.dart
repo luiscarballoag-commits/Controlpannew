@@ -5,6 +5,7 @@ import 'inventory_report_page.dart';
 import 'cost_report_page.dart';
 import '../models/cost_record.dart';
 import '../services/cost_record_service.dart';
+import '../services/settings_service.dart';
 
 class CostsPage extends StatefulWidget {
   const CostsPage({super.key});
@@ -15,6 +16,7 @@ class CostsPage extends StatefulWidget {
 
 class _CostsPageState extends State<CostsPage> {
   final CostRecordService costRecordService = CostRecordService();
+  final SettingsService settingsService = SettingsService();
 
   String selectedPeriod = 'Hoy';
 
@@ -326,7 +328,7 @@ class _CostsPageState extends State<CostsPage> {
           ),
         ),
         trailing: Text(
-          '\$${value.toStringAsFixed(2)}',
+          settingsService.formatCurrency(value),
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -356,7 +358,7 @@ class _CostsPageState extends State<CostsPage> {
           ),
           Text(
             isCurrency
-                ? '\$${value.toStringAsFixed(2)}'
+                ? settingsService.formatCurrency(value)
                 : value.toStringAsFixed(0),
             style: const TextStyle(
               fontSize: 18,

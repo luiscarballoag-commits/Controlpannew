@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/ingredient_service.dart';
 import '../services/inventory_presentation_service.dart';
+import '../services/settings_service.dart';
 import 'ingredient_editor_page.dart';
 import 'inventory_kardex_page.dart';
 import 'inventory_entry_page.dart';
@@ -17,6 +18,7 @@ class IngredientsPage extends StatefulWidget {
 
 class _IngredientsPageState extends State<IngredientsPage> {
   final IngredientService ingredientService = IngredientService();
+  final SettingsService settingsService = SettingsService();
 
   Future<void> deleteIngredient(int index) async {
     final confirm = await showDialog<bool>(
@@ -101,7 +103,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
                           "⚠️ Mínimo: ${ingredient.minimumStock.toStringAsFixed(2)} ${ingredient.unit}",
                         ),
                         Text(
-                          "💲 Precio: \$${ingredient.packagePurchasePrice.toStringAsFixed(2)}",
+                          "💲 Precio: ${settingsService.formatCurrency(ingredient.packagePurchasePrice)}",
                         ),
                       ],
                     ),

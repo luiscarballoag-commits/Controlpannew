@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/labor_worker.dart';
 import '../services/labor_service.dart';
+import '../services/settings_service.dart';
 
 class LaborCostsPage extends StatefulWidget {
   const LaborCostsPage({super.key});
@@ -11,6 +12,7 @@ class LaborCostsPage extends StatefulWidget {
 }
 
 class _LaborCostsPageState extends State<LaborCostsPage> {
+  final SettingsService settingsService = SettingsService();
   final LaborService laborService = LaborService();
 
   void _showWorkerDialog({int? index}) {
@@ -262,7 +264,7 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '\$${total.toStringAsFixed(2)}',
+                    settingsService.formatCurrency(total),
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -306,7 +308,7 @@ class _LaborCostsPageState extends State<LaborCostsPage> {
                       CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '\$${workerTotal.toStringAsFixed(2)}',
+                      settingsService.formatCurrency(workerTotal),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),

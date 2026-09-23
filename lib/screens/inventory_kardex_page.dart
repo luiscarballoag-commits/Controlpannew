@@ -3,37 +3,39 @@ import 'package:flutter/material.dart';
 import '../models/ingredient_catalog.dart';
 import '../models/inventory_movement.dart';
 import '../services/inventory_kardex_service.dart';
+import '../services/settings_service.dart';
 
 class InventoryKardexPage extends StatelessWidget {
   final IngredientCatalog ingredient;
+  final SettingsService settingsService = SettingsService();
 
-  const InventoryKardexPage({
+  InventoryKardexPage({
     super.key,
     required this.ingredient,
   });
 
   String _formatConsumptionCost(double value) {
     if (value == 0) {
-      return '\$0.00';
+      return settingsService.formatCurrency(value);
     }
 
     if (value >= 0.01) {
-      return '\$${value.toStringAsFixed(2)}';
+      return settingsService.formatCurrency(value);
     }
 
     if (value >= 0.001) {
-      return '\$${value.toStringAsFixed(3)}';
+      return settingsService.formatCurrency(value, decimals: 3);
     }
 
     if (value >= 0.0001) {
-      return '\$${value.toStringAsFixed(4)}';
+      return settingsService.formatCurrency(value, decimals: 4);
     }
 
     if (value >= 0.00001) {
-      return '\$${value.toStringAsFixed(5)}';
+      return settingsService.formatCurrency(value, decimals: 5);
     }
 
-    return '\$${value.toStringAsFixed(6)}';
+    return settingsService.formatCurrency(value, decimals: 6);
   }
 
   @override
@@ -143,7 +145,7 @@ class InventoryKardexPage extends StatelessWidget {
                   leading: const Icon(Icons.attach_money),
                   title: const Text('Precio de compra'),
                   trailing: Text(
-                    '\$${purchasePrice.toStringAsFixed(2)} '
+                    '${settingsService.formatCurrency(purchasePrice)} '
                     '/ $purchaseUnit',
                   ),
                 ),
@@ -166,7 +168,7 @@ class InventoryKardexPage extends StatelessWidget {
                   leading: const Icon(Icons.calculate),
                   title: const Text('Valor del inventario'),
                   trailing: Text(
-                    '\$${inventoryValue.toStringAsFixed(2)}',
+                    settingsService.formatCurrency(inventoryValue),
                   ),
                 ),
               ],
@@ -216,7 +218,7 @@ class InventoryKardexPage extends StatelessWidget {
                     '${movement.reference}\n'
                     '${movement.quantity.toStringAsFixed(2)} '
                     '${movement.unit}'
-                    '${isEntry && movement.purchasePrice > 0 ? '\nPrecio: \$${movement.purchasePrice.toStringAsFixed(2)}' : ''}',
+                    '${isEntry && movement.purchasePrice > 0 ? '\nPrecio: ${settingsService.formatCurrency(movement.purchasePrice)}' : ''}',
                   ),
                   isThreeLine: true,
                 ),

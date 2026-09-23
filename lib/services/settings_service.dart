@@ -133,4 +133,8 @@ class SettingsService {
   String get currencyDisplay {
     return '$currencyName ($currencySymbol)';
   }
+
+  String formatCurrency(double value, {int decimals = 2}) {
+    return '$currencySymbol${value.toStringAsFixed(decimals)}';
+  }
 }

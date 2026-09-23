@@ -45,28 +45,19 @@ class InventoryReportPage extends StatelessWidget {
 
     if (owner.isNotEmpty) {
       information.add(
-        pw.Text(
-          'Propietario: $owner',
-          style: const pw.TextStyle(fontSize: 9),
-        ),
+        pw.Text('Propietario: $owner', style: const pw.TextStyle(fontSize: 9)),
       );
     }
 
     if (address.isNotEmpty) {
       information.add(
-        pw.Text(
-          'Dirección: $address',
-          style: const pw.TextStyle(fontSize: 9),
-        ),
+        pw.Text('Dirección: $address', style: const pw.TextStyle(fontSize: 9)),
       );
     }
 
     if (phone.isNotEmpty) {
       information.add(
-        pw.Text(
-          'Teléfono: $phone',
-          style: const pw.TextStyle(fontSize: 9),
-        ),
+        pw.Text('Teléfono: $phone', style: const pw.TextStyle(fontSize: 9)),
       );
     }
 
@@ -74,21 +65,14 @@ class InventoryReportPage extends StatelessWidget {
       width: double.infinity,
       padding: const pw.EdgeInsets.only(bottom: 10),
       decoration: const pw.BoxDecoration(
-        border: pw.Border(
-          bottom: pw.BorderSide(
-            color: pdf.PdfColors.grey400,
-          ),
-        ),
+        border: pw.Border(bottom: pw.BorderSide(color: pdf.PdfColors.grey400)),
       ),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
             name.isEmpty ? 'CONTROLPAN' : name,
-            style: pw.TextStyle(
-              fontSize: 20,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
           ),
           if (information.isNotEmpty) ...[
             pw.SizedBox(height: 5),
@@ -105,11 +89,9 @@ class InventoryReportPage extends StatelessWidget {
     double totalInventoryValue = 0;
 
     for (final ingredient in ingredients) {
-      final available =
-          _kardexService.getAvailableStockNormalized(ingredient);
+      final available = _kardexService.getAvailableStockNormalized(ingredient);
 
-      final normalizedUnitPrice =
-          _getNormalizedUnitPrice(ingredient);
+      final normalizedUnitPrice = _getNormalizedUnitPrice(ingredient);
 
       if (available > 0) {
         totalInventoryValue += available * normalizedUnitPrice;
@@ -129,10 +111,7 @@ class InventoryReportPage extends StatelessWidget {
 
             pw.Text(
               'REPORTE DE INVENTARIO',
-              style: pw.TextStyle(
-                fontSize: 18,
-                fontWeight: pw.FontWeight.bold,
-              ),
+              style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 4),
             pw.Text(
@@ -143,17 +122,12 @@ class InventoryReportPage extends StatelessWidget {
 
             pw.Text(
               'Resumen del inventario',
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.bold,
-              ),
+              style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 8),
 
             pw.Table(
-              border: pw.TableBorder.all(
-                color: pdf.PdfColors.grey400,
-              ),
+              border: pw.TableBorder.all(color: pdf.PdfColors.grey400),
               children: [
                 _pdfSummaryRow(
                   'Ingredientes registrados',
@@ -161,7 +135,7 @@ class InventoryReportPage extends StatelessWidget {
                 ),
                 _pdfSummaryRow(
                   'Valor total del inventario',
-                  '\$${totalInventoryValue.toStringAsFixed(2)}',
+                  _settingsService.formatCurrency(totalInventoryValue),
                 ),
               ],
             ),
@@ -170,10 +144,7 @@ class InventoryReportPage extends StatelessWidget {
 
             pw.Text(
               'Existencias actuales',
-              style: pw.TextStyle(
-                fontSize: 16,
-                fontWeight: pw.FontWeight.bold,
-              ),
+              style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
             ),
             pw.SizedBox(height: 8),
 
@@ -181,9 +152,7 @@ class InventoryReportPage extends StatelessWidget {
               pw.Text('No hay ingredientes registrados.')
             else
               pw.Table(
-                border: pw.TableBorder.all(
-                  color: pdf.PdfColors.grey400,
-                ),
+                border: pw.TableBorder.all(color: pdf.PdfColors.grey400),
                 columnWidths: {
                   0: const pw.FlexColumnWidth(2.0),
                   1: const pw.FlexColumnWidth(1.3),
@@ -208,56 +177,54 @@ class InventoryReportPage extends StatelessWidget {
                       _pdfCell('Valor', bold: true),
                     ],
                   ),
-                  ...ingredients.map(
-                    (ingredient) {
-                      final purchased =
-                          _kardexService
-                              .getTotalPurchasedNormalized(ingredient);
+                  ...ingredients.map((ingredient) {
+                    final purchased = _kardexService
+                        .getTotalPurchasedNormalized(ingredient);
 
-                      final consumed =
-                          _kardexService
-                              .getTotalConsumedNormalized(ingredient);
+                    final consumed = _kardexService.getTotalConsumedNormalized(
+                      ingredient,
+                    );
 
-                      final available =
-                          _kardexService
-                              .getAvailableStockNormalized(ingredient);
+                    final available = _kardexService
+                        .getAvailableStockNormalized(ingredient);
 
-                      final lastPrice =
-                          _kardexService
-                              .getLastPurchasePrice(ingredient);
+                    final lastPrice = _kardexService.getLastPurchasePrice(
+                      ingredient,
+                    );
 
-                      final normalizedUnitPrice =
-                          _getNormalizedUnitPrice(ingredient);
+                    final normalizedUnitPrice = _getNormalizedUnitPrice(
+                      ingredient,
+                    );
 
-                      final inventoryValue = available > 0
-                          ? available * normalizedUnitPrice
-                          : 0;
+                    final inventoryValue = available > 0
+                        ? available * normalizedUnitPrice
+                        : 0.0;
 
-                      return pw.TableRow(
-                        children: [
-                          _pdfCell(ingredient.name),
-                          _pdfCell(
-                            '${_formatNumber(purchased)} ${ingredient.unit}',
+                    return pw.TableRow(
+                      children: [
+                        _pdfCell(ingredient.name),
+                        _pdfCell(
+                          '${_formatNumber(purchased)} ${ingredient.unit}',
+                        ),
+                        _pdfCell(
+                          '${_formatNumber(consumed)} ${ingredient.unit}',
+                        ),
+                        _pdfCell(
+                          '${_formatNumber(available)} ${ingredient.unit}',
+                        ),
+                        _pdfCell(_settingsService.formatCurrency(lastPrice)),
+                        _pdfCell(
+                          _settingsService.formatCurrency(
+                            normalizedUnitPrice,
+                            decimals: 4,
                           ),
-                          _pdfCell(
-                            '${_formatNumber(consumed)} ${ingredient.unit}',
-                          ),
-                          _pdfCell(
-                            '${_formatNumber(available)} ${ingredient.unit}',
-                          ),
-                          _pdfCell(
-                            '\$${lastPrice.toStringAsFixed(2)}',
-                          ),
-                          _pdfCell(
-                            '\$${normalizedUnitPrice.toStringAsFixed(4)}',
-                          ),
-                          _pdfCell(
-                            '\$${inventoryValue.toStringAsFixed(2)}',
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                        _pdfCell(
+                          _settingsService.formatCurrency(inventoryValue),
+                        ),
+                      ],
+                    );
+                  }),
                 ],
               ),
 
@@ -267,7 +234,7 @@ class InventoryReportPage extends StatelessWidget {
               alignment: pw.Alignment.centerRight,
               child: pw.Text(
                 'Valor total del inventario: '
-                '\$${totalInventoryValue.toStringAsFixed(2)}',
+                '${_settingsService.formatCurrency(totalInventoryValue)}',
                 style: pw.TextStyle(
                   fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
@@ -290,31 +257,20 @@ class InventoryReportPage extends StatelessWidget {
     );
   }
 
-  pw.TableRow _pdfSummaryRow(
-    String label,
-    String value,
-  ) {
+  pw.TableRow _pdfSummaryRow(String label, String value) {
     return pw.TableRow(
-      children: [
-        _pdfCell(label),
-        _pdfCell(value, bold: true),
-      ],
+      children: [_pdfCell(label), _pdfCell(value, bold: true)],
     );
   }
 
-  pw.Widget _pdfCell(
-    String text, {
-    bool bold = false,
-  }) {
+  pw.Widget _pdfCell(String text, {bool bold = false}) {
     return pw.Padding(
       padding: const pw.EdgeInsets.all(5),
       child: pw.Text(
         text,
         style: pw.TextStyle(
           fontSize: 8,
-          fontWeight: bold
-              ? pw.FontWeight.bold
-              : pw.FontWeight.normal,
+          fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
         ),
       ),
     );
@@ -347,10 +303,7 @@ class InventoryReportPage extends StatelessWidget {
               children: [
                 const Text(
                   'Existencias actuales',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 const Text(
@@ -365,23 +318,19 @@ class InventoryReportPage extends StatelessWidget {
   }
 
   Widget _buildIngredientCard(IngredientCatalog ingredient) {
-    final purchased =
-        _kardexService.getTotalPurchasedNormalized(ingredient);
+    final purchased = _kardexService.getTotalPurchasedNormalized(ingredient);
 
-    final consumed =
-        _kardexService.getTotalConsumedNormalized(ingredient);
+    final consumed = _kardexService.getTotalConsumedNormalized(ingredient);
 
-    final available =
-        _kardexService.getAvailableStockNormalized(ingredient);
+    final available = _kardexService.getAvailableStockNormalized(ingredient);
 
-    final lastPrice =
-        _kardexService.getLastPurchasePrice(ingredient);
+    final lastPrice = _kardexService.getLastPurchasePrice(ingredient);
 
-    final normalizedUnitPrice =
-        _getNormalizedUnitPrice(ingredient);
+    final normalizedUnitPrice = _getNormalizedUnitPrice(ingredient);
 
-    final inventoryValue =
-        available > 0 ? available * normalizedUnitPrice : 0;
+    final inventoryValue = available > 0
+        ? available * normalizedUnitPrice
+        : 0.0;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -392,10 +341,7 @@ class InventoryReportPage extends StatelessWidget {
           children: [
             Text(
               ingredient.name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             _buildRow(
@@ -412,16 +358,19 @@ class InventoryReportPage extends StatelessWidget {
             ),
             _buildRow(
               'Último precio',
-              '\$${lastPrice.toStringAsFixed(2)}',
+              _settingsService.formatCurrency(lastPrice),
             ),
             _buildRow(
               'Costo por ${ingredient.unit}',
-              '\$${normalizedUnitPrice.toStringAsFixed(4)}',
+              _settingsService.formatCurrency(
+                normalizedUnitPrice.toDouble(),
+                decimals: 4,
+              ),
             ),
             const Divider(),
             _buildRow(
               'Valor del inventario',
-              '\$${inventoryValue.toStringAsFixed(2)}',
+              _settingsService.formatCurrency(inventoryValue),
               bold: true,
             ),
           ],
@@ -430,11 +379,7 @@ class InventoryReportPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(
-    String label,
-    String value, {
-    bool bold = false,
-  }) {
+  Widget _buildRow(String label, String value, {bool bold = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

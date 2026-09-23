@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/cost_record_service.dart';
 import '../services/inventory_service.dart';
 import '../services/production_service.dart';
+import '../services/settings_service.dart';
 
 class SummaryCards extends StatefulWidget {
   const SummaryCards({super.key});
@@ -12,6 +13,7 @@ class SummaryCards extends StatefulWidget {
 }
 
 class _SummaryCardsState extends State<SummaryCards> {
+  final SettingsService _settingsService = SettingsService();
   final InventoryService _inventoryService = InventoryService();
   final ProductionService _productionService = ProductionService();
   final CostRecordService _costRecordService = CostRecordService();
@@ -19,7 +21,7 @@ class _SummaryCardsState extends State<SummaryCards> {
   int _totalIngredients = 0;
   int _todayProductions = 0;
   int _lowStockAlerts = 0;
-  double? _averageCostPerPiece;
+  double? _averageSuggestedSalePrice;
 
   static const String _mainRecipeName = 'Pan Campesino';
 
@@ -44,10 +46,8 @@ class _SummaryCardsState extends State<SummaryCards> {
       _totalIngredients = _inventoryService.getTotalIngredients();
       _todayProductions = todayProductions.length;
       _lowStockAlerts = _inventoryService.getLowStockItems().length;
-      _averageCostPerPiece =
-          _costRecordService.getAverageCostPerPieceForRecipeToday(
-        _mainRecipeName,
-      );
+      _averageSuggestedSalePrice = _costRecordService
+          .getAverageSuggestedSalePriceForRecipeToday(_mainRecipeName);
     });
   }
 
@@ -70,9 +70,9 @@ class _SummaryCardsState extends State<SummaryCards> {
         _summaryCard(
           Icons.attach_money,
           _mainRecipeName,
-          _averageCostPerPiece == null
+          _averageSuggestedSalePrice == null
               ? 'Sin producción hoy'
-              : '\$${_averageCostPerPiece!.toStringAsFixed(2)}',
+              : _settingsService.formatCurrency(_averageSuggestedSalePrice!),
           Colors.green,
         ),
         _summaryCard(
@@ -85,20 +85,13 @@ class _SummaryCardsState extends State<SummaryCards> {
     );
   }
 
-  Widget _summaryCard(
-    IconData icon,
-    String title,
-    String value,
-    Color color,
-  ) {
+  Widget _summaryCard(IconData icon, String title, String value, Color color) {
     final isRecipeCard = title == _mainRecipeName;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(
           horizontal: 16,
@@ -112,9 +105,7 @@ class _SummaryCardsState extends State<SummaryCards> {
           title,
           maxLines: isRecipeCard ? 2 : 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: isRecipeCard
             ? Text(
