@@ -379,7 +379,7 @@ class _OperatingExpensesPageState
                               children: [
                                 const Text('Costo diario equivalente'),
                                 Text(
-                                  '${settingsService.formatCurrency(dailyCost)}',
+                                  settingsService.formatCurrency(dailyCost),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
