@@ -9,6 +9,7 @@ import '../widgets/date_time_card.dart';
 import '../widgets/greeting_card.dart';
 import '../widgets/message_card.dart';
 import '../widgets/summary_cards.dart';
+import '../widgets/trial_status_card.dart';
 
 import 'costs_page.dart';
 import 'inventory_page.dart';
@@ -176,6 +177,7 @@ class HomeDashboard extends StatelessWidget {
 
         MessageCard(message: message),
 
+        const TrialStatusCard(),
         const DashboardBanner(),
 
         const SizedBox(height: 25),

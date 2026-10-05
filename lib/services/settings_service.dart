@@ -10,6 +10,7 @@ class SettingsService {
   static const String currencyKey = 'currency';
   static const String profitMarginKey = 'profit_margin';
   static const String initialSetupCompletedKey = 'initial_setup_completed';
+  static const String trialStartDateKey = 'trial_start_date';
 
   Box get _box => Hive.box(_boxName);
 
@@ -88,7 +89,49 @@ class SettingsService {
 
   Future<void> completeInitialSetup() async {
     await _box.put(initialSetupCompletedKey, true);
+
+    if (!_box.containsKey(trialStartDateKey)) {
+      await _box.put(trialStartDateKey, DateTime.now().toIso8601String());
+    }
   }
+
+  DateTime? get trialStartDate {
+    final value = _box.get(trialStartDateKey);
+
+    if (value is! String) {
+      return null;
+    }
+
+    return DateTime.tryParse(value);
+  }
+
+  int get trialDaysRemaining {
+    final startDate = trialStartDate;
+
+    if (startDate == null) {
+      return 30;
+    }
+
+    final startDay = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
+    final today = DateTime.now();
+    final currentDay = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    );
+
+    final elapsedDays = currentDay.difference(startDay).inDays;
+    final remaining = 30 - elapsedDays;
+
+    return remaining.clamp(0, 30);
+  }
+
+  bool get trialExpired => trialDaysRemaining <= 0;
 
   String get currencyName {
     switch (currency) {
