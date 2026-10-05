@@ -9,6 +9,7 @@ class SettingsService {
   static const String bakeryOwnerKey = 'bakery_owner';
   static const String currencyKey = 'currency';
   static const String profitMarginKey = 'profit_margin';
+  static const String initialSetupCompletedKey = 'initial_setup_completed';
 
   Box get _box => Hive.box(_boxName);
 
@@ -76,6 +77,17 @@ class SettingsService {
 
   Future<void> saveProfitMargin(double value) async {
     await _box.put(profitMarginKey, value);
+  }
+
+  bool get initialSetupCompleted {
+    return _box.get(
+      initialSetupCompletedKey,
+      defaultValue: false,
+    ) as bool;
+  }
+
+  Future<void> completeInitialSetup() async {
+    await _box.put(initialSetupCompletedKey, true);
   }
 
   String get currencyName {

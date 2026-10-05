@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import '../services/settings_service.dart';
 import 'home_page.dart';
+import 'initial_setup_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -11,6 +14,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   late final VideoPlayerController _videoController;
+
   bool _isInitialized = false;
   bool _hasNavigated = false;
 
@@ -47,9 +51,14 @@ class _SplashPageState extends State<SplashPage> {
 
     _hasNavigated = true;
 
+    final settings = SettingsService();
+    final destination = settings.initialSetupCompleted
+        ? const HomePage()
+        : const InitialSetupPage();
+
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, _, _) => const HomePage(),
+        pageBuilder: (_, _, _) => destination,
         transitionDuration: const Duration(milliseconds: 500),
         transitionsBuilder: (_, animation, _, child) {
           return FadeTransition(
