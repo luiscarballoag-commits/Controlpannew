@@ -7,6 +7,7 @@ import '../models/production.dart';
 import '../services/production_service.dart';
 import '../services/elaboration/elaboration_record_service.dart';
 import '../services/settings_service.dart';
+import '../services/production_variety_cost_service.dart';
 
 class ProductionReportPage extends StatelessWidget {
   ProductionReportPage({super.key});
@@ -14,6 +15,8 @@ class ProductionReportPage extends StatelessWidget {
   final ProductionService productionService = ProductionService();
   final ElaborationRecordService elaborationRecordService =
       ElaborationRecordService();
+  final ProductionVarietyCostService varietyCostService =
+      ProductionVarietyCostService();
 
   String _formatDate(DateTime date) {
     final day = date.day.toString().padLeft(2, '0');
@@ -432,6 +435,8 @@ class ProductionReportPage extends StatelessWidget {
     Map<String, int> piecesByVariety,
     int totalPieces,
   ) {
+    final allCosts = varietyCostService.getAll();
+
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(
@@ -469,34 +474,63 @@ class ProductionReportPage extends StatelessWidget {
               const Text('No hay variedades registradas.'),
             ] else ...[
               const SizedBox(height: 12),
-              ...piecesByVariety.entries.map(
-                (entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
+              ...piecesByVariety.entries.map((entry) {
+                final matchingCosts = allCosts.where(
+                  (item) => item.productName.trim().toLowerCase() ==
+                      entry.key.trim().toLowerCase(),
+                );
+
+                final cost = matchingCosts.isEmpty
+                    ? null
+                    : matchingCosts.last;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 7),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.bakery_dining,
-                        size: 20,
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.bakery_dining,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              entry.key,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${entry.value} piezas',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          entry.key,
-                          style: const TextStyle(
-                            fontSize: 15,
+                      if (cost != null) ...[
+                        const SizedBox(height: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 28),
+                          child: Text(
+                            'Base: \$${cost.baseCostPerPiece.toStringAsFixed(2)}  •  '
+                            'Complemento: \$${cost.elaborationCostPerPiece.toStringAsFixed(2)}  •  '
+                            'Costo: \$${cost.totalCostPerPiece.toStringAsFixed(2)} / pieza',
+                            style: const TextStyle(
+                              fontSize: 13,
+                            ),
                           ),
                         ),
-                      ),
-                      Text(
-                        '${entry.value} piezas',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      ],
                     ],
                   ),
-                ),
-              ),
+                );
+              }),
             ],
           ],
         ),

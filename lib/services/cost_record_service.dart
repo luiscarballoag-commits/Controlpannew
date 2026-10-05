@@ -2,6 +2,8 @@ import 'package:hive/hive.dart';
 
 import '../models/cost_record.dart';
 import 'production_service.dart';
+import 'production_variety_cost_service.dart';
+import '../models/production_variety_cost.dart';
 
 class CostRecordService {
   static const String boxName = 'costs';
@@ -56,8 +58,40 @@ class CostRecordService {
     _box.clear();
   }
 
-  void saveRecord(CostRecord record) {
-    _box.add(record);
+  Future<void> saveRecord(CostRecord record) async {
+    await _box.add(record);
+
+    final varietyService = ProductionVarietyCostService();
+    final varieties = varietyService.getByProduction(record.productionId);
+
+    for (final variety in varieties) {
+      final production =
+          ProductionService().getProductionById(record.productionId);
+
+      if (production == null || production.totalPieces <= 0) {
+        continue;
+      }
+
+      final baseCostPerPiece =
+          (record.totalCost - record.elaborationCost) /
+              production.totalPieces;
+
+      final totalCostPerPiece =
+          baseCostPerPiece + variety.elaborationCostPerPiece;
+
+      await varietyService.save(
+        ProductionVarietyCost(
+          id: variety.id,
+          productionId: variety.productionId,
+          recipeId: variety.recipeId,
+          productName: variety.productName,
+          quantity: variety.quantity,
+          baseCostPerPiece: baseCostPerPiece,
+          elaborationCostPerPiece: variety.elaborationCostPerPiece,
+          totalCostPerPiece: totalCostPerPiece,
+        ),
+      );
+    }
   }
 
   double? getAverageSuggestedSalePriceForRecipeToday(String recipeName) {

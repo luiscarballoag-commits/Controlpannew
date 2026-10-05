@@ -5,6 +5,9 @@ import '../services/elaboration/elaboration_recipe_service.dart';
 import '../services/elaboration/elaboration_production_service.dart';
 import '../services/elaboration/elaboration_record_service.dart';
 import '../models/elaboration/consumption_item.dart';
+import '../models/production_variety_cost.dart';
+import '../services/cost_service.dart';
+import '../services/production_variety_cost_service.dart';
 
 import 'elaboration/elaboration_consumption_summary_page.dart';
 
@@ -30,6 +33,9 @@ class _ProductionElaborationPageState extends State<ProductionElaborationPage> {
       ElaborationProductionService();
 
   final ElaborationRecordService recordService = ElaborationRecordService();
+  final CostService costService = CostService();
+  final ProductionVarietyCostService varietyCostService =
+      ProductionVarietyCostService();
 
   final Map<String, TextEditingController> controllers = {};
 
@@ -166,6 +172,25 @@ class _ProductionElaborationPageState extends State<ProductionElaborationPage> {
                               0;
 
                           if (pieces <= 0) continue;
+                          final elaborationCostPerPiece =
+                              costService.calculateElaborationCostPerPiece(
+                            recipe: recipe,
+                            quantity: pieces,
+                          );
+
+                          await varietyCostService.save(
+                            ProductionVarietyCost(
+                              id: '${widget.productionId}_${recipe.id}',
+                              productionId: widget.productionId,
+                              recipeId: recipe.id,
+                              productName: recipe.name,
+                              quantity: pieces,
+                              baseCostPerPiece: 0.0,
+                              elaborationCostPerPiece: elaborationCostPerPiece,
+                              totalCostPerPiece: elaborationCostPerPiece,
+                            ),
+                          );
+
 
                           await productionService.saveProduction(
                             productionId: widget.productionId,

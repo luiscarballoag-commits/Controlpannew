@@ -213,4 +213,50 @@ class CostService {
       profitMargin: effectiveProfitMargin,
     );
   }
+
+  /// Calcula únicamente el costo de los ingredientes de una elaboración
+  /// y lo expresa como costo por pieza.
+  double calculateElaborationCostPerPiece({
+    required ElaborationRecipe recipe,
+    required int quantity,
+  }) {
+    if (quantity <= 0) return 0.0;
+
+    final inventory = ingredientService.getAllIngredients();
+    double totalCost = 0.0;
+
+    for (final recipeIngredient in recipe.ingredients) {
+      final ingredient = inventory.cast<IngredientCatalog?>().firstWhere(
+        (item) => item?.id == recipeIngredient.ingredientId,
+        orElse: () => null,
+      );
+
+      if (ingredient == null) continue;
+
+      final quantityUsed = recipeIngredient.quantity * quantity;
+      double unitPrice = ingredient.purchasePrice;
+
+      final ingredientUnit = ingredient.unit.trim().toLowerCase();
+      final elaborationUnit = recipeIngredient.unit.trim().toLowerCase();
+
+      if (ingredientUnit != elaborationUnit) {
+        if (ingredientUnit == 'kg' && elaborationUnit == 'g') {
+          unitPrice = ingredient.purchasePrice / 1000;
+        } else if (ingredientUnit == 'g' && elaborationUnit == 'kg') {
+          unitPrice = ingredient.purchasePrice * 1000;
+        } else if (ingredientUnit == 'l' && elaborationUnit == 'ml') {
+          unitPrice = ingredient.purchasePrice / 1000;
+        } else if (ingredientUnit == 'ml' && elaborationUnit == 'l') {
+          unitPrice = ingredient.purchasePrice * 1000;
+        } else {
+          continue;
+        }
+      }
+
+      totalCost += quantityUsed * unitPrice;
+    }
+
+    return totalCost / quantity;
+  }
+
 }
