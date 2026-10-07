@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage> {
     final settings = SettingsService();
     final destination = !settings.initialSetupCompleted
         ? const InitialSetupPage()
-        : DateTime.now().millisecondsSinceEpoch >= 0
+        : settings.trialExpired
             ? const TrialExpiredPage()
             : const HomePage();
 
