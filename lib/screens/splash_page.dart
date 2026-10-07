@@ -4,6 +4,7 @@ import 'package:video_player/video_player.dart';
 import '../services/settings_service.dart';
 import 'home_page.dart';
 import 'initial_setup_page.dart';
+import 'trial_expired_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -52,9 +53,11 @@ class _SplashPageState extends State<SplashPage> {
     _hasNavigated = true;
 
     final settings = SettingsService();
-    final destination = settings.initialSetupCompleted
-        ? const HomePage()
-        : const InitialSetupPage();
+    final destination = !settings.initialSetupCompleted
+        ? const InitialSetupPage()
+        : true
+            ? const TrialExpiredPage()
+            : const HomePage();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
